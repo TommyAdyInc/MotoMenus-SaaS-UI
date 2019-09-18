@@ -6,7 +6,7 @@ orbs:
 jobs:
   sync-assets-to-s3:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: "circleci/python:2.7"
     steps:
       - checkout
       - run:
