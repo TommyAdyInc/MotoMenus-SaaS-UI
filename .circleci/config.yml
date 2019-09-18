@@ -1,6 +1,8 @@
 version: 2.1
+
 orbs:
   aws-s3: circleci/aws-s3@1.0.0
+
 jobs:
   sync-assets-to-s3:
     docker:
@@ -14,10 +16,12 @@ jobs:
             echo 'export CIRCLE_PROJECT_REPONAME_LOWERCASE=$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')' >> $BASH_ENV
       - run: mkdir bucket && echo "lorum ipsum" > bucket/build_asset.txt
       - aws-s3/sync:
+          aws-region: AWS_DEFAULT_REGION
           from: bucket
           to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
           arguments: |
-            --acl public-read
+            --acl public-read \
+            --cache-control "max-age=86400"
           overwrite: true
 
 workflows:
