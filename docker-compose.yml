@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  node:
+    command:
+      - "node"
+      - "--inspect=0.0.0.0:${DOCKER_INSPECT_PORT}"
+      - "--require"
+      - "dotenv/config"
+      - "node_modules/.bin/webpack-dev-server"
+      - "--env.mode"
+      - "development"
+      - "--hot"
+      - "--inline"
+    image: "node:10.16.0-alpine"
+    init: true
+    networks:
+      - default
+      - local-network
+    ports:
+      - target: ${DOCKER_HOST_PORT}
+        published: ${DOCKER_HOST_PORT}
+        protocol: tcp
+        mode: host
+      - target: ${DOCKER_INSPECT_PORT}
+        published: ${DOCKER_INSPECT_PORT}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: .
+        target: /usr/src/app
+    working_dir: "/usr/src/app"
+
+networks:
+  local-network:
+    driver: bridge
+    external: true
