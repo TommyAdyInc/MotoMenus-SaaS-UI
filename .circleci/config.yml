@@ -1,12 +1,12 @@
 version: 2.1
 
 orbs:
-  aws-s3: circleci/aws-s3@1.0.0
+  aws-s3: circleci/aws-s3@1.0.11
 
 jobs:
   sync-assets-to-s3:
     docker:
-      - image: "circleci/python:2.7"
+      - image: circleci/buildpack-deps:stretch
     steps:
       - checkout
       - run:
