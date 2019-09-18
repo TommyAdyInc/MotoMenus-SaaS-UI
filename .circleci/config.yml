@@ -1,0 +1,33 @@
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@1.0.0
+jobs:
+  sync-assets-to-s3:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - run:
+          name: "Set an environment variable ($CIRCLE_PROJECT_REPONAME_LOWERCASE)"
+          command: |
+            set -x
+            echo 'export CIRCLE_PROJECT_REPONAME_LOWERCASE=$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')' >> $BASH_ENV
+      - run: mkdir bucket && echo "lorum ipsum" > bucket/build_asset.txt
+      - aws-s3/sync:
+          from: bucket
+          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
+          arguments: |
+            --acl public-read
+          overwrite: true
+
+workflows:
+  version: 2
+  main-workflow:
+    jobs:
+      - sync-assets-to-s3:
+          context: "org-global"
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
