@@ -1,6 +1,6 @@
 const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const modeConfig = env => require(`./build-utils/webpack.${env}`)(env);
+const modeConfig = env => require(`./build-utils/webpack.config.${env}`)(env);
 const webpack = require("webpack");
 const webpackMerge = require("webpack-merge");
 
