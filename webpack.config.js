@@ -80,8 +80,21 @@ module.exports = ({ mode } = { mode: "prod" }) => {
           }
         ]
       },
+      optimization: {
+        moduleIds: "hashed",
+        runtimeChunk: "single",
+        splitChunks: {
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "node_modules",
+              chunks: "all"
+            }
+          }
+        }
+      },
       output: {
-        filename: `${mode}-output.js`,
+        filename: `${mode}.[name].[hash].output.js`,
         publicPath: "/" // The public URL of the output directory when referenced in a browser. The URL to the output directory resolved relative to the HTML page (same directory).
       },
       plugins: [
@@ -89,7 +102,8 @@ module.exports = ({ mode } = { mode: "prod" }) => {
         new HtmlWebpackPlugin({
           favicon: "./src/graphics/favicon.png",
           filename: "index.html",
-          template: "./src/html/index-template.html"
+          template: "./src/html/index-template.html",
+          title: "888888888"
         }),
         new webpack.ProgressPlugin()
       ]
