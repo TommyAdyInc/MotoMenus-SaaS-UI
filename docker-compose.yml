@@ -9,7 +9,7 @@ services:
       - "dotenv/config"
       - "node_modules/.bin/webpack-dev-server"
       - "--env.mode"
-      - "dev"
+      - "development"
       - "--hot"
       - "--inline"
     image: "node:10.16.0-alpine"
