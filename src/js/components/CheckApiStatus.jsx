@@ -16,27 +16,11 @@ class CheckApiStatus extends React.Component {
         "//" + hostname + ":" + port + route_prefix + healthcheck_route
       );
     } catch (error) {
-      let error_message = this.handleCheckApiStatusCaughtError(
-        error,
-        healthcheck_route
-      );
-      let element_to_render = (
-        <Modal>
-          <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
-            <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
-              Error!
-            </span>
-            <span className="inline-flex px-2">
-              <div>{error_message}</div>
-            </span>
-          </div>
-        </Modal>
-      );
-      this.setState({ element_to_render: element_to_render });
+      this.handleError(error, healthcheck_route);
     }
   }
 
-  handleCheckApiStatusCaughtError = (error, path = "") => {
+  handleError = (error, path = "") => {
     let error_message = "";
     let { hostname } = this.props;
     if (error.response) {
@@ -58,7 +42,19 @@ class CheckApiStatus extends React.Component {
         "Something happened in setting up the request that triggered an error. " +
         error.message;
     }
-    return error_message;
+    let element_to_render = (
+      <Modal>
+        <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
+          <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+            Error!
+          </span>
+          <span className="inline-flex px-2">
+            <div>{error_message}</div>
+          </span>
+        </div>
+      </Modal>
+    );
+    this.setState({ element_to_render: element_to_render });
   };
 
   render() {
