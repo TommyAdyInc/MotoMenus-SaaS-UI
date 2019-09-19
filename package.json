@@ -54,12 +54,12 @@
     "dev:eslint:check": "eslint \"src/**/*.{js,jsx}\"",
     "dev:prettier:format": "prettier --write \"src/**/*.{css,js,json,jsx}\"",
     "dev:tailwind-cli:build": "npx tailwind build ./src/sass/tailwind-source.scss -c tailwind.config.js -o src/css/tailwind-output.css",
-    "dev:webpack:build": "webpack --env.mode development",
-    "dev:webpack:debug": "webpack --env.mode development --inspect --debug-brk",
-    "dev:webpack:server": "webpack-dev-server --env.mode development --hot --inline",
-    "dev:webpack:watch": "webpack --env.mode development --watch",
+    "dev:webpack:build": "webpack --env.mode dev",
+    "dev:webpack:debug": "webpack --env.mode dev --inspect --debug-brk",
+    "dev:webpack:server": "webpack-dev-server --env.mode dev --hot --inline",
+    "dev:webpack:watch": "webpack --env.mode dev --watch",
     "prod:eslint:check": "eslint \"src/**/*.{js,jsx}\"",
     "prod:prettier:check": "prettier --list-different \"src/**/*.{css,js,json,jsx}\"",
-    "prod:webpack:build": "webpack --env.mode production"
+    "prod:webpack:build": "webpack --env.mode prod"
   }
 }

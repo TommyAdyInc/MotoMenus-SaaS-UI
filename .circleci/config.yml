@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Compile assets
           command: |
-            npm run prod:webpack:build
+            npm run ${CIRCLE_BRANCH}:webpack:build
       - run:
           name: Remove the `node_modules` directory.
           command: rm -rf node_modules
