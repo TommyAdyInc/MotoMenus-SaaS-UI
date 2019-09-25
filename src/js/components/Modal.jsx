@@ -5,7 +5,7 @@ class Modal extends React.Component {
   render() {
     return (
       <Portal>
-        <dialog className="bg-smoke-500 fixed flex h-screen inset-0 items-center justify-center overflow-auto w-full z-50">
+        <dialog className="bg-smoke-700 fixed flex h-screen inset-0 items-center justify-center overflow-auto w-full z-50">
           {this.props.children}
         </dialog>
       </Portal>
