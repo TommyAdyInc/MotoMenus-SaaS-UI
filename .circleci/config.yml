@@ -1,15 +1,18 @@
+global-working-directory: &working-directory "/tmp/working-directory"
+
 version: 2.1
 
 orbs:
   aws-s3: circleci/aws-s3@1.0.11
 
 jobs:
-  install-node-dependencies:
+  npm-install:
     docker:
       # The primary container is an instance of the first image listed. The job's commands run in this container.
       - image: node:10.16.0-stretch
       # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       # - image: mysql:5.7.16
+    working_directory: *working-directory
     steps:
       - checkout
       - restore_cache:
@@ -26,6 +29,7 @@ jobs:
   compile-assets:
     docker:
       - image: node:10.16.0-stretch
+    working_directory: *working-directory
     steps:
       - checkout
       - restore_cache:
@@ -39,13 +43,8 @@ jobs:
             API_PORT=80
             API_ROUTE_PREFIX="/api"
             EOL
-      - run:
-          name: Compile assets
-          command: |
-            npm run ${CIRCLE_BRANCH}:webpack:build
-      - run:
-          name: Remove the `node_modules` directory.
-          command: rm -rf node_modules
+      - run: npm run ${CIRCLE_BRANCH}:webpack:build
+      - run: rm -rf node_modules
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
           root: ./dist
@@ -79,11 +78,11 @@ workflows:
   version: 2
   main-workflow:
     jobs:
-      - install-node-dependencies
+      - npm-install
 
       - compile-assets:
           requires:
-            - install-node-dependencies
+            - npm-install
 
       - sync-assets-to-s3:
           context: "org-global"
@@ -93,5 +92,5 @@ workflows:
                 - dev
                 - prod
           requires:
-            - install-node-dependencies
+            - npm-install
             - compile-assets
