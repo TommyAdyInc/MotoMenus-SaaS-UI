@@ -17,6 +17,7 @@ class Home extends React.Component {
                   >
                     <div className="flex flex-col mt-4">
                       <input
+                        autoComplete="username"
                         id="email"
                         type="text"
                         className="flex-grow h-8 px-2 border rounded border-gray-400"
@@ -26,6 +27,7 @@ class Home extends React.Component {
                     </div>
                     <div className="flex flex-col mt-4">
                       <input
+                        autoComplete="current-password"
                         id="password"
                         type="password"
                         className="flex-grow h-8 px-2 rounded border border-gray-400"
