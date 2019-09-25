@@ -17,6 +17,9 @@ import NotFound from "./components/NotFound.jsx";
 class Entry extends React.Component {
   constructor(props) {
     super(props);
+    var loc = window.location;
+    // console.log("loc", loc);
+    var hostname_parts_reversed = loc.hostname.split(".").reverse();
     this.state = {
       api: {
         healthcheck_route: process.env.API_HEALTHCHECK_ROUTE,
@@ -25,16 +28,19 @@ class Entry extends React.Component {
         subdomain: process.env.API_SUBDOMAIN
       },
       ui: {
-        domain: window.location.hostname.split(".")[1],
-        hostname: window.location.hostname,
-        subdomain: window.location.hostname.split(".")[0],
-        tld: window.location.hostname.split(".")[2]
+        domain: hostname_parts_reversed[1],
+        hostname: loc.hostname,
+        subdomain: hostname_parts_reversed[2],
+        subsubdomain: hostname_parts_reversed[3],
+        tld: hostname_parts_reversed[0]
       }
     };
   }
 
   render() {
     const { api, ui } = this.state;
+    // console.log("ui", ui);
+    // console.log("api", api);
     return (
       <div>
         <CheckEnvironmentVariables />

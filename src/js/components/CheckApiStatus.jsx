@@ -12,7 +12,7 @@ class CheckApiStatus extends React.Component {
     const { api, ui } = this.props;
     const url =
       "//" +
-      ui.subdomain +
+      (ui.subsubdomain || ui.subdomain) +
       "." +
       api.subdomain +
       "." +
