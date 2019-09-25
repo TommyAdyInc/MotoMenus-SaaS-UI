@@ -42,6 +42,7 @@ jobs:
             API_HEALTHCHECK_ROUTE="/health-check"
             API_PORT=80
             API_ROUTE_PREFIX="/api"
+            API_SUBDOMAIN="api"
             EOL
       - run: npm run ${CIRCLE_BRANCH}:webpack:build
       - run: rm -rf node_modules

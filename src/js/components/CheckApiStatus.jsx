@@ -9,33 +9,41 @@ class CheckApiStatus extends React.Component {
   };
 
   async componentDidMount() {
-    const { healthcheck_route, port, route_prefix } = this.props.api;
-    const { hostname } = this.props;
+    const { api, ui } = this.props;
+    const url =
+      "//" +
+      ui.subdomain +
+      "." +
+      api.subdomain +
+      "." +
+      ui.domain +
+      "." +
+      ui.tld +
+      ":" +
+      api.port +
+      api.route_prefix +
+      api.healthcheck_route;
+    console.log(url);
     try {
-      await axios.head(
-        "//" + hostname + ":" + port + route_prefix + healthcheck_route
-      );
+      await axios.head(url);
     } catch (error) {
-      this.handleError(error, healthcheck_route);
+      this.handleError(error, url);
     }
   }
 
-  handleError = (error, path = "") => {
+  handleError = (error, url) => {
     let error_message = "";
-    let { hostname } = this.props;
     if (error.response) {
       error_message =
         "A request was sent to the API (" +
-        hostname +
-        path +
+        url +
         ") and the server responded with a status code (" +
         error.response.status +
         ") which falls out of the range of 2xx.";
     } else if (error.request) {
       error_message =
         "A request was sent to the API (" +
-        hostname +
-        path +
+        url +
         ") but no response was received. The API may not be running.";
     } else {
       error_message =

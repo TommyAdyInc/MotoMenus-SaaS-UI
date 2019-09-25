@@ -21,19 +21,24 @@ class Entry extends React.Component {
       api: {
         healthcheck_route: process.env.API_HEALTHCHECK_ROUTE,
         port: process.env.API_PORT,
-        route_prefix: process.env.API_ROUTE_PREFIX
+        route_prefix: process.env.API_ROUTE_PREFIX,
+        subdomain: process.env.API_SUBDOMAIN
       },
-      hostname: window.location.hostname,
-      subdomain: window.location.hostname.split(".")[0]
+      ui: {
+        domain: window.location.hostname.split(".")[1],
+        hostname: window.location.hostname,
+        subdomain: window.location.hostname.split(".")[0],
+        tld: window.location.hostname.split(".")[2]
+      }
     };
   }
 
   render() {
-    const { api, hostname } = this.state;
+    const { api, ui } = this.state;
     return (
       <div>
         <CheckEnvironmentVariables />
-        <CheckApiStatus api={api} hostname={hostname} />
+        <CheckApiStatus api={api} ui={ui} />
         <main>
           <Router>
             <Home path="/" />
