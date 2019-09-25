@@ -23,7 +23,6 @@ class CheckApiStatus extends React.Component {
       api.port +
       api.route_prefix +
       api.healthcheck_route;
-    console.log(url);
     try {
       await axios.head(url);
     } catch (error) {
