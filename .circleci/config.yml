@@ -85,7 +85,7 @@ jobs:
           name: "Create invalidation in CloudFront"
           command: |
             set -x
-            aws cloudfront create-invalidation --distribution-id="{$AWS_CLOUDFRONT_DISTRIBUTION_ID}" --paths="/*"
+            aws cloudfront create-invalidation --distribution-id="${AWS_CLOUDFRONT_DISTRIBUTION_ID}" --paths="/*"
 
 workflows:
   version: 2
