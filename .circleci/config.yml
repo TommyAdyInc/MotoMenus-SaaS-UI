@@ -3,6 +3,7 @@ global-working-directory: &working-directory "/tmp/working-directory"
 version: 2.1
 
 orbs:
+  aws-cli: circleci/aws-cli@0.1.16
   aws-s3: circleci/aws-s3@1.0.11
 
 jobs:
@@ -56,6 +57,7 @@ jobs:
   sync-assets-to-s3:
     docker:
       - image: circleci/buildpack-deps:stretch
+    working_directory: *working-directory
     steps:
       - checkout
       - attach_workspace:
@@ -75,6 +77,16 @@ jobs:
             --cache-control "max-age=86400"
           overwrite: true
 
+  create-invalidation:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup
+      - run:
+          name: "Create invalidation in CloudFront"
+          command: |
+            set -x
+            aws cloudfront create-invalidation --distribution-id="{$AWS_CLOUDFRONT_DISTRIBUTION_ID}" --paths="/*"
+
 workflows:
   version: 2
   main-workflow:
@@ -93,5 +105,14 @@ workflows:
                 - dev
                 - prod
           requires:
-            - npm-install
             - compile-assets
+
+      - create-invalidation:
+          context: "org-global"
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
+          requires:
+            - sync-assets-to-s3
