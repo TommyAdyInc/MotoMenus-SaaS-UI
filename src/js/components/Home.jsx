@@ -4,11 +4,33 @@ class Home extends React.Component {
   render() {
     return (
       <div className="bg-blue-400 h-screen w-screen">
-        <div className="flex flex-col items-center flex-1 h-full justify-center px-4 sm:px-0">
-          <div className="flex rounded-lg shadow-xl w-full sm:w-3/4 lg:w-1/2 bg-white sm:mx-0">
-            <div className="flex flex-col w-full md:w-1/2 p-4">
+        <div className="flex flex-col items-center flex-1 h-full justify-center">
+          <div
+            className="my-3 text-2xl text-white"
+            style={{
+              textShadow:
+                "rgba(0, 0, 0, 0.5) 1px 1px 1px, rgba(0, 0, 0, 0.05) 1px 1px 1px"
+            }}
+          >
+            Welcome back,{" "}
+            <span>
+              {
+                [
+                  "Jack Sparrow",
+                  "Elizabeth Swan",
+                  "Will Turner",
+                  "Hector Barbossa",
+                  "Joshamee Gibbs"
+                ][Math.floor(Math.random() * 5)]
+              }
+            </span>
+          </div>
+          <div className="flex rounded-lg shadow-xl w-full sm:w-3/4 md:w-3/4 lg:w-1/3 bg-white sm:mx-0">
+            <div className="flex flex-col w-full p-4">
               <div className="flex flex-col flex-1 justify-center mb-8">
-                <h1 className="text-4xl text-center font-thin">Welcome Back</h1>
+                <h1 className="text-4xl text-center font-thin">
+                  Log in to {process.env.APP_NAME}
+                </h1>
                 <div className="w-full mt-4">
                   <form
                     className="form-horizontal w-3/4 mx-auto"
@@ -70,13 +92,6 @@ class Home extends React.Component {
                 </div>
               </div>
             </div>
-            <div
-              className="bg-center bg-cover hidden md:block md:w-1/2 rounded-r-lg"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1525160354320-d8e92641c563)"
-              }}
-            ></div>
           </div>
         </div>
       </div>
