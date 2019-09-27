@@ -2,12 +2,11 @@ import React from "react";
 
 class Footer extends React.Component {
   render() {
-    const app_name = "MotoMenus";
     return (
-      <footer className="bg-smoke-100 py-2">
-        <p className="text-center text-gray-600 text-xs w-full">
-          Copyright &copy; {new Date().getFullYear()} {app_name}. All rights
-          reserved.
+      <footer className="absolute bg-smoke-400 bottom-0 py-2 w-full">
+        <p className="text-center text-white text-xs">
+          Copyright &copy; {new Date().getFullYear()} {process.env.APP_NAME}.
+          All rights reserved.
         </p>
       </footer>
     );

@@ -44,6 +44,7 @@ jobs:
             API_PORT=443
             API_ROUTE_PREFIX="/api"
             API_SUBDOMAIN="api"
+            APP_NAME="MotoMenus"
             EOL
       - run: npm run ${CIRCLE_BRANCH}:webpack:build
       - run: rm -rf node_modules
