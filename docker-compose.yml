@@ -7,7 +7,7 @@ services:
       - "--inspect=0.0.0.0:${DOCKER_INSPECT_PORT}"
       - "--require"
       - "dotenv/config"
-      - "node_modules/.bin/webpack-dev-server"
+      - "node_modules/webpack-dev-server/bin/webpack-dev-server.js"
       - "--env.mode"
       - "development"
       - "--hot"

@@ -1,6 +1,38 @@
 import React from "react";
+import axios from "axios"
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.login = this.login.bind(this);
+  }
+
+  login(event) {
+    event.preventDefault();
+
+    const { port, route_prefix, oauth_id, oauth_secret, api_url } = this.props.api;
+    const { subdomain } = this.props;
+    const data = new FormData(event.target);
+
+    axios({
+      method: 'post',
+      url: '//' + subdomain + api_url + ':' + port + route_prefix + '/oauth/token',
+      data: {
+        grant_type: 'password',
+        client_id: oauth_id,
+        client_secret: oauth_secret,
+        username: data.get('email'),
+        password: data.get('password'),
+        provider: 'users',
+        scope: ''
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+        .then(({data}) => console.log(data)); //this.props.onLogin(data)
+  }
+
   render() {
     return (
       <div className="bg-blue-400 h-screen w-screen">
@@ -12,8 +44,7 @@ class Home extends React.Component {
                 <div className="w-full mt-4">
                   <form
                     className="form-horizontal w-3/4 mx-auto"
-                    method="POST"
-                    action="#"
+                    onSubmit={this.login}
                   >
                     <div className="flex flex-col mt-4">
                       <input
