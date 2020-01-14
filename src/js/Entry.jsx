@@ -24,16 +24,16 @@ class Entry extends React.Component {
         route_prefix: process.env.API_ROUTE_PREFIX,
         oauth_secret: process.env.OAUTH_CLIENT_SECRET,
         oauth_id: process.env.OAUTH_CLIENT_ID,
-        api_url: process.env.API_URL,
+        api_url: process.env.API_URL
       },
       hostname: window.location.hostname,
       subdomain: window.location.hostname.split(".")[0],
-      login: null,
+      login: null
     };
   }
 
   setLogin(data) {
-    this.setState({login: data})
+    this.setState({ login: data });
   }
 
   render() {
@@ -44,7 +44,12 @@ class Entry extends React.Component {
         <CheckApiStatus api={api} hostname={hostname} />
         <main>
           <Router>
-            <Home path="/" onLogin={(data) => this.setLogin(data)} api={api} subdomain={subdomain} />
+            <Home
+              path="/"
+              onLogin={data => this.setLogin(data)}
+              api={api}
+              subdomain={subdomain}
+            />
             <NotFound default />
           </Router>
         </main>

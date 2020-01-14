@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios"
+import axios from "axios";
 
 class Home extends React.Component {
   constructor(props) {
@@ -10,27 +10,33 @@ class Home extends React.Component {
   login(event) {
     event.preventDefault();
 
-    const { port, route_prefix, oauth_id, oauth_secret, api_url } = this.props.api;
+    const {
+      port,
+      route_prefix,
+      oauth_id,
+      oauth_secret,
+      api_url
+    } = this.props.api;
     const { subdomain } = this.props;
     const data = new FormData(event.target);
 
     axios({
-      method: 'post',
-      url: '//' + subdomain + api_url + ':' + port + route_prefix + '/oauth/token',
+      method: "post",
+      url:
+        "//" + subdomain + api_url + ":" + port + route_prefix + "/oauth/token",
       data: {
-        grant_type: 'password',
+        grant_type: "password",
         client_id: oauth_id,
         client_secret: oauth_secret,
-        username: data.get('email'),
-        password: data.get('password'),
-        provider: 'users',
-        scope: ''
+        username: data.get("email"),
+        password: data.get("password"),
+        provider: "users",
+        scope: ""
       },
       headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then(({data}) => console.log(data)); //this.props.onLogin(data)
+        "Content-Type": "application/json"
+      }
+    }).then(({ data }) => console.log(data)); //this.props.onLogin(data)
   }
 
   render() {
