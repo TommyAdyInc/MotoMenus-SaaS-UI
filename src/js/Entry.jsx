@@ -12,7 +12,10 @@ import CheckApiStatus from "./components/CheckApiStatus.jsx";
 import CheckEnvironmentVariables from "./components/CheckEnvironmentVariables.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./components/Home.jsx";
+import Menu from "./components/Menu.jsx";
 import NotFound from "./components/NotFound.jsx";
+import Dashboard from "./components/Dashboard.jsx";
+import { isAuthenticated } from "./helpers/auth";
 
 class Entry extends React.Component {
   constructor(props) {
@@ -28,28 +31,36 @@ class Entry extends React.Component {
       },
       hostname: window.location.hostname,
       subdomain: window.location.hostname.split(".")[0],
-      login: null
+      authenticated: isAuthenticated()
     };
   }
 
-  setLogin(data) {
-    this.setState({ login: data });
+  onLogin() {
+    this.setState({ authenticated: true });
+  }
+
+  onLogout() {
+    this.setState({ authenticated: false });
   }
 
   render() {
     const { api, hostname, subdomain } = this.state;
     return (
-      <div>
+      <div className="flex flex-1 flex-col h-screen w-full">
         <CheckEnvironmentVariables />
         <CheckApiStatus api={api} hostname={hostname} />
-        <main>
-          <Router>
+        <main className="flex-auto">
+          {this.state.authenticated && (
+            <Menu onLogout={() => this.onLogout()} />
+          )}
+          <Router className={this.state.authenticated ? "h-auto" : "h-full"}>
             <Home
               path="/"
-              onLogin={data => this.setLogin(data)}
               api={api}
               subdomain={subdomain}
+              onLogin={() => this.onLogin()}
             />
+            <Dashboard path="/dashboard" api={api} subdomain={subdomain} />
             <NotFound default />
           </Router>
         </main>

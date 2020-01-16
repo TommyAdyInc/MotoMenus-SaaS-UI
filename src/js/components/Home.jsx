@@ -1,15 +1,28 @@
+import "../../sass/utilities/spinner.scss";
+
 import React from "react";
 import axios from "axios";
+import { setLogin, isAuthenticated } from "../helpers/auth";
+import Modal from "./Modal.jsx";
+import { Redirect } from "@reach/router";
 
 class Home extends React.Component {
+  state = {
+    element_to_render: null,
+    authenticated: false,
+    loading: false
+  };
+
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
+    this.state.authenticated = isAuthenticated();
   }
 
   login(event) {
     event.preventDefault();
 
+    this.setState({ loading: true });
     const {
       port,
       route_prefix,
@@ -18,7 +31,7 @@ class Home extends React.Component {
       api_url
     } = this.props.api;
     const { subdomain } = this.props;
-    const data = new FormData(event.target);
+    const form_data = new FormData(event.target);
 
     axios({
       method: "post",
@@ -28,20 +41,64 @@ class Home extends React.Component {
         grant_type: "password",
         client_id: oauth_id,
         client_secret: oauth_secret,
-        username: data.get("email"),
-        password: data.get("password"),
+        username: form_data.get("email"),
+        password: form_data.get("password"),
         provider: "users",
         scope: ""
       },
       headers: {
         "Content-Type": "application/json"
       }
-    }).then(({ data }) => console.log(data)); //this.props.onLogin(data)
+    })
+      .then(({ data }) => {
+        setLogin(data, !!form_data.get("remember"));
+        this.props.onLogin();
+        this.setState({ authenticated: true });
+      })
+      .catch(error => {
+        let element_to_render = (
+          <Modal>
+            <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
+              <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+                Error!
+              </span>
+              <span className="inline-flex px-2">
+                <div>We were unable to find a matching record.</div>
+              </span>
+              <button
+                className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+                onClick={() => this.setState({ element_to_render: null })}
+              >
+                Close
+              </button>
+            </div>
+          </Modal>
+        );
+
+        this.setState({ element_to_render });
+      })
+      .finally(() => this.setState({ loading: false }));
   }
 
   render() {
+    if (this.state.authenticated) {
+      return <Redirect noThrow={true} to="/dashboard" />;
+    }
+
     return (
-      <div className="bg-blue-400 h-screen w-screen">
+      <div className="bg-blue-400 w-screen h-full">
+        {this.state.loading && (
+          <div className="lds-roller">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        )}
         <div className="flex flex-col items-center flex-1 h-full justify-center px-4 sm:px-0">
           <div className="flex rounded-lg shadow-xl w-full sm:w-3/4 lg:w-1/2 bg-white sm:mx-0">
             <div className="flex flex-col w-full md:w-1/2 p-4">
@@ -114,6 +171,7 @@ class Home extends React.Component {
             ></div>
           </div>
         </div>
+        {this.state.element_to_render}
       </div>
     );
   }

@@ -30,5 +30,9 @@ module.exports = () => ({
       }
     ]
   },
-  plugins: [new CleanWebpackPlugin()]
+  plugins: [new CleanWebpackPlugin()],
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
+  }
 });
