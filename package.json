@@ -44,7 +44,9 @@
     "webpack-dev-server": "^3.10.1",
     "webpack-merge": "^4.1.5"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react-icons": "^3.8.0"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "npm run dev:prettier:format && npm run dev:eslint:check"

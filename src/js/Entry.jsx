@@ -14,7 +14,7 @@ import Footer from "./components/Footer.jsx";
 import Home from "./components/Home.jsx";
 import Menu from "./components/Menu.jsx";
 import NotFound from "./components/NotFound.jsx";
-import Dashboard from "./components/Dashboard.jsx";
+import Deals from "./components/Deals.jsx";
 import { isAuthenticated } from "./helpers/auth";
 
 class Entry extends React.Component {
@@ -60,7 +60,7 @@ class Entry extends React.Component {
               subdomain={subdomain}
               onLogin={() => this.onLogin()}
             />
-            <Dashboard path="/dashboard" api={api} subdomain={subdomain} />
+            <Deals path="/deals" api={api} subdomain={subdomain} />
             <NotFound default />
           </Router>
         </main>

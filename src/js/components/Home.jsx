@@ -1,9 +1,8 @@
-import "../../sass/utilities/spinner.scss";
-
 import React from "react";
 import axios from "axios";
 import { setLogin, isAuthenticated } from "../helpers/auth";
 import Modal from "./Modal.jsx";
+import Loading from "../helpers/Loading.jsx";
 import { Redirect } from "@reach/router";
 
 class Home extends React.Component {
@@ -87,18 +86,7 @@ class Home extends React.Component {
 
     return (
       <div className="bg-blue-400 w-screen h-full">
-        {this.state.loading && (
-          <div className="lds-roller">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        )}
+        {this.state.loading && <Loading />}
         <div className="flex flex-col items-center flex-1 h-full justify-center px-4 sm:px-0">
           <div className="flex rounded-lg shadow-xl w-full sm:w-3/4 lg:w-1/2 bg-white sm:mx-0">
             <div className="flex flex-col w-full md:w-1/2 p-4">

@@ -10,6 +10,9 @@ export const setLogin = (data, remember) => {
 export const logout = () => {
   localStorage.removeItem("auth");
   sessionStorage.removeItem("auth");
+
+  // redirect to login
+  window.location = "/";
 };
 
 export const isAuthenticated = () =>
@@ -17,7 +20,19 @@ export const isAuthenticated = () =>
 
 export const getAuthToken = () => {
   return (
-    JSON.parse(localStorage.getItem("auth")).token.access_token ||
-    JSON.parse(sessionStorage.getItem("auth")).token.access_token
+    JSON.parse(localStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth"))
+  ).token.access_token;
+};
+
+export const sessionExpired = () => {
+  let session =
+    JSON.parse(localStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth"));
+
+  return (
+    !session ||
+    new Date().getTime() / 1000 >
+      parseInt(session.token.expires_in) + session.current_time
   );
 };

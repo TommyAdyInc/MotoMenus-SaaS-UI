@@ -67,7 +67,7 @@ class Menu extends React.Component {
                 logout();
                 onLogout();
               }}
-              className="block lg:inline-block mt-4 lg:mt-0 hover:text-white text-blue-200"
+              className="block lg:inline-block mt-4 lg:mt-0 hover:text-white text-blue-200 text-sm"
             >
               Logout
             </a>
