@@ -15,7 +15,10 @@ import Home from "./components/Home.jsx";
 import Menu from "./components/Menu.jsx";
 import NotFound from "./components/NotFound.jsx";
 import Deals from "./components/Deals.jsx";
+import Customers from "./components/Customers.jsx";
 import { isAuthenticated } from "./helpers/auth";
+import Users from "./components/Users.jsx";
+import Settings from "./components/Settings.jsx";
 
 class Entry extends React.Component {
   constructor(props) {
@@ -61,6 +64,9 @@ class Entry extends React.Component {
               onLogin={() => this.onLogin()}
             />
             <Deals path="/deals" api={api} subdomain={subdomain} />
+            <Customers path="/customers" api={api} subdomain={subdomain} />
+            <Users path="/users" api={api} subdomain={subdomain} />
+            <Settings path="/settings" api={api} subdomain={subdomain} />
             <NotFound default />
           </Router>
         </main>

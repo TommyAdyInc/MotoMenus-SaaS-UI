@@ -10,20 +10,20 @@ import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
 
-class Deals extends React.Component {
+class Customers extends React.Component {
   state = {
-    deals: [],
+    customers: [],
     loading: false,
     error: null,
     paging: null,
-    new_deal: false
+    new_customer: false
   };
 
   constructor(props) {
     super(props);
   }
 
-  getDeals(paging = null) {
+  getCustomers(paging = null) {
     this.checkSession();
 
     const { port, route_prefix, api_url } = this.props.api;
@@ -43,7 +43,8 @@ class Deals extends React.Component {
 
     axios({
       method: "GET",
-      url: "//" + subdomain + api_url + ":" + port + route_prefix + "/deal",
+      url:
+        "//" + subdomain + api_url + ":" + port + route_prefix + "/customers",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -52,11 +53,11 @@ class Deals extends React.Component {
       params: params
     })
       .then(({ data }) => {
-        let deals = [...data.data];
+        let customers = [...data.data];
         delete data.data;
         let paging = data;
 
-        this.setState({ deals, paging });
+        this.setState({ customers, paging });
       })
       .catch(errors => {
         let error = (
@@ -66,7 +67,7 @@ class Deals extends React.Component {
                 Error!
               </span>
               <span className="inline-flex px-2">
-                <div>Could not retrieve deals.</div>
+                <div>Could not retrieve customers.</div>
               </span>
               <button
                 className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
@@ -89,17 +90,13 @@ class Deals extends React.Component {
     }
   }
 
-  editDeal(id) {
-    console.log(id);
-  }
-
-  deleteDeal(id) {
+  editCustomer(id) {
     console.log(id);
   }
 
   componentDidMount() {
     if (isAuthenticated()) {
-      this.getDeals();
+      this.getCustomers();
     }
   }
 
@@ -113,52 +110,39 @@ class Deals extends React.Component {
     return (
       <div className="px-4 py-4 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
-        {!this.state.new_deal && (
+        {!this.state.new_customer && (
           <table className="table-responsive w-full text-gray-900">
             <thead>
               <tr>
-                <th className="px-2 py-1 w-1/12 text-md">Date</th>
-                <th className="px-2 py-1 w-2/12 text-md">Customer</th>
-                <th className="px-2 py-1 w-1/12 text-md">Phone</th>
-                <th className="px-2 py-1 w-2/12 text-md">Consultant</th>
-                <th className="px-2 py-1 w-1/12 text-md">Year</th>
-                <th className="px-2 py-1 w-1/12 text-md">Make</th>
-                <th className="px-2 py-1 w-2/12 text-md">Model</th>
-                <th className="px-2 py-1 w-1/12 text-md">Step</th>
+                <th className="px-2 py-1 w-1/4 text-md">Name</th>
+                <th className="px-2 py-1 w-1/4 text-md">Address</th>
+                <th className="px-2 py-1 w-2/12 text-md">Phone</th>
+                <th className="px-2 py-1 w-1/4 text-md">Email</th>
                 <th className="px-2 py-1 w-1/12"></th>
               </tr>
             </thead>
             <tbody className="text-xs md:text-sm lg:text-sm">
-              {this.state.deals.map((deal, index) => {
+              {this.state.customers.map((customer, index) => {
                 return (
                   <tr key={index} className="odd:bg-white even:bg-gray-200">
-                    <td className="border px-1 py-1">{deal.deal_date}</td>
                     <td className="border px-1 py-1">
-                      {deal.customer.first_name} {deal.customer.last_name}
+                      {customer.first_name} {customer.last_name}
                     </td>
-                    <td className="border px-1 py-1">{deal.customer.phone}</td>
-                    <td className="border px-1 py-1">{deal.user.name}</td>
-                    <td className="border px-1 py-1">{deal.units[0].year}</td>
-                    <td className="border px-1 py-1">{deal.units[0].make}</td>
-                    <td className="border px-1 py-1">{deal.units[0].model}</td>
-                    <td className="border px-1 py-1">{deal.sales_status}</td>
+                    <td className="border px-1 py-1">
+                      {customer.address}, {customer.city}, {customer.state}{" "}
+                      {customer.postcode}
+                    </td>
+                    <td className="border px-1 py-1">{customer.phone}</td>
+                    <td className="border px-1 py-1">{customer.email}</td>
                     <td className="border px-1 py-1">
                       <div className="flex items-center">
                         <svg
-                          onClick={() => this.editDeal(deal.id)}
+                          onClick={() => this.editCustomer(customer.id)}
                           className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
                         >
                           <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" />
-                        </svg>
-                        <svg
-                          onClick={() => this.deleteDeal(deal.id)}
-                          className="fill-current text-red-500 h-4 w-4 cursor-pointer"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
                         </svg>
                       </div>
                     </td>
@@ -169,16 +153,16 @@ class Deals extends React.Component {
             <tfoot>
               {this.state.paging && (
                 <tr>
-                  <td className="text-sm py-2" colSpan={5}>
-                    Deals {this.state.paging.from} to {this.state.paging.to} out
-                    of {this.state.paging.total}
+                  <td className="text-sm py-2" colSpan={2}>
+                    Customers {this.state.paging.from} to {this.state.paging.to}{" "}
+                    out of {this.state.paging.total}
                   </td>
-                  <td className="text-sm py-2" colSpan={4}>
+                  <td className="text-sm py-2" colSpan={3}>
                     <div className="flex align-center justify-end w-full">
                       {this.state.paging.from > 1 && (
                         <a
                           href="#responsive-header"
-                          onClick={() => this.getDeals("prev")}
+                          onClick={() => this.getCustomers("prev")}
                           className="block border border-gray-400 border-r-0 rounded-l-full border p-1 pl-2 pr-2 ml-3 hover:text-blue-300 text-blue-600 text-sm mt-2"
                         >
                           <svg
@@ -207,7 +191,7 @@ class Deals extends React.Component {
                       {this.state.paging.total > this.state.paging.to && (
                         <a
                           href="#responsive-header"
-                          onClick={() => this.getDeals("next")}
+                          onClick={() => this.getCustomers("next")}
                           className="ml-0 border border-gray-400 border-l-0 rounded-r-full p-1 pl-2 pr-2 block mr-3 hover:text-blue-300 text-blue-600 text-sm mt-2"
                         >
                           <svg
@@ -232,4 +216,4 @@ class Deals extends React.Component {
   }
 }
 
-export default Deals;
+export default Customers;

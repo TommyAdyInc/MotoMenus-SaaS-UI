@@ -1,5 +1,5 @@
 import React from "react";
-import { logout } from "../helpers/auth";
+import { logout, isAdmin } from "../helpers/auth";
 
 class Menu extends React.Component {
   state = {
@@ -42,23 +42,39 @@ class Menu extends React.Component {
         >
           <div className="text-sm lg:flex-grow">
             <a
-              href="#responsive-header"
-              className="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
+              href="/deals"
+              className="block lg:mr-4 mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
             >
-              Docs
+              Deals
             </a>
             <a
-              href="#responsive-header"
-              className="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
+              href="/customers"
+              className="block lg:mr-4 mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
             >
-              Examples
+              Customers
             </a>
+            {isAdmin() && (
+              <a
+                href="/users"
+                className="block lg:mr-4 mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
+              >
+                Users
+              </a>
+            )}
             <a
-              href="#responsive-header"
-              className="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
+              href="/settings"
+              className="block lg:mr-4 mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
             >
-              Blog
+              Settings
             </a>
+            {isAdmin() && (
+              <a
+                href="/cash-specials"
+                className="block lg:mr-4 mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
+              >
+                Cash Specials
+              </a>
+            )}
           </div>
           <div>
             <a

@@ -36,3 +36,11 @@ export const sessionExpired = () => {
       parseInt(session.token.expires_in) + session.current_time
   );
 };
+
+export const isAdmin = () => {
+  let session =
+    JSON.parse(localStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth"));
+
+  return session.user.role === "admin";
+};
