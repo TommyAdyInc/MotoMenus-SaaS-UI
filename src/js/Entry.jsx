@@ -33,7 +33,6 @@ class Entry extends React.Component {
         route_prefix: process.env.API_ROUTE_PREFIX,
         oauth_secret: process.env.OAUTH_CLIENT_SECRET,
         oauth_id: process.env.OAUTH_CLIENT_ID,
-        api_url: process.env.API_URL,
         subdomain: process.env.API_SUBDOMAIN
       },
       ui: {
@@ -42,8 +41,8 @@ class Entry extends React.Component {
         subdomain: hostname_parts_reversed[2],
         subsubdomain: hostname_parts_reversed[3],
         tld: hostname_parts_reversed[0],
-        authenticated: isAuthenticated()
-      }
+      },
+      authenticated: isAuthenticated()
     };
   }
 

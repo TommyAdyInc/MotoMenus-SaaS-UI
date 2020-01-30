@@ -7,6 +7,7 @@ import {
   getAuthToken,
   isAdmin
 } from "../helpers/auth";
+import {apiURL} from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
@@ -30,15 +31,14 @@ class Settings extends React.Component {
     if (isAdmin) {
       this.checkSession();
 
-      const { port, route_prefix, api_url } = this.props.api;
-      const { subdomain } = this.props.ui;
+      const { api, ui } = this.props;
 
       this.setState({ loading: true });
 
       axios({
         method: "GET",
         url:
-          "//" + subdomain + api_url + ":" + port + route_prefix + "/settings",
+          apiURL(api, ui) + "/settings",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

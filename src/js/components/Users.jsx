@@ -6,6 +6,7 @@ import {
   logout,
   getAuthToken
 } from "../helpers/auth";
+import{apiURL} from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
@@ -26,8 +27,7 @@ class Users extends React.Component {
   getUsers(paging = null) {
     this.checkSession();
 
-    const { port, route_prefix, api_url } = this.props.api;
-    const { subdomain } = this.props.ui;
+    const { api, ui } = this.props;
 
     this.setState({ loading: true });
 
@@ -43,7 +43,7 @@ class Users extends React.Component {
 
     axios({
       method: "GET",
-      url: "//" + subdomain + api_url + ":" + port + route_prefix + "/users",
+      url: apiURL(api, ui) + "/users",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

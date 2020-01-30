@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 
 import Modal from "./Modal.jsx";
+import {apiURL} from "../helpers/url"
 
 class CheckApiStatus extends React.Component {
   state = {
@@ -11,17 +12,7 @@ class CheckApiStatus extends React.Component {
   async componentDidMount() {
     const { api, ui } = this.props;
     const url =
-      "//" +
-      (ui.subsubdomain ? ui.subsubdomain + "." + ui.subdomain : ui.subdomain) +
-      "." +
-      api.subdomain +
-      "." +
-      ui.domain +
-      "." +
-      ui.tld +
-      ":" +
-      api.port +
-      api.route_prefix +
+      apiURL(api, ui) +
       api.healthcheck_route;
     try {
       await axios.head(url);
