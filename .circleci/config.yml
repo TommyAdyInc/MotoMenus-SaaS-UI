@@ -1,0 +1,119 @@
+global-working-directory: &working-directory "/tmp/working-directory"
+
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@0.1.16
+  aws-s3: circleci/aws-s3@1.0.11
+
+jobs:
+  npm-install:
+    docker:
+      # The primary container is an instance of the first image listed. The job's commands run in this container.
+      - image: node:10.16.0-stretch
+      # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
+      # - image: mysql:5.7.16
+    working_directory: *working-directory
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+      - run:
+          name: Install NPM dependencies.
+          command: npm install
+      - save_cache:
+          key: npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+  compile-assets:
+    docker:
+      - image: node:10.16.0-stretch
+    working_directory: *working-directory
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+      - run:
+          name: Create .env file and set values
+          command: |
+            cat > .env \<< EOL
+            API_HEALTHCHECK_ROUTE="/health-check"
+            API_PORT=443
+            API_ROUTE_PREFIX="/api"
+            API_SUBDOMAIN="api"
+            APP_NAME="MotoMenus"
+            EOL
+      - run: npm run ${CIRCLE_BRANCH}:webpack:build
+      - run: rm -rf node_modules
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory.
+          root: ./dist
+          # Must be relative path from root.
+          paths:
+            - ./
+
+  sync-assets-to-s3:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    working_directory: *working-directory
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory.
+          at: ./dist
+      - run:
+          name: "Set an environment variable ($CIRCLE_PROJECT_REPONAME_LOWERCASE)"
+          command: |
+            set -x
+            echo 'export CIRCLE_PROJECT_REPONAME_LOWERCASE=$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')' >> $BASH_ENV
+      - aws-s3/sync:
+          aws-region: AWS_DEFAULT_REGION
+          from: dist
+          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          overwrite: true
+
+  create-invalidation:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup
+      - run:
+          name: "Create invalidation in CloudFront"
+          command: |
+            set -x
+            aws cloudfront create-invalidation --distribution-id="${AWS_CLOUDFRONT_DISTRIBUTION_ID}" --paths="/*"
+
+workflows:
+  version: 2
+  main-workflow:
+    jobs:
+      - npm-install
+
+      - compile-assets:
+          requires:
+            - npm-install
+
+      - sync-assets-to-s3:
+          context: "org-global"
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
+          requires:
+            - compile-assets
+
+      - create-invalidation:
+          context: "org-global"
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
+          requires:
+            - sync-assets-to-s3

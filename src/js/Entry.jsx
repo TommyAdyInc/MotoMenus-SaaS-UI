@@ -23,6 +23,9 @@ import Settings from "./components/Settings.jsx";
 class Entry extends React.Component {
   constructor(props) {
     super(props);
+    var loc = window.location;
+    // console.log("loc", loc);
+    var hostname_parts_reversed = loc.hostname.split(".").reverse();
     this.state = {
       api: {
         healthcheck_route: process.env.API_HEALTHCHECK_ROUTE,
@@ -32,9 +35,14 @@ class Entry extends React.Component {
         oauth_id: process.env.OAUTH_CLIENT_ID,
         api_url: process.env.API_URL
       },
-      hostname: window.location.hostname,
-      subdomain: window.location.hostname.split(".")[0],
-      authenticated: isAuthenticated()
+      ui: {
+        domain: hostname_parts_reversed[1],
+        hostname: loc.hostname,
+        subdomain: hostname_parts_reversed[2],
+        subsubdomain: hostname_parts_reversed[3],
+        tld: hostname_parts_reversed[0],
+        authenticated: isAuthenticated()
+      }
     };
   }
 
@@ -47,26 +55,22 @@ class Entry extends React.Component {
   }
 
   render() {
-    const { api, hostname, subdomain } = this.state;
+    const { api, ui } = this.state;
+
     return (
       <div className="flex flex-1 flex-col h-screen w-full">
         <CheckEnvironmentVariables />
-        <CheckApiStatus api={api} hostname={hostname} />
+        <CheckApiStatus api={api} ui={ui} />
         <main className="flex-auto">
           {this.state.authenticated && (
             <Menu onLogout={() => this.onLogout()} />
           )}
           <Router className={this.state.authenticated ? "h-auto" : "h-full"}>
-            <Home
-              path="/"
-              api={api}
-              subdomain={subdomain}
-              onLogin={() => this.onLogin()}
-            />
-            <Deals path="/deals" api={api} subdomain={subdomain} />
-            <Customers path="/customers" api={api} subdomain={subdomain} />
-            <Users path="/users" api={api} subdomain={subdomain} />
-            <Settings path="/settings" api={api} subdomain={subdomain} />
+            <Home path="/" api={api} ui={ui} onLogin={() => this.onLogin()} />
+            <Deals path="/deals" api={api} ui={ui} />
+            <Customers path="/customers" api={api} ui={ui} />
+            <Users path="/users" api={api} ui={ui} />
+            <Settings path="/settings" api={api} ui={ui} />
             <NotFound default />
           </Router>
         </main>

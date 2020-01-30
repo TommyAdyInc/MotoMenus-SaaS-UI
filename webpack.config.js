@@ -1,6 +1,6 @@
 const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const modeConfig = env => require(`./build-utils/webpack.${env}`)(env);
+const modeConfig = env => require(`./build-utils/webpack.config.${env}`)(env);
 const webpack = require("webpack");
 const webpackMerge = require("webpack-merge");
 
@@ -80,8 +80,21 @@ module.exports = ({ mode } = { mode: "production" }) => {
           }
         ]
       },
+      optimization: {
+        moduleIds: "hashed",
+        runtimeChunk: "single",
+        splitChunks: {
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "node_modules",
+              chunks: "all"
+            }
+          }
+        }
+      },
       output: {
-        filename: `${mode}-output.js`,
+        filename: `${mode}.[name].[hash].output.js`,
         publicPath: "/" // The public URL of the output directory when referenced in a browser. The URL to the output directory resolved relative to the HTML page (same directory).
       },
       plugins: [
@@ -89,7 +102,8 @@ module.exports = ({ mode } = { mode: "production" }) => {
         new HtmlWebpackPlugin({
           favicon: "./src/graphics/favicon.png",
           filename: "index.html",
-          template: "./src/html/index-template.html"
+          template: "./src/html/index-template.html",
+          title: "888888888"
         }),
         new webpack.ProgressPlugin()
       ]

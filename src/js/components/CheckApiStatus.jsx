@@ -9,56 +9,59 @@ class CheckApiStatus extends React.Component {
   };
 
   async componentDidMount() {
-    const { healthcheck_route, port, route_prefix } = this.props.api;
-    const { hostname } = this.props;
+    const { api, ui } = this.props;
+    const url =
+      "//" +
+      (ui.subsubdomain ? ui.subsubdomain + "." + ui.subdomain : ui.subdomain) +
+      "." +
+      api.subdomain +
+      "." +
+      ui.domain +
+      "." +
+      ui.tld +
+      ":" +
+      api.port +
+      api.route_prefix +
+      api.healthcheck_route;
     try {
-      await axios.head(
-        "//" + hostname + ":" + port + route_prefix + healthcheck_route
-      );
+      await axios.head(url);
     } catch (error) {
-      let error_message = this.handleCheckApiStatusCaughtError(
-        error,
-        healthcheck_route
-      );
-      let element_to_render = (
-        <Modal>
-          <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
-            <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
-              Error!
-            </span>
-            <span className="inline-flex px-2">
-              <div>{error_message}</div>
-            </span>
-          </div>
-        </Modal>
-      );
-      this.setState({ element_to_render: element_to_render });
+      this.handleError(error, url);
     }
   }
 
-  handleCheckApiStatusCaughtError = (error, path = "") => {
+  handleError = (error, url) => {
     let error_message = "";
-    let { hostname } = this.props;
     if (error.response) {
       error_message =
         "A request was sent to the API (" +
-        hostname +
-        path +
+        url +
         ") and the server responded with a status code (" +
         error.response.status +
         ") which falls out of the range of 2xx.";
     } else if (error.request) {
       error_message =
         "A request was sent to the API (" +
-        hostname +
-        path +
+        url +
         ") but no response was received. The API may not be running.";
     } else {
       error_message =
         "Something happened in setting up the request that triggered an error. " +
         error.message;
     }
-    return error_message;
+    let element_to_render = (
+      <Modal>
+        <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
+          <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+            Error!
+          </span>
+          <span className="inline-flex px-2">
+            <div>{error_message}</div>
+          </span>
+        </div>
+      </Modal>
+    );
+    this.setState({ element_to_render: element_to_render });
   };
 
   render() {
