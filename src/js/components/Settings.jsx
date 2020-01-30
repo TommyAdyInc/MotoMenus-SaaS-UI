@@ -31,7 +31,7 @@ class Settings extends React.Component {
       this.checkSession();
 
       const { port, route_prefix, api_url } = this.props.api;
-      const { subdomain } = this.props;
+      const { subdomain } = this.props.ui;
 
       this.setState({ loading: true });
 

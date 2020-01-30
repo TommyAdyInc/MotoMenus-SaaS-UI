@@ -27,7 +27,7 @@ class Customers extends React.Component {
     this.checkSession();
 
     const { port, route_prefix, api_url } = this.props.api;
-    const { subdomain } = this.props.subdomain;
+    const { subdomain } = this.props.ui;
 
     this.setState({ loading: true });
 
