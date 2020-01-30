@@ -58,7 +58,7 @@ class Users extends React.Component {
 
         this.setState({ users, paging });
       })
-      .catch(errors => {
+      .catch(() => {
         let error = (
           <Modal>
             <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
@@ -90,15 +90,15 @@ class Users extends React.Component {
   }
 
   editUser(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   enableUser(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   disableUser(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   componentDidMount() {

@@ -58,7 +58,7 @@ class Deals extends React.Component {
 
         this.setState({ deals, paging });
       })
-      .catch(errors => {
+      .catch(() => {
         let error = (
           <Modal>
             <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
@@ -90,11 +90,11 @@ class Deals extends React.Component {
   }
 
   editDeal(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   deleteDeal(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   componentDidMount() {

@@ -27,7 +27,7 @@ class Customers extends React.Component {
     this.checkSession();
 
     const { port, route_prefix, api_url } = this.props.api;
-    const { subdomain } = this.props;
+    const { subdomain } = this.props.subdomain;
 
     this.setState({ loading: true });
 
@@ -59,7 +59,7 @@ class Customers extends React.Component {
 
         this.setState({ customers, paging });
       })
-      .catch(errors => {
+      .catch(() => {
         let error = (
           <Modal>
             <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
@@ -91,7 +91,7 @@ class Customers extends React.Component {
   }
 
   editCustomer(id) {
-    console.log(id);
+    // console.log(id);
   }
 
   componentDidMount() {

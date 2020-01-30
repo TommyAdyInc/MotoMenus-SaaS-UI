@@ -54,7 +54,7 @@ class Home extends React.Component {
         this.props.onLogin();
         this.setState({ authenticated: true });
       })
-      .catch(error => {
+      .catch(() => {
         let element_to_render = (
           <Modal>
             <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
