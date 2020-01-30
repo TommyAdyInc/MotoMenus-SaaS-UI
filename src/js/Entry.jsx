@@ -74,7 +74,7 @@ class Entry extends React.Component {
             <NotFound default />
           </Router>
         </main>
-        <Footer />
+        <Footer authenticated={this.state.authenticated} />
       </div>
     );
   }
