@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 
 import Modal from "./Modal.jsx";
-import {apiURL} from "../helpers/url"
+import { apiURL } from "../helpers/url";
 
 class CheckApiStatus extends React.Component {
   state = {
@@ -11,9 +11,7 @@ class CheckApiStatus extends React.Component {
 
   async componentDidMount() {
     const { api, ui } = this.props;
-    const url =
-      apiURL(api, ui) +
-      api.healthcheck_route;
+    const url = apiURL(api, ui) + api.healthcheck_route;
     try {
       await axios.head(url);
     } catch (error) {

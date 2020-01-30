@@ -7,7 +7,7 @@ import {
   getAuthToken,
   isAdmin
 } from "../helpers/auth";
-import {apiURL} from "../helpers/url";
+import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
@@ -37,8 +37,7 @@ class Settings extends React.Component {
 
       axios({
         method: "GET",
-        url:
-          apiURL(api, ui) + "/settings",
+        url: apiURL(api, ui) + "/settings",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

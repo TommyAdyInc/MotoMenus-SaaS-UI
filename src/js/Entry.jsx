@@ -40,7 +40,7 @@ class Entry extends React.Component {
         hostname: loc.hostname,
         subdomain: hostname_parts_reversed[2],
         subsubdomain: hostname_parts_reversed[3],
-        tld: hostname_parts_reversed[0],
+        tld: hostname_parts_reversed[0]
       },
       authenticated: isAuthenticated()
     };

@@ -6,10 +6,11 @@ import {
   logout,
   getAuthToken
 } from "../helpers/auth";
-import{apiURL} from "../helpers/url";
+import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
+import Paging from "../helpers/Paging.jsx";
 
 class Users extends React.Component {
   state = {
@@ -180,64 +181,7 @@ class Users extends React.Component {
                 );
               })}
             </tbody>
-            <tfoot>
-              {this.state.paging && (
-                <tr>
-                  <td className="text-sm py-2" colSpan={2}>
-                    Users {this.state.paging.from} to {this.state.paging.to} out
-                    of {this.state.paging.total}
-                  </td>
-                  <td className="text-sm py-2" colSpan={3}>
-                    <div className="flex align-center justify-end w-full">
-                      {this.state.paging.from > 1 && (
-                        <a
-                          href="#responsive-header"
-                          onClick={() => this.getUsers("prev")}
-                          className="block border border-gray-400 border-r-0 rounded-l-full border p-1 pl-2 pr-2 ml-3 hover:text-blue-300 text-blue-600 text-sm mt-2"
-                        >
-                          <svg
-                            className="fill-current h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M7.05 9.293L6.343 10 12 15.657l1.414-1.414L9.172 10l4.242-4.243L12 4.343z" />
-                          </svg>
-                        </a>
-                      )}
-                      <div
-                        className={
-                          "font-semibold ml-0 mr-0 border border-gray-400 p-1 pl-2 pr-2 block text-blue-600 mt-2 " +
-                          (this.state.paging.total <= this.state.paging.to
-                            ? "rounded-r"
-                            : "") +
-                          (parseInt(this.state.paging.from) === 1
-                            ? " rounded-l"
-                            : "")
-                        }
-                      >
-                        {this.state.paging.current_page} OF{" "}
-                        {this.state.paging.last_page}
-                      </div>
-                      {this.state.paging.total > this.state.paging.to && (
-                        <a
-                          href="#responsive-header"
-                          onClick={() => this.getUsers("next")}
-                          className="ml-0 border border-gray-400 border-l-0 rounded-r-full p-1 pl-2 pr-2 block mr-3 hover:text-blue-300 text-blue-600 text-sm mt-2"
-                        >
-                          <svg
-                            className="fill-current h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z" />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tfoot>
+            <Paging paging={this.state.paging} changePage={(type) => this.getUsers(type)} />
           </table>
         )}
         {this.state.error}
