@@ -34,7 +34,7 @@ class Entry extends React.Component {
         oauth_secret: process.env.OAUTH_CLIENT_SECRET,
         oauth_id: process.env.OAUTH_CLIENT_ID,
         api_url: process.env.API_URL,
-        subdomain: process.env.API_SUBDOMAIN,
+        subdomain: process.env.API_SUBDOMAIN
       },
       ui: {
         domain: hostname_parts_reversed[1],
