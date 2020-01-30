@@ -167,7 +167,10 @@ class Deals extends React.Component {
                 );
               })}
             </tbody>
-            <Paging paging={this.state.paging} changePage={(type) => this.getDeals(type)} />
+            <Paging
+              paging={this.state.paging}
+              changePage={type => this.getDeals(type)}
+            />
           </table>
         )}
         {this.state.error}

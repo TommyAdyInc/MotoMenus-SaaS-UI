@@ -150,7 +150,10 @@ class Customers extends React.Component {
                 );
               })}
             </tbody>
-            <Paging paging={this.state.paging} changePage={(type) => this.getCustomers(type)} />
+            <Paging
+              paging={this.state.paging}
+              changePage={type => this.getCustomers(type)}
+            />
           </table>
         )}
         {this.state.error}

@@ -181,7 +181,10 @@ class Users extends React.Component {
                 );
               })}
             </tbody>
-            <Paging paging={this.state.paging} changePage={(type) => this.getUsers(type)} />
+            <Paging
+              paging={this.state.paging}
+              changePage={type => this.getUsers(type)}
+            />
           </table>
         )}
         {this.state.error}
