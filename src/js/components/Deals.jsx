@@ -112,7 +112,7 @@ class Deals extends React.Component {
     this.checkSession();
 
     return (
-      <div className="px-4 py-4 w-full h-full flex-grow">
+      <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
         {!this.state.new_deal && (
           <table className="table-responsive w-full text-gray-900">

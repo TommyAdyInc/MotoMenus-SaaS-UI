@@ -20,7 +20,8 @@ class Settings extends React.Component {
     error: null,
     store_name: "",
     logo: "",
-    password: ""
+    password: "",
+    password_confirm: "",
   };
 
   constructor(props) {
@@ -79,26 +80,18 @@ class Settings extends React.Component {
   getLogo() {
     this.checkSession();
 
-    const { port, route_prefix, api_url } = this.props.api;
-    const { subdomain } = this.props;
+    const { api, ui } = this.props;
 
     axios({
       method: "GET",
-      url:
-        "//" +
-        subdomain +
-        api_url +
-        ":" +
-        port +
-        route_prefix +
-        "/settings/logo",
+      url: apiURL(api, ui) + "/settings/logo",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json"
       }
     })
       .then(({ data }) => {
-        this.setState({ logo: data });
+        this.setState({ logo: data.path });
       })
       .catch(error => console.log(error));
   }
@@ -107,19 +100,11 @@ class Settings extends React.Component {
     if (isAdmin) {
       this.checkSession();
 
-      const { port, route_prefix, api_url } = this.props.api;
-      const { subdomain } = this.props;
+      const { api, ui } = this.props;
 
       axios({
         method: "GET",
-        url:
-          "//" +
-          subdomain +
-          api_url +
-          ":" +
-          port +
-          route_prefix +
-          "/settings/store-name",
+        url: apiURL(api, ui) + "/settings/store-name",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -155,42 +140,64 @@ class Settings extends React.Component {
     this.checkSession();
 
     return (
-      <div className="px-4 py-4 w-full h-full flex-grow">
+      <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
 
         <div className="w-full">
           {isAdmin() && (
             <div>
-              <h2>Store Defaults</h2>
-              <b>Default Interest Rate</b>
-              <input
-                type="number"
-                value={this.state.interest}
-                onChange={val => this.setState({ interest: val })}
-              />
-              <b>Default Tax Rate</b>{" "}
-              <input
-                type="number"
-                value={this.state.tax}
-                onChange={val => this.setState({ tax: val })}
-              />
-              <h2>Store Settings</h2>
-              <b>Logo</b> <img alt="logo" srcSet={this.state.logo} />
-              <b>Name: </b>{" "}
-              <input
-                type="text"
-                value={this.state.store_name}
-                onChange={val => this.setState({ store_name: val })}
-              />
+              <div className="mb-5">
+                <h2>Store Defaults</h2>
+                <b className="inline-block mr-3">Default Interest Rate</b>
+                <input
+                  className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
+                  type="number"
+                  value={this.state.interest}
+                  onChange={val => this.setState({ interest: val })}
+                />
+                <b className="inline-block mr-3">Default Tax Rate</b>{" "}
+                <input
+                  className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
+                  type="number"
+                  value={this.state.tax}
+                  onChange={val => this.setState({ tax: val })}
+                />
+                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Save Defaults</button>
+              </div>
+              <hr className="mb-5" />
+              <div className="mb-5">
+                <h2>Store Settings</h2>
+                <b className="inline-block mr-3">Logo</b> <img alt="logo" className="inline-block mr-3 align-top h-auto" style={{maxWidth: 200 +'px'}} srcSet={this.state.logo} />
+                <b className="inline-block mr-3">Store Name </b>{" "}
+                <input
+                  className="border border-gray-500 text-left mr-4 rounded-full inline-block px-2"
+                  type="text"
+                  value={this.state.store_name}
+                  onChange={val => this.setState({ store_name: val })}
+                />
+                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Save Name</button>
+              </div>
+              <hr className="mb-5" />
             </div>
           )}
-          <h2>User</h2>
-          <b>Change Password</b>{" "}
-          <input
-            type="password"
-            value={this.state.password}
-            onChange={val => this.setState({ password: val })}
-          />
+          <div className="mb-5">
+            <h2>User</h2>
+            <b className="inline-block mr-3">Change Password</b>{" "}
+            <input
+              className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+              type="password"
+              value={this.state.password}
+              onChange={val => this.setState({ password: val })}
+            />
+            <b className="inline-block mr-3">Confirm Password</b>{" "}
+            <input
+                className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+                type="password"
+                value={this.state.password_confirm}
+                onChange={val => this.setState({ password_confirm: val })}
+            />
+            <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Update Password</button>
+          </div>
         </div>
 
         {this.state.error}
