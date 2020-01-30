@@ -6,16 +6,16 @@ class Paging extends React.Component {
   }
 
   render() {
-    const { paging, changePage } = this.props;
+    const { paging, changePage, colSpanLeft, colSpanRight } = this.props;
 
     return (
       <tfoot>
         {paging && (
           <tr>
-            <td className="text-sm py-2" colSpan={5}>
+            <td className="text-sm py-2" colSpan={colSpanLeft}>
               Deals {paging.from} to {paging.to} out of {paging.total}
             </td>
-            <td className="text-sm py-2" colSpan={4}>
+            <td className="text-sm py-2" colSpan={colSpanRight}>
               <div className="flex align-center justify-end w-full">
                 {paging.from > 1 && (
                   <a

@@ -170,6 +170,8 @@ class Deals extends React.Component {
             <Paging
               paging={this.state.paging}
               changePage={type => this.getDeals(type)}
+              colSpanLeft={5}
+              colSpanRight={4}
             />
           </table>
         )}

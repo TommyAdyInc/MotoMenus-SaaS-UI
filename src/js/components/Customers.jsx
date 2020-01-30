@@ -153,6 +153,8 @@ class Customers extends React.Component {
             <Paging
               paging={this.state.paging}
               changePage={type => this.getCustomers(type)}
+              colSpanLeft={3}
+              colSpanRight={2}
             />
           </table>
         )}

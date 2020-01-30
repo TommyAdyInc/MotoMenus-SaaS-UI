@@ -184,6 +184,8 @@ class Users extends React.Component {
             <Paging
               paging={this.state.paging}
               changePage={type => this.getUsers(type)}
+              colSpanLeft={3}
+              colSpanRight={2}
             />
           </table>
         )}
