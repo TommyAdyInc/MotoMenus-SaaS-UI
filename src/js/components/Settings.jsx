@@ -21,7 +21,7 @@ class Settings extends React.Component {
     store_name: "",
     logo: "",
     password: "",
-    password_confirm: "",
+    password_confirm: ""
   };
 
   constructor(props) {
@@ -162,12 +162,20 @@ class Settings extends React.Component {
                   value={this.state.tax}
                   onChange={val => this.setState({ tax: val })}
                 />
-                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Save Defaults</button>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+                  Save Defaults
+                </button>
               </div>
               <hr className="mb-5" />
               <div className="mb-5">
                 <h2>Store Settings</h2>
-                <b className="inline-block mr-3">Logo</b> <img alt="logo" className="inline-block mr-3 align-top h-auto" style={{maxWidth: 200 +'px'}} srcSet={this.state.logo} />
+                <b className="inline-block mr-3">Logo</b>{" "}
+                <img
+                  alt="logo"
+                  className="inline-block mr-3 align-top h-auto"
+                  style={{ maxWidth: 200 + "px" }}
+                  srcSet={this.state.logo}
+                />
                 <b className="inline-block mr-3">Store Name </b>{" "}
                 <input
                   className="border border-gray-500 text-left mr-4 rounded-full inline-block px-2"
@@ -175,7 +183,9 @@ class Settings extends React.Component {
                   value={this.state.store_name}
                   onChange={val => this.setState({ store_name: val })}
                 />
-                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Save Name</button>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+                  Save Name
+                </button>
               </div>
               <hr className="mb-5" />
             </div>
@@ -191,12 +201,14 @@ class Settings extends React.Component {
             />
             <b className="inline-block mr-3">Confirm Password</b>{" "}
             <input
-                className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
-                type="password"
-                value={this.state.password_confirm}
-                onChange={val => this.setState({ password_confirm: val })}
+              className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+              type="password"
+              value={this.state.password_confirm}
+              onChange={val => this.setState({ password_confirm: val })}
             />
-            <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">Update Password</button>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+              Update Password
+            </button>
           </div>
         </div>
 
