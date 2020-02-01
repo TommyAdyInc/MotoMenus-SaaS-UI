@@ -9,7 +9,8 @@ class Menu extends React.Component {
   constructor(props) {
     super(props);
 
-    this.path = window.location.pathname;
+    this.path =
+      window.location.pathname === "/" ? "/deals" : window.location.pathname;
   }
 
   toggle() {
@@ -95,11 +96,11 @@ class Menu extends React.Component {
     }
 
     return (
-      <nav className="flex items-center justify-between flex-wrap p-6 lg:pt-0 lg:pb-2">
+      <nav className="flex items-center justify-between flex-wrap p-6 lg:pt-0 lg:pb-2 lg:bg-white sm:bg-blue-500">
         <div className="block lg:hidden">
           <button
             onClick={() => this.toggle()}
-            className="flex items-center px-3 py-2 border rounded text-blue-500 border-blue-400 hover:text-blue-200 hover:border-blue-200"
+            className="flex items-center px-3 py-2 border rounded text-blue-200 border-blue-200 hover:text-blue-100 hover:border-blue-100"
           >
             <svg
               className="fill-current h-3 w-3"
@@ -118,7 +119,7 @@ class Menu extends React.Component {
           }
         >
           <div
-            className="sm:hidden block lg:inline-block bg-blue-400 mr-10 flex items-center align-center"
+            className="sm:hidden block lg:inline-block bg-blue-500 mr-10 flex items-center align-center z-10 shadow-md"
             style={{
               width: 170 + "px",
               height: 120 + "px",
@@ -141,7 +142,7 @@ class Menu extends React.Component {
             <a
               href="/customers"
               className={
-                "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 text-blue-500 hover:text-blue-300 font-bold" +
+                "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 lg:text-blue-500 sm:text-blue-200 hover:text-blue-300 sm:hover:text-blue-100 font-bold" +
                 (this.path === "/customers"
                   ? " bg-blue-200 rounded-lg px-3"
                   : "")
@@ -153,7 +154,7 @@ class Menu extends React.Component {
               <a
                 href="/users"
                 className={
-                  "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 text-blue-500 hover:text-blue-300 font-bold" +
+                  "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 lg:text-blue-500 sm:text-blue-200 hover:text-blue-300 sm:hover:text-blue-100 font-bold" +
                   (this.path === "/users" ? " bg-blue-200 rounded-lg px-3" : "")
                 }
               >
@@ -163,7 +164,7 @@ class Menu extends React.Component {
             <a
               href="/settings"
               className={
-                "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 text-blue-500 hover:text-blue-300 font-bold" +
+                "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 lg:text-blue-500 sm:text-blue-200 hover:text-blue-300 sm:hover:text-blue-100 font-bold" +
                 (this.path === "/settings"
                   ? " bg-blue-200 rounded-lg px-3"
                   : "")
@@ -175,7 +176,7 @@ class Menu extends React.Component {
               <a
                 href="/cash-specials"
                 className={
-                  "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 text-blue-500 hover:text-blue-300 font-bold" +
+                  "block lg:mr-8 mt-4 lg:inline-block lg:mt-0 lg:text-blue-500 sm:text-blue-200 hover:text-blue-300 sm:hover:text-blue-100 font-bold" +
                   (this.path === "/cash-specials"
                     ? " bg-blue-200 rounded-lg px-3"
                     : "")
@@ -192,7 +193,7 @@ class Menu extends React.Component {
                 logout();
                 onLogout();
               }}
-              className="block lg:inline-block mt-4 lg:mt-0 hover:text-blue-200 text-blue-500 font-bold"
+              className="block lg:mr-8 mt-4 lg:inline-block lg:mt-0 lg:text-blue-500 sm:text-blue-200 hover:text-blue-300 sm:hover:text-blue-100 font-bold"
             >
               Logout
             </a>

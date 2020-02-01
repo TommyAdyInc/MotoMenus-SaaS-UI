@@ -118,14 +118,16 @@ class Deals extends React.Component {
           <table className="table-responsive w-full text-gray-900">
             <thead>
               <tr>
-                <th className="px-2 py-1 w-1/12 text-md">Date</th>
-                <th className="px-2 py-1 w-2/12 text-md">Customer</th>
-                <th className="px-2 py-1 w-1/12 text-md">Phone</th>
-                <th className="px-2 py-1 w-2/12 text-md">Consultant</th>
-                <th className="px-2 py-1 w-1/12 text-md">Year</th>
-                <th className="px-2 py-1 w-1/12 text-md">Make</th>
-                <th className="px-2 py-1 w-2/12 text-md">Model</th>
-                <th className="px-2 py-1 w-1/12 text-md">Step</th>
+                <th className="px-2 py-1 w-1/12 text-md text-left">Date</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">Customer</th>
+                <th className="px-2 py-1 w-1/12 text-md text-left">Phone</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">
+                  Consultant
+                </th>
+                <th className="px-2 py-1 w-1/12 text-md text-left">Year</th>
+                <th className="px-2 py-1 w-1/12 text-md text-left">Make</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">Model</th>
+                <th className="px-2 py-1 w-1/12 text-md text-left">Step</th>
                 <th className="px-2 py-1 w-1/12"></th>
               </tr>
             </thead>

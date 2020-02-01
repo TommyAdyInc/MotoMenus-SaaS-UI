@@ -114,10 +114,10 @@ class Customers extends React.Component {
           <table className="table-responsive w-full text-gray-900">
             <thead>
               <tr>
-                <th className="px-2 py-1 w-1/4 text-md">Name</th>
-                <th className="px-2 py-1 w-1/4 text-md">Address</th>
-                <th className="px-2 py-1 w-2/12 text-md">Phone</th>
-                <th className="px-2 py-1 w-1/4 text-md">Email</th>
+                <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
+                <th className="px-2 py-1 w-1/4 text-md text-left">Address</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">Phone</th>
+                <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
                 <th className="px-2 py-1 w-1/12"></th>
               </tr>
             </thead>

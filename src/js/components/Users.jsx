@@ -122,10 +122,10 @@ class Users extends React.Component {
           <table className="table-responsive w-full text-gray-900">
             <thead>
               <tr>
-                <th className="px-2 py-1 w-1/4 text-md">Name</th>
-                <th className="px-2 py-1 w-1/4 text-md">Email</th>
-                <th className="px-2 py-1 w-2/12 text-md">Role</th>
-                <th className="px-2 py-1 w-2/12 text-md">Status</th>
+                <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
+                <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">Role</th>
+                <th className="px-2 py-1 w-2/12 text-md text-left">Status</th>
                 <th className="px-2 py-1 w-1/12"></th>
               </tr>
             </thead>
