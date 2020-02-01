@@ -29,7 +29,7 @@ class Settings extends React.Component {
     save_defaults: false,
     save_store_name: false,
     save_user: false,
-    user: null,
+    user: null
   };
 
   constructor(props) {
@@ -89,7 +89,7 @@ class Settings extends React.Component {
     if (isAdmin) {
       this.checkSession();
 
-      const {api, ui} = this.props;
+      const { api, ui } = this.props;
 
       axios({
         method: "GET",
@@ -99,10 +99,10 @@ class Settings extends React.Component {
           Accept: "application/json"
         }
       })
-          .then(({data}) => {
-            this.setState({logo: data.path});
-          })
-          .catch(error => console.log(error));
+        .then(({ data }) => {
+          this.setState({ logo: data.path });
+        })
+        .catch(error => console.log(error));
     }
   }
 
@@ -120,10 +120,10 @@ class Settings extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       }
     })
-        .then(({ data }) => {
-          this.setState({ user: data });
-        })
-        .catch(error => console.log(error));
+      .then(({ data }) => {
+        this.setState({ user: data });
+      })
+      .catch(error => console.log(error));
   }
 
   getStoreName() {
@@ -186,15 +186,15 @@ class Settings extends React.Component {
       },
       data: {
         default_tax_rate: this.state.tax,
-        default_interest_rate: this.state.interest,
+        default_interest_rate: this.state.interest
       }
     })
-        .then(({ data }) => {
-          this.setState({ save_defaults: true });
-          setTimeout(() => this.setState({ save_defaults: false }), 4000)
-        })
-        .catch(error => console.log(error))
-        .finally(() => this.setState({ loading: false }));
+      .then(({ data }) => {
+        this.setState({ save_defaults: true });
+        setTimeout(() => this.setState({ save_defaults: false }), 4000);
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   updateStoreName() {
@@ -214,22 +214,22 @@ class Settings extends React.Component {
         name: this.state.store_name
       }
     })
-        .then(({ data }) => {
-          this.setState({ save_store_name: true });
-          setTimeout(() => this.setState({ save_store_name: false }), 4000)
-        })
-        .catch(error => console.log(error))
-        .finally(() => this.setState({ loading: false }));
+      .then(({ data }) => {
+        this.setState({ save_store_name: true });
+        setTimeout(() => this.setState({ save_store_name: false }), 4000);
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   updateUser() {
-    if(this.state.password !== this.state.password_confirm) {
-      this.setState({password_error: true})
+    if (this.state.password !== this.state.password_confirm) {
+      this.setState({ password_error: true });
 
-      return
+      return;
     }
 
-    if(!this.state.user) {
+    if (!this.state.user) {
       return;
     }
 
@@ -249,12 +249,17 @@ class Settings extends React.Component {
         password: this.state.password
       }
     })
-        .then(({ data }) => {
-          this.setState({ save_user: true, password: '', password_confirm: '', password_error: false });
-          setTimeout(() => this.setState({ save_user: false }), 4000)
-        })
-        .catch(error => console.log(error))
-        .finally(() => this.setState({ loading: false }));
+      .then(({ data }) => {
+        this.setState({
+          save_user: true,
+          password: "",
+          password_confirm: "",
+          password_error: false
+        });
+        setTimeout(() => this.setState({ save_user: false }), 4000);
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   dropRejected() {
@@ -302,16 +307,23 @@ class Settings extends React.Component {
                     className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
                     type="number"
                     value={this.state.interest}
-                    onChange={event => this.setState({ interest: event.target.value })}
+                    onChange={event =>
+                      this.setState({ interest: event.target.value })
+                    }
                   />
                   <b className="inline-block mr-3">Default Tax Rate</b>{" "}
                   <input
                     className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
                     type="number"
                     value={this.state.tax}
-                    onChange={event => this.setState({ tax: event.target.value })}
+                    onChange={event =>
+                      this.setState({ tax: event.target.value })
+                    }
                   />
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() => this.setDefaults()}>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                    onClick={() => this.setDefaults()}
+                  >
                     Save Defaults
                   </button>
                   {this.state.save_defaults && <CheckMark />}
@@ -374,9 +386,14 @@ class Settings extends React.Component {
                     className="border border-gray-500 text-left mr-4 rounded-full inline-block px-2"
                     type="text"
                     value={this.state.store_name}
-                    onChange={event => this.setState({ store_name: event.target.value })}
+                    onChange={event =>
+                      this.setState({ store_name: event.target.value })
+                    }
                   />
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() =>  this.updateStoreName()}>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                    onClick={() => this.updateStoreName()}
+                  >
                     Save Name
                   </button>
                   {this.state.save_store_name && <CheckMark />}
@@ -392,21 +409,32 @@ class Settings extends React.Component {
                 className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
                 type="password"
                 value={this.state.password}
-                onChange={event => this.setState({ password: event.target.value })}
+                onChange={event =>
+                  this.setState({ password: event.target.value })
+                }
               />
               <b className="inline-block mr-3">Confirm Password</b>{" "}
               <input
                 className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
                 type="password"
                 value={this.state.password_confirm}
-                onChange={event => this.setState({ password_confirm: event.target.value })}
+                onChange={event =>
+                  this.setState({ password_confirm: event.target.value })
+                }
               />
-              <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() => this.updateUser()}>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                onClick={() => this.updateUser()}
+              >
                 Update Password
               </button>
               {this.state.save_user && <CheckMark />}
               <br />
-              {this.state.password_error && <div className="text-red-500 text-sm">Passwords do not match!!</div> }
+              {this.state.password_error && (
+                <div className="text-red-500 text-sm">
+                  Passwords do not match!!
+                </div>
+              )}
             </div>
           </div>
         </div>
