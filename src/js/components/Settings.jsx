@@ -11,6 +11,7 @@ import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
+import CheckMark from "../helpers/CheckMark.jsx";
 import Dropzone from "react-dropzone";
 
 class Settings extends React.Component {
@@ -23,7 +24,12 @@ class Settings extends React.Component {
     logo: "",
     password: "",
     password_confirm: "",
-    drop_rejected: false
+    password_error: false,
+    drop_rejected: false,
+    save_defaults: false,
+    save_store_name: false,
+    save_user: false,
+    user: null,
   };
 
   constructor(props) {
@@ -80,22 +86,44 @@ class Settings extends React.Component {
   }
 
   getLogo() {
+    if (isAdmin) {
+      this.checkSession();
+
+      const {api, ui} = this.props;
+
+      axios({
+        method: "GET",
+        url: apiURL(api, ui) + "/settings/logo",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        }
+      })
+          .then(({data}) => {
+            this.setState({logo: data.path});
+          })
+          .catch(error => console.log(error));
+    }
+  }
+
+  getUser() {
     this.checkSession();
 
     const { api, ui } = this.props;
 
     axios({
       method: "GET",
-      url: apiURL(api, ui) + "/settings/logo",
+      url: apiURL(api, ui) + "/user",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json"
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
       }
     })
-      .then(({ data }) => {
-        this.setState({ logo: data.path });
-      })
-      .catch(error => console.log(error));
+        .then(({ data }) => {
+          this.setState({ user: data });
+        })
+        .catch(error => console.log(error));
   }
 
   getStoreName() {
@@ -143,6 +171,92 @@ class Settings extends React.Component {
       .finally(() => this.setState({ loading: false }));
   }
 
+  setDefaults() {
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    axios({
+      method: "PUT",
+      url: apiURL(api, ui) + "/settings",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      data: {
+        default_tax_rate: this.state.tax,
+        default_interest_rate: this.state.interest,
+      }
+    })
+        .then(({ data }) => {
+          this.setState({ save_defaults: true });
+          setTimeout(() => this.setState({ save_defaults: false }), 4000)
+        })
+        .catch(error => console.log(error))
+        .finally(() => this.setState({ loading: false }));
+  }
+
+  updateStoreName() {
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    axios({
+      method: "PUT",
+      url: apiURL(api, ui) + "/settings/store-name",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      data: {
+        name: this.state.store_name
+      }
+    })
+        .then(({ data }) => {
+          this.setState({ save_store_name: true });
+          setTimeout(() => this.setState({ save_store_name: false }), 4000)
+        })
+        .catch(error => console.log(error))
+        .finally(() => this.setState({ loading: false }));
+  }
+
+  updateUser() {
+    if(this.state.password !== this.state.password_confirm) {
+      this.setState({password_error: true})
+
+      return
+    }
+
+    if(!this.state.user) {
+      return;
+    }
+
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    axios({
+      method: "PUT",
+      url: apiURL(api, ui) + "/users/" + this.state.user.id,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      data: {
+        password: this.state.password
+      }
+    })
+        .then(({ data }) => {
+          this.setState({ save_user: true, password: '', password_confirm: '', password_error: false });
+          setTimeout(() => this.setState({ save_user: false }), 4000)
+        })
+        .catch(error => console.log(error))
+        .finally(() => this.setState({ loading: false }));
+  }
+
   dropRejected() {
     this.setState({ drop_rejected: true });
 
@@ -160,6 +274,7 @@ class Settings extends React.Component {
       this.getSettings();
       this.getLogo();
       this.getStoreName();
+      this.getUser();
     }
   }
 
@@ -187,18 +302,19 @@ class Settings extends React.Component {
                     className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
                     type="number"
                     value={this.state.interest}
-                    onChange={val => this.setState({ interest: val })}
+                    onChange={event => this.setState({ interest: event.target.value })}
                   />
                   <b className="inline-block mr-3">Default Tax Rate</b>{" "}
                   <input
                     className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
                     type="number"
                     value={this.state.tax}
-                    onChange={val => this.setState({ tax: val })}
+                    onChange={event => this.setState({ tax: event.target.value })}
                   />
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() => this.setDefaults()}>
                     Save Defaults
                   </button>
+                  {this.state.save_defaults && <CheckMark />}
                 </div>
               </div>
 
@@ -258,11 +374,12 @@ class Settings extends React.Component {
                     className="border border-gray-500 text-left mr-4 rounded-full inline-block px-2"
                     type="text"
                     value={this.state.store_name}
-                    onChange={val => this.setState({ store_name: val })}
+                    onChange={event => this.setState({ store_name: event.target.value })}
                   />
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() =>  this.updateStoreName()}>
                     Save Name
                   </button>
+                  {this.state.save_store_name && <CheckMark />}
                 </div>
               </div>
             </div>
@@ -275,18 +392,21 @@ class Settings extends React.Component {
                 className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
                 type="password"
                 value={this.state.password}
-                onChange={val => this.setState({ password: val })}
+                onChange={event => this.setState({ password: event.target.value })}
               />
               <b className="inline-block mr-3">Confirm Password</b>{" "}
               <input
                 className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
                 type="password"
                 value={this.state.password_confirm}
-                onChange={val => this.setState({ password_confirm: val })}
+                onChange={event => this.setState({ password_confirm: event.target.value })}
               />
-              <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm">
+              <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm" onClick={() => this.updateUser()}>
                 Update Password
               </button>
+              {this.state.save_user && <CheckMark />}
+              <br />
+              {this.state.password_error && <div className="text-red-500 text-sm">Passwords do not match!!</div> }
             </div>
           </div>
         </div>
