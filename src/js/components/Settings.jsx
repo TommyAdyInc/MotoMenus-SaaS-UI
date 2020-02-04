@@ -37,7 +37,7 @@ class Settings extends React.Component {
   }
 
   getSettings() {
-    if (isAdmin) {
+    if (isAdmin()) {
       this.checkSession();
 
       const { api, ui } = this.props;
@@ -86,7 +86,7 @@ class Settings extends React.Component {
   }
 
   getLogo() {
-    if (isAdmin) {
+    if (isAdmin()) {
       this.checkSession();
 
       const { api, ui } = this.props;
@@ -127,7 +127,7 @@ class Settings extends React.Component {
   }
 
   getStoreName() {
-    if (isAdmin) {
+    if (isAdmin()) {
       this.checkSession();
 
       const { api, ui } = this.props;

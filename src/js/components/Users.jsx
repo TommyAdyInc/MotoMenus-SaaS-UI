@@ -11,6 +11,7 @@ import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
 import Paging from "../helpers/Paging.jsx";
+import NewUser from "./NewUser.jsx";
 
 class Users extends React.Component {
   state = {
@@ -164,6 +165,8 @@ class Users extends React.Component {
 
     this.checkSession();
 
+    const { api, ui } = this.props;
+
     return (
       <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
@@ -180,6 +183,12 @@ class Users extends React.Component {
                 <option value="enabled">Enabled</option>
                 <option value="disabled">Disabled</option>
               </select>
+              <button
+                className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 float-right hover:bg-green-600"
+                onClick={() => this.setState({ new_user: true })}
+              >
+                New User
+              </button>
             </div>
             <table className="table-responsive w-full text-gray-900">
               <thead>
@@ -201,7 +210,7 @@ class Users extends React.Component {
                       <td className="border px-1 py-1 text-center">
                         <div
                           className={
-                            "inline-block text-white text-sm rounded-full px-4 py-1 " +
+                            "inline-block text-white text-xs rounded-full px-4 py-0 " +
                             (user.deleted_at ? "bg-red-400" : "bg-green-400")
                           }
                         >
@@ -251,6 +260,28 @@ class Users extends React.Component {
                 colSpanRight={2}
               />
             </table>
+          </div>
+        )}
+        {this.state.new_user && (
+          <div className="w-full">
+            <div>
+              <a
+                href="#responsive-header"
+                onClick={() =>
+                  this.setState({ new_user: false }, this.getUsers)
+                }
+              >
+                <svg
+                  className="inline-block h-4 w-4 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <polygon points="3.828 9 9.899 2.929 8.485 1.515 0 10 .707 10.707 8.485 18.485 9.899 17.071 3.828 11 20 11 20 9 3.828 9" />
+                </svg>
+                <span className="inline-block">Back</span>
+              </a>
+            </div>
+            <NewUser api={api} ui={ui} />
           </div>
         )}
         {this.state.error}
