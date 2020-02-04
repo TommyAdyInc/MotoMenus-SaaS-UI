@@ -13,3 +13,26 @@ h3 {
 @tailwind components;
 
 @tailwind utilities;
+
+/* common css for menu items */
+.nav-item {
+  @apply block mt-4 text-blue-200 font-bold;
+}
+.nav-item:hover {
+  @apply text-blue-100;
+}
+.nav-selected {
+  @apply bg-blue-800 rounded-lg px-3;
+}
+
+@screen lg {
+  .nav-item {
+    @apply mr-8 inline-block mt-0 text-blue-500;
+  }
+  .nav-item:hover {
+    @apply text-blue-300;
+  }
+  .nav-selected {
+    @apply bg-blue-200;
+  }
+}
