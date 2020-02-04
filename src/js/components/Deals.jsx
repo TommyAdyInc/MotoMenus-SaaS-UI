@@ -170,6 +170,7 @@ class Deals extends React.Component {
               })}
             </tbody>
             <Paging
+              page="Deals"
               paging={this.state.paging}
               changePage={type => this.getDeals(type)}
               colSpanLeft={5}

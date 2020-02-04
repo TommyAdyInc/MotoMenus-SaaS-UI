@@ -15,6 +15,7 @@ import Paging from "../helpers/Paging.jsx";
 class Users extends React.Component {
   state = {
     users: [],
+    filter: "all",
     loading: false,
     error: null,
     paging: null,
@@ -32,7 +33,7 @@ class Users extends React.Component {
 
     this.setState({ loading: true });
 
-    let params = {};
+    let params = { filter: this.state.filter };
 
     if (paging === "next") {
       params.page = parseInt(this.state.paging.current_page) + 1;
@@ -90,7 +91,13 @@ class Users extends React.Component {
     }
   }
 
-  editUser(id) {
+  setFilter(filter) {
+    if (filter) {
+      this.setState({ filter }, this.getUsers);
+    }
+  }
+
+  editUser(user) {
     // console.log(id);
   }
 
@@ -161,75 +168,90 @@ class Users extends React.Component {
       <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
         {!this.state.new_user && (
-          <table className="table-responsive w-full text-gray-900">
-            <thead>
-              <tr>
-                <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
-                <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
-                <th className="px-2 py-1 w-2/12 text-md text-left">Role</th>
-                <th className="px-2 py-1 w-2/12 text-md text-left">Status</th>
-                <th className="px-2 py-1 w-1/12"></th>
-              </tr>
-            </thead>
-            <tbody className="text-xs md:text-sm lg:text-sm">
-              {this.state.users.map((user, index) => {
-                return (
-                  <tr key={index} className="odd:bg-white even:bg-gray-200">
-                    <td className="border px-1 py-1">{user.name}</td>
-                    <td className="border px-1 py-1">{user.email}</td>
-                    <td className="border px-1 py-1">{user.role}</td>
-                    <td className="border px-1 py-1 text-center">
-                      <div
-                        className={
-                          "inline-block text-white text-sm rounded-full px-4 py-1 " +
-                          (user.deleted_at ? "bg-red-400" : "bg-green-400")
-                        }
-                      >
-                        {user.deleted_at ? "Disabled" : "Enabled"}
-                      </div>
-                    </td>
-                    <td className="border px-1 py-1">
-                      <div className="flex items-center">
-                        <svg
-                          onClick={() => this.editUser(user)}
-                          className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
+          <div>
+            <div className="w-full my-5">
+              <span className="inline-block font-bold">Filter: </span>
+              <select
+                className="border border-gray-500 text-right ml-4 rounded-full inline-block px-3"
+                value={this.state.filter}
+                onChange={event => this.setFilter(event.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+            <table className="table-responsive w-full text-gray-900">
+              <thead>
+                <tr>
+                  <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
+                  <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
+                  <th className="px-2 py-1 w-2/12 text-md text-left">Role</th>
+                  <th className="px-2 py-1 w-2/12 text-md text-left">Status</th>
+                  <th className="px-2 py-1 w-1/12"></th>
+                </tr>
+              </thead>
+              <tbody className="text-xs md:text-sm lg:text-sm">
+                {this.state.users.map((user, index) => {
+                  return (
+                    <tr key={index} className="odd:bg-white even:bg-gray-200">
+                      <td className="border px-1 py-1">{user.name}</td>
+                      <td className="border px-1 py-1">{user.email}</td>
+                      <td className="border px-1 py-1">{user.role}</td>
+                      <td className="border px-1 py-1 text-center">
+                        <div
+                          className={
+                            "inline-block text-white text-sm rounded-full px-4 py-1 " +
+                            (user.deleted_at ? "bg-red-400" : "bg-green-400")
+                          }
                         >
-                          <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" />
-                        </svg>
-                        {user.deleted_at ? (
+                          {user.deleted_at ? "Disabled" : "Enabled"}
+                        </div>
+                      </td>
+                      <td className="border px-1 py-1">
+                        <div className="flex items-center">
                           <svg
-                            onClick={() => this.enableUser(user)}
-                            className="fill-current text-blue-500 h-4 w-4 cursor-pointer"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            <path d="M53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32zm70.11-175.8l89.38-94.26a15.41 15.41 0 0 1 22.62 0l89.38 94.26c10.08 10.62 2.94 28.8-11.32 28.8H256v112a16 16 0 0 1-16 16h-32a16 16 0 0 1-16-16V320h-57.37c-14.26 0-21.4-18.18-11.32-28.8zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
-                          </svg>
-                        ) : (
-                          <svg
-                            onClick={() => this.disableUser(user)}
-                            className="fill-current text-red-500 h-4 w-4 cursor-pointer"
+                            onClick={() => this.editUser(user)}
+                            className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                           >
-                            <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
+                            <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" />
                           </svg>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <Paging
-              paging={this.state.paging}
-              changePage={type => this.getUsers(type)}
-              colSpanLeft={3}
-              colSpanRight={2}
-            />
-          </table>
+                          {user.deleted_at ? (
+                            <svg
+                              onClick={() => this.enableUser(user)}
+                              className="fill-current text-blue-500 h-4 w-4 cursor-pointer"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 448 512"
+                            >
+                              <path d="M53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32zm70.11-175.8l89.38-94.26a15.41 15.41 0 0 1 22.62 0l89.38 94.26c10.08 10.62 2.94 28.8-11.32 28.8H256v112a16 16 0 0 1-16 16h-32a16 16 0 0 1-16-16V320h-57.37c-14.26 0-21.4-18.18-11.32-28.8zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                            </svg>
+                          ) : (
+                            <svg
+                              onClick={() => this.disableUser(user)}
+                              className="fill-current text-red-500 h-4 w-4 cursor-pointer"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
+                            </svg>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <Paging
+                page="Users"
+                paging={this.state.paging}
+                changePage={type => this.getUsers(type)}
+                colSpanLeft={3}
+                colSpanRight={2}
+              />
+            </table>
+          </div>
         )}
         {this.state.error}
       </div>

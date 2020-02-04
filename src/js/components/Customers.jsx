@@ -151,6 +151,7 @@ class Customers extends React.Component {
               })}
             </tbody>
             <Paging
+              page="Customers"
               paging={this.state.paging}
               changePage={type => this.getCustomers(type)}
               colSpanLeft={3}
