@@ -94,12 +94,54 @@ class Users extends React.Component {
     // console.log(id);
   }
 
-  enableUser(id) {
-    // console.log(id);
+  enableUser(user) {
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    axios({
+      method: "DELETE",
+      url: apiURL(api, ui) + "/users/restore/" + user.id,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => {
+        user.deleted_at = null;
+        this.setState({
+          save_user: true
+        });
+        setTimeout(() => this.setState({ save_user: false }), 4000);
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
-  disableUser(id) {
-    // console.log(id);
+  disableUser(user) {
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    axios({
+      method: "DELETE",
+      url: apiURL(api, ui) + "/users/" + user.id,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => {
+        user.deleted_at = true;
+        this.setState({
+          save_user: true
+        });
+        setTimeout(() => this.setState({ save_user: false }), 4000);
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   componentDidMount() {
@@ -149,7 +191,7 @@ class Users extends React.Component {
                     <td className="border px-1 py-1">
                       <div className="flex items-center">
                         <svg
-                          onClick={() => this.editUser(user.id)}
+                          onClick={() => this.editUser(user)}
                           className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
@@ -158,7 +200,7 @@ class Users extends React.Component {
                         </svg>
                         {user.deleted_at ? (
                           <svg
-                            onClick={() => this.enableUser(user.id)}
+                            onClick={() => this.enableUser(user)}
                             className="fill-current text-blue-500 h-4 w-4 cursor-pointer"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"
@@ -167,7 +209,7 @@ class Users extends React.Component {
                           </svg>
                         ) : (
                           <svg
-                            onClick={() => this.disableUser(user.id)}
+                            onClick={() => this.disableUser(user)}
                             className="fill-current text-red-500 h-4 w-4 cursor-pointer"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
