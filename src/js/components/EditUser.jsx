@@ -32,8 +32,8 @@ class EditUser extends React.Component {
     this.setState({
       name: this.props.user.name,
       email: this.props.user.email,
-      role: this.props.user.role,
-    })
+      role: this.props.user.role
+    });
   }
 
   saveUser() {

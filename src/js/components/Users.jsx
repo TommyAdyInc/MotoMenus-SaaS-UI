@@ -22,7 +22,7 @@ class Users extends React.Component {
     error: null,
     paging: null,
     new_user: false,
-    edit_user: null,
+    edit_user: null
   };
 
   constructor(props) {
@@ -101,7 +101,7 @@ class Users extends React.Component {
   }
 
   editUser(user) {
-    this.setState({edit_user: user, new_user: false});
+    this.setState({ edit_user: user, new_user: false });
   }
 
   enableUser(user) {
@@ -221,15 +221,16 @@ class Users extends React.Component {
                       </td>
                       <td className="border px-1 py-1">
                         <div className="flex items-center">
-                          {!user.deleted_at && <svg
+                          {!user.deleted_at && (
+                            <svg
                               onClick={() => this.editUser(user)}
                               className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
-                          >
-                            <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"/>
-                          </svg>
-                          }
+                            >
+                              <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" />
+                            </svg>
+                          )}
                           {user.deleted_at ? (
                             <svg
                               onClick={() => this.enableUser(user)}
@@ -288,26 +289,26 @@ class Users extends React.Component {
           </div>
         )}
         {this.state.edit_user && (
-            <div className="w-full">
-              <div>
-                <a
-                    href="#responsive-header"
-                    onClick={() =>
-                        this.setState({ edit_user: null }, this.getUsers)
-                    }
+          <div className="w-full">
+            <div>
+              <a
+                href="#responsive-header"
+                onClick={() =>
+                  this.setState({ edit_user: null }, this.getUsers)
+                }
+              >
+                <svg
+                  className="inline-block h-4 w-4 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
                 >
-                  <svg
-                      className="inline-block h-4 w-4 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                  >
-                    <polygon points="3.828 9 9.899 2.929 8.485 1.515 0 10 .707 10.707 8.485 18.485 9.899 17.071 3.828 11 20 11 20 9 3.828 9" />
-                  </svg>
-                  <span className="inline-block">Back</span>
-                </a>
-              </div>
-              <EditUser api={api} ui={ui} user={this.state.edit_user} />
+                  <polygon points="3.828 9 9.899 2.929 8.485 1.515 0 10 .707 10.707 8.485 18.485 9.899 17.071 3.828 11 20 11 20 9 3.828 9" />
+                </svg>
+                <span className="inline-block">Back</span>
+              </a>
             </div>
+            <EditUser api={api} ui={ui} user={this.state.edit_user} />
+          </div>
         )}
         {this.state.error}
       </div>
