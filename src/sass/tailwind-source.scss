@@ -36,3 +36,31 @@ h3 {
     @apply bg-blue-200;
   }
 }
+
+
+/* css for customer edit form */
+.input-customer {
+  @apply border border-gray-500 rounded-full inline-block px-2 w-1/6;
+  max-width: 156px;
+}
+
+.input-customer-wide {
+  @apply border border-gray-500 rounded-full inline-block px-2 w-5/6;
+  max-width: 790px;
+}
+
+.textarea-customer-wide {
+  @apply border border-gray-500 rounded-lg inline-block px-2 w-5/6 align-top;
+  max-width: 790px;
+}
+
+.label-customer {
+  @apply block px-3 w-1/6 text-right;
+  max-width: 156px;
+}
+
+@screen lg {
+  .label-customer {
+    @apply inline-block;
+  }
+}
