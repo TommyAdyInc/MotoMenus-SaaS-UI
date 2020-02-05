@@ -109,7 +109,7 @@ class Customers extends React.Component {
   getUsers() {
     this.checkSession();
 
-    const {api, ui} = this.props;
+    const { api, ui } = this.props;
 
     axios({
       method: "GET",
@@ -120,15 +120,15 @@ class Customers extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       },
       params: {
-        filter: 'all',
-        no_paging: true,
+        filter: "all",
+        no_paging: true
       }
     })
-        .then(({data}) => {
-          let users = data;
-          this.setState({users});
-        })
-        .catch(errors => console.log(errors));
+      .then(({ data }) => {
+        let users = data;
+        this.setState({ users });
+      })
+      .catch(errors => console.log(errors));
   }
 
   checkSession() {
@@ -140,7 +140,7 @@ class Customers extends React.Component {
   componentDidMount() {
     if (isAuthenticated()) {
       this.getCustomers();
-      if(isAdmin()) {
+      if (isAdmin()) {
         this.getUsers();
       }
     }
@@ -196,7 +196,7 @@ class Customers extends React.Component {
 
     let users = [];
     this.state.users.forEach(function(u) {
-      users.push(<option value={u.id}>{u.name}</option>)
+      users.push(<option value={u.id}>{u.name}</option>);
     });
 
     return (
