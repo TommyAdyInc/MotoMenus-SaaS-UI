@@ -10,7 +10,7 @@ jobs:
   npm-install:
     docker:
       # The primary container is an instance of the first image listed. The job's commands run in this container.
-      - image: node:10.16.0-stretch
+      - image: circleci/node:12.13.1-stretch
       # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       # - image: mysql:5.7.16
     working_directory: *working-directory
@@ -29,7 +29,7 @@ jobs:
 
   compile-assets:
     docker:
-      - image: node:10.16.0-stretch
+      - image: circleci/node:12.13.1-stretch
     working_directory: *working-directory
     steps:
       - checkout
