@@ -28,8 +28,14 @@ jobs:
             - node_modules
 
   webpack-build:
+    description: A parameterized job that runs the webpack.config.js directives (Ex. compile assets, optimize CSS, etc.)
     docker:
       - image: circleci/node:12.13.1-stretch
+    parameters:
+      environment:
+        description: "The environment a.k.a. type of webpack build to run (dev or prod)"
+        default: "prod"
+        type: string
     working_directory: *working-directory
     steps:
       - checkout
@@ -46,7 +52,7 @@ jobs:
             API_SUBDOMAIN="api"
             APP_NAME="MotoMenus"
             EOL
-      - run: npm run ${CIRCLE_BRANCH}:webpack:build
+      - run: npm run << parameters.environment >>:webpack:build
       - run: rm -rf node_modules
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
@@ -100,11 +106,20 @@ workflows:
       - npm-ci
 
       - webpack-build:
+          environment: "dev"
           filters:
             branches:
               only:
                 - dev
-                - prod
+          requires:
+            - npm-ci
+
+      - webpack-build:
+          environment: "prod"
+          filters:
+            branches:
+              ignore:
+                - dev
           requires:
             - npm-ci
 
