@@ -3,14 +3,14 @@ global-working-directory: &working-directory "/tmp/working-directory"
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@0.1.16
+  aws-cli: circleci/aws-cli@0.1.19
   aws-s3: circleci/aws-s3@1.0.11
 
 jobs:
-  npm-install:
+  npm-ci:
     docker:
       # The primary container is an instance of the first image listed. The job's commands run in this container.
-      - image: node:10.16.0-stretch
+      - image: circleci/node:12.13.1-stretch
       # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       # - image: mysql:5.7.16
     working_directory: *working-directory
@@ -18,24 +18,25 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+            - npm-ci-v1-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
-          name: Install NPM dependencies.
-          command: npm install
+          name: Install NPM dependencies
+          command: npm ci
       - save_cache:
-          key: npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-ci-v1-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules
 
-  compile-assets:
+  webpack-build:
+    description: A job that runs the webpack.config.js directives (Ex. compile assets, optimize CSS, etc.)
     docker:
-      - image: node:10.16.0-stretch
+      - image: circleci/node:12.13.1-stretch
     working_directory: *working-directory
     steps:
       - checkout
       - restore_cache:
           keys:
-            - npm-install-v2-{{ .Branch }}-{{ checksum "package.json" }}
+            - npm-ci-v1-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Create .env file and set values
           command: |
@@ -46,7 +47,14 @@ jobs:
             API_SUBDOMAIN="api"
             APP_NAME="MotoMenus"
             EOL
-      - run: npm run ${CIRCLE_BRANCH}:webpack:build
+      - run:
+          name: Run webpack build
+          command: |
+            if [ "$CIRCLE_BRANCH" = "dev" ]; then
+              npm run dev:webpack:build
+            else
+              npm run prod:webpack:build
+            fi
       - run: rm -rf node_modules
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
@@ -56,8 +64,10 @@ jobs:
             - ./
 
   sync-assets-to-s3:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor:
+      name: aws-cli/default
+      python-version: "3.8.1"
+      debian-release: buster
     working_directory: *working-directory
     steps:
       - checkout
@@ -70,16 +80,19 @@ jobs:
             set -x
             echo 'export CIRCLE_PROJECT_REPONAME_LOWERCASE=$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')' >> $BASH_ENV
       - aws-s3/sync:
-          aws-region: AWS_DEFAULT_REGION
-          from: dist
-          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
           arguments: |
             --acl public-read \
-            --cache-control "max-age=86400"
+            --metadata "commit=${CIRCLE_SHA1}"
+          aws-region: AWS_DEFAULT_REGION
+          from: dist
           overwrite: true
+          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
 
   create-invalidation:
-    executor: aws-cli/default
+    executor:
+      name: aws-cli/default
+      python-version: "3.8.1"
+      debian-release: buster
     steps:
       - aws-cli/setup
       - run:
@@ -92,11 +105,11 @@ workflows:
   version: 2
   main-workflow:
     jobs:
-      - npm-install
+      - npm-ci
 
-      - compile-assets:
+      - webpack-build:
           requires:
-            - npm-install
+            - npm-ci
 
       - sync-assets-to-s3:
           context: "org-global"
@@ -106,7 +119,7 @@ workflows:
                 - dev
                 - prod
           requires:
-            - compile-assets
+            - webpack-build
 
       - create-invalidation:
           context: "org-global"
