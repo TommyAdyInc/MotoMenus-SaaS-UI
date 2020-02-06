@@ -27,7 +27,7 @@ jobs:
           paths:
             - node_modules
 
-  compile-assets:
+  webpack-build:
     docker:
       - image: circleci/node:12.13.1-stretch
     working_directory: *working-directory
@@ -94,7 +94,7 @@ workflows:
     jobs:
       - npm-ci
 
-      - compile-assets:
+      - webpack-build:
           filters:
             branches:
               only:
@@ -111,7 +111,7 @@ workflows:
                 - dev
                 - prod
           requires:
-            - compile-assets
+            - webpack-build
 
       - create-invalidation:
           context: "org-global"
