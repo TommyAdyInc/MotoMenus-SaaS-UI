@@ -111,6 +111,7 @@ workflows:
             branches:
               only:
                 - dev
+          name: WebpackBuildDevBranch
           requires:
             - npm-ci
 
@@ -120,6 +121,7 @@ workflows:
             branches:
               ignore:
                 - dev
+          name: WebpackBuildAllBranchesExceptDev
           requires:
             - npm-ci
 
