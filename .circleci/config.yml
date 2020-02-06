@@ -72,13 +72,13 @@ jobs:
             set -x
             echo 'export CIRCLE_PROJECT_REPONAME_LOWERCASE=$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')' >> $BASH_ENV
       - aws-s3/sync:
-          aws-region: AWS_DEFAULT_REGION
-          from: dist
-          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
           arguments: |
             --acl public-read \
-            --cache-control "max-age=86400"
+            --metadata "commit=${CIRCLE_SHA1}"
+          aws-region: AWS_DEFAULT_REGION
+          from: dist
           overwrite: true
+          to: "s3://${CIRCLE_PROJECT_REPONAME_LOWERCASE}-${CIRCLE_BRANCH}"
 
   create-invalidation:
     executor:
