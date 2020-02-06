@@ -47,12 +47,14 @@ jobs:
             API_SUBDOMAIN="api"
             APP_NAME="MotoMenus"
             EOL
-      - run: |
-          if [ "$CIRCLE_BRANCH" = "dev" ]; then
-            npm run dev:webpack:build
-          else
-            npm run prod:webpack:build
-          fi
+      - run:
+          name: Run webpack build
+          command: |
+            if [ "$CIRCLE_BRANCH" = "dev" ]; then
+              npm run dev:webpack:build
+            else
+              npm run prod:webpack:build
+            fi
       - run: rm -rf node_modules
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
