@@ -95,6 +95,11 @@ workflows:
       - npm-ci
 
       - compile-assets:
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
           requires:
             - npm-ci
 
