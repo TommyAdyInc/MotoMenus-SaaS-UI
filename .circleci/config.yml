@@ -56,8 +56,10 @@ jobs:
             - ./
 
   sync-assets-to-s3:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor:
+      name: aws-cli/default
+      python-version: "3.8.1"
+      debian-release: buster
     working_directory: *working-directory
     steps:
       - checkout
@@ -79,7 +81,10 @@ jobs:
           overwrite: true
 
   create-invalidation:
-    executor: aws-cli/default
+    executor:
+      name: aws-cli/default
+      python-version: "3.8.1"
+      debian-release: buster
     steps:
       - aws-cli/setup
       - run:
