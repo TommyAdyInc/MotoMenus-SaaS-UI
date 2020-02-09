@@ -128,7 +128,7 @@ class NewUser extends React.Component {
               Full Name
             </b>
             <input
-              className="border border-gray-500 mr-4 rounded-full inline-block px-2"
+              className="form-input py-0"
               type="text"
               value={this.state.name}
               onChange={event => this.setState({ name: event.target.value })}
@@ -140,7 +140,7 @@ class NewUser extends React.Component {
               Email
             </b>{" "}
             <input
-              className="border border-gray-500 mr-4 rounded-full inline-block px-2"
+              className="form-input py-0"
               type="email"
               value={this.state.email}
               onChange={event => this.setState({ email: event.target.value })}
@@ -154,7 +154,7 @@ class NewUser extends React.Component {
               Password
             </b>{" "}
             <input
-              className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+              className="form-input py-0"
               type="password"
               value={this.state.password}
               onChange={event =>
@@ -168,7 +168,7 @@ class NewUser extends React.Component {
               Confirm Password
             </b>{" "}
             <input
-              className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+              className="form-input py-0"
               type="password"
               value={this.state.password_confirm}
               onChange={event =>
@@ -190,7 +190,7 @@ class NewUser extends React.Component {
               Role
             </b>{" "}
             <select
-              className="border border-gray-500 text-right rounded-full inline-block px-3"
+              className="form-select py-0"
               value={this.state.role}
               onChange={event => this.setState({ role: event.target.value })}
             >

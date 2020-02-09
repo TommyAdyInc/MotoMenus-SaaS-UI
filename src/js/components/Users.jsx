@@ -177,7 +177,7 @@ class Users extends React.Component {
             <div className="w-full my-5">
               <span className="inline-block font-bold">Filter: </span>
               <select
-                className="border border-gray-500 text-right ml-4 rounded-full inline-block px-3"
+                className="form-select py-0 ml-4"
                 value={this.state.filter}
                 onChange={event => this.setFilter(event.target.value)}
               >
