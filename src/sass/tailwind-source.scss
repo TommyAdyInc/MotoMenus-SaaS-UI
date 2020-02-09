@@ -44,13 +44,7 @@ h3 {
   max-width: 156px;
 }
 
-.input-customer-wide {
-  @apply border border-gray-500 rounded-full inline-block px-2 w-5/6;
-  max-width: 790px;
-}
-
-.textarea-customer-wide {
-  @apply border border-gray-500 rounded-lg inline-block px-2 w-5/6 align-top;
+.input-wide {
   max-width: 790px;
 }
 

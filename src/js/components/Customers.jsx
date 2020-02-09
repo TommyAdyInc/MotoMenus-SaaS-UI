@@ -196,7 +196,11 @@ class Customers extends React.Component {
 
     let users = [];
     this.state.users.forEach(function(u, i) {
-      users.push(<option value={u.id} key={i}>{u.name}</option>);
+      users.push(
+        <option value={u.id} key={i}>
+          {u.name}
+        </option>
+      );
     });
 
     return (
@@ -225,7 +229,7 @@ class Customers extends React.Component {
                 <div className="py-1 px-5">
                   <b className="label-customer">First Name</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.first_name}
                     onChange={event =>
@@ -234,7 +238,7 @@ class Customers extends React.Component {
                   />
                   <b className="label-customer">Last Name</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.last_name}
                     onChange={event =>
@@ -243,7 +247,7 @@ class Customers extends React.Component {
                   />
                   <b className="label-customer">Email</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="email"
                     value={this.state.filter.email}
                     onChange={event =>
@@ -254,7 +258,7 @@ class Customers extends React.Component {
                 <div className="py-1 px-5">
                   <b className="label-customer">Phone</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.phone}
                     onChange={event =>
@@ -263,7 +267,7 @@ class Customers extends React.Component {
                   />
                   <b className="label-customer">Address</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.address}
                     onChange={event =>
@@ -272,7 +276,7 @@ class Customers extends React.Component {
                   />
                   <b className="label-customer">City</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.city}
                     onChange={event =>
@@ -283,7 +287,8 @@ class Customers extends React.Component {
                 <div className="py-1 px-5">
                   <b className="label-customer">State</b>
                   <select
-                    className="input-customer"
+                    className="form-select py-0"
+                    style={{ width: 200 + "px" }}
                     value={this.state.filter.state}
                     onChange={event =>
                       this.setFilterField("state", event.target.value)
@@ -293,7 +298,7 @@ class Customers extends React.Component {
                   </select>
                   <b className="label-customer">Postcode</b>
                   <input
-                    className="input-customer"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.filter.postcode}
                     onChange={event =>
@@ -303,7 +308,8 @@ class Customers extends React.Component {
                   {isAdmin() && <b className="label-customer">User</b>}
                   {isAdmin() && (
                     <select
-                      className="input-customer"
+                      className="form-select py-0"
+                      style={{ width: 200 + "px" }}
                       value={this.state.filter.user_id}
                       onChange={event =>
                         this.setFilterField("user_id", event.target.value)

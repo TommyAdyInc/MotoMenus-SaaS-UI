@@ -4,7 +4,8 @@ import {
   isAuthenticated,
   sessionExpired,
   logout,
-  getAuthToken
+  getAuthToken,
+  isAdmin
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
@@ -18,7 +19,10 @@ class Deals extends React.Component {
     loading: false,
     error: null,
     paging: null,
-    new_deal: false
+    new_deal: false,
+    show_filter: false,
+    users: [],
+    user_id: 0
   };
 
   constructor(props) {
@@ -50,7 +54,7 @@ class Deals extends React.Component {
         Accept: "application/json",
         Authorization: "Bearer " + getAuthToken()
       },
-      params: params
+      params: this.setFilter(params)
     })
       .then(({ data }) => {
         let deals = [...data.data];
@@ -84,6 +88,20 @@ class Deals extends React.Component {
       .finally(() => this.setState({ loading: false }));
   }
 
+  setFilter(params) {
+    if (parseInt(this.state.user_id)) {
+      params.user_id = this.state.user_id;
+    }
+
+    return params;
+  }
+
+  resetFilter() {
+    this.setState({
+      user_id: 0
+    });
+  }
+
   checkSession() {
     if (sessionExpired()) {
       logout();
@@ -98,9 +116,38 @@ class Deals extends React.Component {
     // console.log(id);
   }
 
+  getUsers() {
+    this.checkSession();
+
+    const { api, ui } = this.props;
+
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/users",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      params: {
+        filter: "all",
+        no_paging: true
+      }
+    })
+      .then(({ data }) => {
+        let users = data;
+        this.setState({ users });
+      })
+      .catch(errors => console.log(errors));
+  }
+
   componentDidMount() {
     if (isAuthenticated()) {
       this.getDeals();
+
+      if (isAdmin()) {
+        this.getUsers();
+      }
     }
   }
 
@@ -111,9 +158,71 @@ class Deals extends React.Component {
 
     this.checkSession();
 
+    let users = [];
+    this.state.users.forEach(function(u, i) {
+      users.push(
+        <option value={u.id} key={i}>
+          {u.name}
+        </option>
+      );
+    });
+
     return (
       <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
+        {!this.state.show_filter && (
+          <button
+            className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 hover:bg-green-600"
+            onClick={() => this.setState({ show_filter: true })}
+          >
+            Filter
+          </button>
+        )}
+        {this.state.show_filter && (
+          <div className="p-5 w-full my-6 border border-blue-500 rounded-lg">
+            <div className="w-full flex flex-row">
+              {isAdmin() && (
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2 w-1/6"
+                  htmlFor="consultant"
+                >
+                  <span className="block w-full">Sales Consultant</span>
+                  <select
+                    className="form-select py-0"
+                    value={this.state.user_id}
+                    onChange={event =>
+                      this.setState({ user_id: event.target.value })
+                    }
+                    name="consultant"
+                  >
+                    <option value={0}>All</option>
+                    {users}
+                  </select>
+                </label>
+              )}
+            </div>
+            <div className="pt-4 px-5 text-right">
+              <button
+                className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 hover:bg-green-600 mr-6"
+                onClick={() => this.getDeals()}
+              >
+                Search
+              </button>
+              <button
+                className="inline-block text-white text-sm rounded-full px-4 py-1 bg-blue-400 hover:bg-blue-600 mr-6"
+                onClick={() => this.resetFilter()}
+              >
+                Clear
+              </button>
+              <button
+                className="inline-block text-white text-sm rounded-full px-4 py-1 bg-red-400 hover:bg-red-600"
+                onClick={() => this.setState({ show_filter: false })}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
         {!this.state.new_deal && (
           <table className="table-responsive w-full text-gray-900">
             <thead>

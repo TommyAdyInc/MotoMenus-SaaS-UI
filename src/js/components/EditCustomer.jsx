@@ -145,7 +145,7 @@ class EditCustomer extends React.Component {
             <div className="p-5">
               <b className="label-customer">First Name</b>
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.first_name}
                 onChange={event =>
@@ -154,7 +154,7 @@ class EditCustomer extends React.Component {
               />
               <b className="label-customer">Middle Name</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.middle_name}
                 onChange={event =>
@@ -163,7 +163,7 @@ class EditCustomer extends React.Component {
               />
               <b className="label-customer">Last Name</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.last_name}
                 onChange={event =>
@@ -174,7 +174,7 @@ class EditCustomer extends React.Component {
             <div className="p-5">
               <b className="label-customer">Email</b>
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="email"
                 value={this.state.customer.email}
                 onChange={event =>
@@ -183,7 +183,7 @@ class EditCustomer extends React.Component {
               />
               <b className="label-customer">Phone</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.phone}
                 onChange={event =>
@@ -192,7 +192,7 @@ class EditCustomer extends React.Component {
               />
               <b className="label-customer">Phone 2</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.phone2}
                 onChange={event =>
@@ -203,7 +203,7 @@ class EditCustomer extends React.Component {
             <div className="p-5">
               <b className="label-customer">Address</b>
               <input
-                className="input-customer-wide"
+                className="form-input py-0 w-5/6 input-wide"
                 type="text"
                 value={this.state.customer.address}
                 onChange={event =>
@@ -214,7 +214,7 @@ class EditCustomer extends React.Component {
             <div className="p-5">
               <b className="label-customer">City</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.city}
                 onChange={event =>
@@ -223,7 +223,7 @@ class EditCustomer extends React.Component {
               />
               <b className="label-customer">State</b>{" "}
               <select
-                className="input-customer"
+                className="form-select py-0"
                 value={this.state.customer.state}
                 onChange={event =>
                   this.setCustomerField("state", event.target.value)
@@ -233,7 +233,7 @@ class EditCustomer extends React.Component {
               </select>
               <b className="label-customer">Postcode</b>{" "}
               <input
-                className="input-customer"
+                className="form-input py-0"
                 type="text"
                 value={this.state.customer.postcode}
                 onChange={event =>
@@ -244,7 +244,7 @@ class EditCustomer extends React.Component {
             <div className="p-5">
               <b className="label-customer">Notes</b>
               <textarea
-                className="textarea-customer-wide"
+                className="form-textarea w-5/6 align-top input-wide"
                 rows={4}
                 value={this.state.customer.note}
                 onChange={event =>

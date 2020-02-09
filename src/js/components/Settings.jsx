@@ -304,7 +304,7 @@ class Settings extends React.Component {
                 <div className="p-5">
                   <b className="inline-block mr-3">Default Interest Rate</b>
                   <input
-                    className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
+                    className="form-input py-0"
                     type="number"
                     value={this.state.interest}
                     onChange={event =>
@@ -313,7 +313,7 @@ class Settings extends React.Component {
                   />
                   <b className="inline-block mr-3">Default Tax Rate</b>{" "}
                   <input
-                    className="border border-gray-500 text-right mr-4 rounded-full inline-block pr-2"
+                    className="form-input py-0"
                     type="number"
                     value={this.state.tax}
                     onChange={event =>
@@ -321,7 +321,7 @@ class Settings extends React.Component {
                     }
                   />
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm  ml-6"
                     onClick={() => this.setDefaults()}
                   >
                     Save Defaults
@@ -383,7 +383,7 @@ class Settings extends React.Component {
                   <br />
                   <b className="inline-block mr-3">Store Name </b>{" "}
                   <input
-                    className="border border-gray-500 text-left mr-4 rounded-full inline-block px-2"
+                    className="form-input py-0"
                     type="text"
                     value={this.state.store_name}
                     onChange={event =>
@@ -391,7 +391,7 @@ class Settings extends React.Component {
                     }
                   />
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                    className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm  ml-6"
                     onClick={() => this.updateStoreName()}
                   >
                     Save Name
@@ -406,7 +406,7 @@ class Settings extends React.Component {
             <div className="p-5">
               <b className="inline-block mr-3">Change Password</b>{" "}
               <input
-                className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+                className="form-input py-0"
                 type="password"
                 value={this.state.password}
                 onChange={event =>
@@ -415,7 +415,7 @@ class Settings extends React.Component {
               />
               <b className="inline-block mr-3">Confirm Password</b>{" "}
               <input
-                className="border border-gray-500 px-2 mr-4 rounded-full inline-block"
+                className="form-input py-0"
                 type="password"
                 value={this.state.password_confirm}
                 onChange={event =>
@@ -423,7 +423,7 @@ class Settings extends React.Component {
                 }
               />
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm ml-6"
                 onClick={() => this.updateUser()}
               >
                 Update Password
