@@ -17,7 +17,7 @@ class CashSpecials extends React.Component {
     cash_specials: [],
     loading: false,
     error: null,
-    save_specials: false,
+    save_specials: false
   };
 
   constructor(props) {
@@ -82,7 +82,7 @@ class CashSpecials extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       },
       data: {
-        cash_specials: this.state.cash_specials,
+        cash_specials: this.state.cash_specials
       }
     })
       .then(({ data }) => {
@@ -105,17 +105,17 @@ class CashSpecials extends React.Component {
         "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: "Bearer " + getAuthToken()
-      },
+      }
     })
-        .then(({ data }) => {
-          const downloadLink = document.createElement("a");
-          downloadLink.href = 'data:application/pdf;base64,' + data;
-          downloadLink.download = "CashSpecials.pdf";
-          downloadLink.click();
-          downloadLink.remove();
-        })
-        .catch(error => console.log(error))
-        .finally(() => this.setState({ loading: false }));
+      .then(({ data }) => {
+        const downloadLink = document.createElement("a");
+        downloadLink.href = "data:application/pdf;base64," + data;
+        downloadLink.download = "CashSpecials.pdf";
+        downloadLink.click();
+        downloadLink.remove();
+      })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   checkSession() {
@@ -138,13 +138,13 @@ class CashSpecials extends React.Component {
 
       let columns = [...cash_specials[index[0]].columns];
 
-      if(fields[1] === 'enabled') {
+      if (fields[1] === "enabled") {
         columns[index[1]].enabled = value;
         cash_specials[index[0]].columns = columns;
       }
 
-      if(fields[1] === 'rows') {
-        let rows = [...columns[index[1]].rows]
+      if (fields[1] === "rows") {
+        let rows = [...columns[index[1]].rows];
         rows[index[2]][fields[2]] = value;
         columns[index[1]].rows = rows;
         cash_specials[index[0]].columns = columns;
@@ -166,9 +166,9 @@ class CashSpecials extends React.Component {
         {this.state.loading && <Loading />}
 
         {this.state.save_specials && (
-            <div className="w-full p-5 mb-5 bg-green-200 text-green-700 text-md rounded-lg">
-              <b>Success.</b> Cash Specials have been updated.
-            </div>
+          <div className="w-full p-5 mb-5 bg-green-200 text-green-700 text-md rounded-lg">
+            <b>Success.</b> Cash Specials have been updated.
+          </div>
         )}
 
         <div className="w-full flex flex-wrap flex-grow flex-row justify-start">
@@ -192,12 +192,17 @@ class CashSpecials extends React.Component {
                               <label className="inline-flex items-center">
                                 <input
                                   type="checkbox"
-                                  onChange={(event) => this.setSpecial(
+                                  onChange={event =>
+                                    this.setSpecial(
                                       "columns.enabled",
                                       event.target.checked ? 1 : 0,
                                       [index, i]
-                                  )}
-                                  defaultChecked={this.state.cash_specials[index].columns[i].enabled}
+                                    )
+                                  }
+                                  defaultChecked={
+                                    this.state.cash_specials[index].columns[i]
+                                      .enabled
+                                  }
                                   className="form-checkbox"
                                 />
                                 <span className="ml-2">{column.name}</span>
@@ -212,7 +217,10 @@ class CashSpecials extends React.Component {
                   <tbody>
                     {c.row_names.map((row, row_index) => {
                       return (
-                        <tr key={row_index} className="odd:bg-white even:bg-gray-200">
+                        <tr
+                          key={row_index}
+                          className="odd:bg-white even:bg-gray-200"
+                        >
                           {!!c.row_names[0].name && (
                             <td className="cash-specials-th">{row.name}</td>
                           )}
@@ -266,14 +274,14 @@ class CashSpecials extends React.Component {
           })}
           <div className="w-full text-right py-5">
             <button
-                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
-                onClick={() => this.saveCashSpecials()}
+              className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+              onClick={() => this.saveCashSpecials()}
             >
               Save
             </button>
             <button
-                className="bg-green-500 hover:bg-green-700 text-white py-1 px-4 rounded-full text-sm ml-6"
-                onClick={() => this.viewCashSpecials()}
+              className="bg-green-500 hover:bg-green-700 text-white py-1 px-4 rounded-full text-sm ml-6"
+              onClick={() => this.viewCashSpecials()}
             >
               Download PDF
             </button>
