@@ -22,7 +22,13 @@ class Deals extends React.Component {
     new_deal: false,
     show_filter: false,
     users: [],
-    user_id: 0
+    user_id: 0,
+    customer: {
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      phone: ""
+    }
   };
 
   constructor(props) {
@@ -93,12 +99,27 @@ class Deals extends React.Component {
       params.user_id = this.state.user_id;
     }
 
+    if (
+      !!this.state.customer.first_name ||
+      !!this.state.customer.middle_name ||
+      !!this.state.customer.last_name ||
+      !!this.state.customer.phone
+    ) {
+      params.customer = this.state.customer;
+    }
+
     return params;
   }
 
   resetFilter() {
     this.setState({
-      user_id: 0
+      user_id: 0,
+      customer: {
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        phone: ""
+      }
     });
   }
 
@@ -151,6 +172,15 @@ class Deals extends React.Component {
     }
   }
 
+  setCustomer(value, field) {
+    this.setState(state => {
+      let customer = { ...state.customer };
+      customer[field] = value;
+
+      return { customer };
+    });
+  }
+
   render() {
     if (!isAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
@@ -183,12 +213,12 @@ class Deals extends React.Component {
             <div className="w-full flex flex-row">
               {isAdmin() && (
                 <label
-                  className="block text-gray-700 text-sm font-bold mb-2 w-1/6"
+                  className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3"
                   htmlFor="consultant"
                 >
                   <span className="block w-full">Sales Consultant</span>
                   <select
-                    className="form-select py-0"
+                    className="form-select py-0 w-full"
                     value={this.state.user_id}
                     onChange={event =>
                       this.setState({ user_id: event.target.value })
@@ -200,6 +230,77 @@ class Deals extends React.Component {
                   </select>
                 </label>
               )}
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+                <span className="block w-full">Customer</span>
+                <input
+                  type="text"
+                  value={this.state.customer.first_name}
+                  onChange={event =>
+                    this.setCustomer(event.target.value, "first_name")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="First Name"
+                />
+                <input
+                  type="text"
+                  value={this.state.customer.middle_name}
+                  onChange={event =>
+                    this.setCustomer(event.target.value, "middle_name")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Middle Name"
+                />
+                <input
+                  type="text"
+                  value={this.state.customer.last_name}
+                  onChange={event =>
+                    this.setCustomer(event.target.value, "last_name")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Last Name"
+                />
+                <input
+                  type="text"
+                  value={this.state.customer.phone}
+                  onChange={event =>
+                    this.setCustomer(event.target.value, "phone")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Phone Number"
+                />
+              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+                <span className="block w-full">Unit</span>
+                <input
+                  type="text"
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Test"
+                />
+              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+                <span className="block w-full">Trade</span>
+                <input
+                  type="text"
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Test"
+                />
+              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+                <span className="block w-full">Customer Type</span>
+                <input
+                  type="text"
+                  className="form-input py-0 w-full"
+                  placeholder="Test"
+                />
+              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+                <span className="block w-full">Sales Step</span>
+                <input
+                  type="text"
+                  className="form-input py-0 w-full"
+                  placeholder="Test"
+                />
+              </label>
             </div>
             <div className="pt-4 px-5 text-right">
               <button
