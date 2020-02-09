@@ -19,6 +19,7 @@ import Customers from "./components/Customers.jsx";
 import { isAuthenticated } from "./helpers/auth";
 import Users from "./components/Users.jsx";
 import Settings from "./components/Settings.jsx";
+import CashSpecials from "./components/CashSpecials.jsx";
 
 class Entry extends React.Component {
   constructor(props) {
@@ -67,10 +68,13 @@ class Entry extends React.Component {
           )}
           <Router className={this.state.authenticated ? "h-auto" : "h-full"}>
             <Home path="/" api={api} ui={ui} onLogin={() => this.onLogin()} />
-            <Deals path="/deals" api={api} ui={ui} />
+
+            <CashSpecials path="/cash-specials" api={api} ui={ui} />
             <Customers path="/customers" api={api} ui={ui} />
-            <Users path="/users" api={api} ui={ui} />
+            <Deals path="/deals" api={api} ui={ui} />
             <Settings path="/settings" api={api} ui={ui} />
+            <Users path="/users" api={api} ui={ui} />
+
             <NotFound default />
           </Router>
         </main>

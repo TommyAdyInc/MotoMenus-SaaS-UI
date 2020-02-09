@@ -64,3 +64,16 @@ h3 {
     @apply inline-block;
   }
 }
+
+/* cash specials css */
+.cash-specials-th {
+  width: 200px;
+  @apply p-2 text-sm;
+}
+
+@screen xl {
+  .cash-specials-th {
+    width: 300px;
+    @apply text-base;
+  }
+}
