@@ -195,8 +195,8 @@ class Customers extends React.Component {
     }
 
     let users = [];
-    this.state.users.forEach(function(u) {
-      users.push(<option value={u.id}>{u.name}</option>);
+    this.state.users.forEach(function(u, i) {
+      users.push(<option value={u.id} key={i}>{u.name}</option>);
     });
 
     return (
