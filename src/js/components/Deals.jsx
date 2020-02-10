@@ -16,6 +16,8 @@ import Paging from "../helpers/Paging.jsx";
 class Deals extends React.Component {
   state = {
     deals: [],
+    sales_steps: [],
+    customer_types: [],
     loading: false,
     error: null,
     paging: null,
@@ -28,7 +30,19 @@ class Deals extends React.Component {
       middle_name: "",
       last_name: "",
       phone: ""
-    }
+    },
+    unit: {
+      model: "",
+      model_number: "",
+      make: ""
+    },
+    trade: {
+      model: "",
+      model_number: "",
+      make: ""
+    },
+    sales_status: "all",
+    customer_type: []
   };
 
   constructor(props) {
@@ -94,6 +108,36 @@ class Deals extends React.Component {
       .finally(() => this.setState({ loading: false }));
   }
 
+  getSalesSteps() {
+    const { api, ui } = this.props;
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/deal/sales-steps",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => this.setState({ sales_steps: data }))
+      .catch(errors => console.log(errors));
+  }
+
+  getCustomerTypes() {
+    const { api, ui } = this.props;
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/deal/customer-types",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => this.setState({ customer_types: data }))
+      .catch(errors => console.log(errors));
+  }
+
   setFilter(params) {
     if (parseInt(this.state.user_id)) {
       params.user_id = this.state.user_id;
@@ -108,19 +152,60 @@ class Deals extends React.Component {
       params.customer = this.state.customer;
     }
 
+    if (
+      !!this.state.unit.model ||
+      !!this.state.unit.model_number ||
+      !!this.state.unit.make ||
+      !!this.state.unit.stock_number
+    ) {
+      params.unit = this.state.unit;
+    }
+
+    if (
+      !!this.state.trade.model ||
+      !!this.state.trade.model_number ||
+      !!this.state.trade.make
+    ) {
+      params.trade = this.state.trade;
+    }
+
+    if (this.state.sales_status) {
+      params.sales_status = this.state.sales_status;
+    }
+
+    if (this.state.customer_type.length) {
+      params.customer_type = this.state.customer_type;
+    }
+
     return params;
   }
 
   resetFilter() {
-    this.setState({
-      user_id: 0,
-      customer: {
-        first_name: "",
-        middle_name: "",
-        last_name: "",
-        phone: ""
-      }
-    });
+    this.setState(
+      {
+        user_id: 0,
+        customer: {
+          first_name: "",
+          middle_name: "",
+          last_name: "",
+          phone: ""
+        },
+        unit: {
+          stock_number: "",
+          model: "",
+          model_number: "",
+          make: ""
+        },
+        trade: {
+          model: "",
+          model_number: "",
+          make: ""
+        },
+        sales_status: "all",
+        customer_type: []
+      },
+      this.getDeals
+    );
   }
 
   checkSession() {
@@ -165,6 +250,8 @@ class Deals extends React.Component {
   componentDidMount() {
     if (isAuthenticated()) {
       this.getDeals();
+      this.getSalesSteps();
+      this.getCustomerTypes();
 
       if (isAdmin()) {
         this.getUsers();
@@ -178,6 +265,24 @@ class Deals extends React.Component {
       customer[field] = value;
 
       return { customer };
+    });
+  }
+
+  setUnit(value, field) {
+    this.setState(state => {
+      let unit = { ...state.unit };
+      unit[field] = value;
+
+      return { unit };
+    });
+  }
+
+  setTrade(value, field) {
+    this.setState(state => {
+      let trade = { ...state.trade };
+      trade[field] = value;
+
+      return { trade };
     });
   }
 
@@ -273,34 +378,124 @@ class Deals extends React.Component {
                 <span className="block w-full">Unit</span>
                 <input
                   type="text"
+                  value={this.state.unit.stock_number}
+                  onChange={event =>
+                    this.setUnit(event.target.value, "stock_number")
+                  }
                   className="form-input py-0 w-full mb-1"
-                  placeholder="Test"
+                  placeholder="Stock Number"
+                />
+                <input
+                  type="text"
+                  value={this.state.unit.make}
+                  onChange={event => this.setUnit(event.target.value, "make")}
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Make"
+                />
+                <input
+                  type="text"
+                  value={this.state.unit.model}
+                  onChange={event => this.setUnit(event.target.value, "model")}
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Model"
+                />
+                <input
+                  type="text"
+                  value={this.state.unit.model_number}
+                  onChange={event =>
+                    this.setUnit(event.target.value, "model_number")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Model Number"
                 />
               </label>
               <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
                 <span className="block w-full">Trade</span>
                 <input
                   type="text"
+                  value={this.state.trade.make}
+                  onChange={event => this.setTrade(event.target.value, "make")}
                   className="form-input py-0 w-full mb-1"
-                  placeholder="Test"
+                  placeholder="Make"
+                />
+                <input
+                  type="text"
+                  value={this.state.trade.model}
+                  onChange={event => this.setTrade(event.target.value, "model")}
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Model"
+                />
+                <input
+                  type="text"
+                  value={this.state.trade.model_number}
+                  onChange={event =>
+                    this.setTrade(event.target.value, "model_number")
+                  }
+                  className="form-input py-0 w-full mb-1"
+                  placeholder="Model Number"
                 />
               </label>
               <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
                 <span className="block w-full">Customer Type</span>
-                <input
-                  type="text"
-                  className="form-input py-0 w-full"
-                  placeholder="Test"
-                />
+                <select
+                  className="form-select"
+                  multiple={true}
+                  size={this.state.customer_types.length}
+                  value={this.state.customer_type}
+                  onChange={e =>
+                    this.setState({
+                      customer_type: Array.from(
+                        e.target.selectedOptions,
+                        item => item.value
+                      )
+                    })
+                  }
+                >
+                  {this.state.customer_types.map((ct, index) => {
+                    return (
+                      <option value={ct} key={index}>
+                        {ct}
+                      </option>
+                    );
+                  })}
+                </select>
               </label>
-              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
+              <div className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
                 <span className="block w-full">Sales Step</span>
-                <input
-                  type="text"
-                  className="form-input py-0 w-full"
-                  placeholder="Test"
-                />
-              </label>
+                <div className="w-full inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio"
+                    name="sales_status"
+                    value="all"
+                    checked={this.state.sales_status === "all"}
+                    onChange={e =>
+                      this.setState({ sales_status: e.target.value })
+                    }
+                  />
+                  <span className="ml-2 font-normal">All</span>
+                </div>
+                {this.state.sales_steps.map((ss, index) => {
+                  return (
+                    <div
+                      className="w-full inline-flex items-center"
+                      key={index}
+                    >
+                      <input
+                        type="radio"
+                        className="form-radio"
+                        name="sales_status"
+                        value={ss}
+                        checked={this.state.sales_status === ss}
+                        onChange={e =>
+                          this.setState({ sales_status: e.target.value })
+                        }
+                      />
+                      <span className="ml-2 font-normal">{ss}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div className="pt-4 px-5 text-right">
               <button
@@ -343,6 +538,43 @@ class Deals extends React.Component {
             </thead>
             <tbody className="text-xs md:text-sm lg:text-sm">
               {this.state.deals.map((deal, index) => {
+                let unit_years = deal.units.map(u => u.year);
+                let unit_makes = deal.units.map(u => u.make);
+                let unit_models = deal.units.map(u => u.model);
+
+                let years = [];
+                unit_years.forEach((y, index) => {
+                  if (!!y && !!unit_makes[index] && unit_models[index]) {
+                    years.push(
+                      <span className="w-full block" key={index}>
+                        {y}
+                      </span>
+                    );
+                  }
+                });
+
+                let makes = [];
+                unit_makes.forEach((m, index) => {
+                  if (!!m && !!unit_years[index] && unit_models[index]) {
+                    makes.push(
+                      <span className="w-full block" key={index}>
+                        {m}
+                      </span>
+                    );
+                  }
+                });
+
+                let models = [];
+                unit_models.forEach((m, index) => {
+                  if (!!m && !!unit_makes[index] && unit_years[index]) {
+                    models.push(
+                      <span className="w-full block" key={index}>
+                        {m}
+                      </span>
+                    );
+                  }
+                });
+
                 return (
                   <tr key={index} className="odd:bg-white even:bg-gray-200">
                     <td className="border px-1 py-1">{deal.deal_date}</td>
@@ -351,9 +583,9 @@ class Deals extends React.Component {
                     </td>
                     <td className="border px-1 py-1">{deal.customer.phone}</td>
                     <td className="border px-1 py-1">{deal.user.name}</td>
-                    <td className="border px-1 py-1">{deal.units[0].year}</td>
-                    <td className="border px-1 py-1">{deal.units[0].make}</td>
-                    <td className="border px-1 py-1">{deal.units[0].model}</td>
+                    <td className="border px-1 py-1">{years}</td>
+                    <td className="border px-1 py-1">{makes}</td>
+                    <td className="border px-1 py-1">{models}</td>
                     <td className="border px-1 py-1">{deal.sales_status}</td>
                     <td className="border px-1 py-1">
                       <div className="flex items-center">
