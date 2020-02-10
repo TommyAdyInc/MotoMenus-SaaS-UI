@@ -12,6 +12,7 @@ import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
 import Paging from "../helpers/Paging.jsx";
+import ViewDeal from "./ViewDeal.jsx";
 
 class Deals extends React.Component {
   state = {
@@ -21,7 +22,8 @@ class Deals extends React.Component {
     loading: false,
     error: null,
     paging: null,
-    new_deal: false,
+    view_deal: false,
+    confirm_delete: null,
     show_filter: false,
     users: [],
     user_id: 0,
@@ -42,7 +44,8 @@ class Deals extends React.Component {
       make: ""
     },
     sales_status: "all",
-    customer_type: []
+    customer_type: [],
+    edit_deal: null
   };
 
   constructor(props) {
@@ -214,12 +217,71 @@ class Deals extends React.Component {
     }
   }
 
-  editDeal(id) {
-    // console.log(id);
+  newDeal() {
+    this.setState({
+      view_deal: true,
+      edit_deal: null
+    });
   }
 
-  deleteDeal(id) {
-    // console.log(id);
+  editDeal(deal) {
+    this.setState({
+      view_deal: true,
+      edit_deal: deal
+    });
+  }
+
+  deleteDeal(deal) {
+    let confirm_delete = (
+      <Modal>
+        <div className="bg-white leading-none p-2 rounded-lg shadow text-blue-600">
+          <div className="w-full block inline-flex items-center">
+            <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+              Confirm!
+            </span>
+            <span className="inline-flex px-2">
+              <div>
+                Are you sure you want to completely remove the selected deal for{" "}
+                {deal.customer.first_name} {deal.customer.last_name}?
+              </div>
+            </span>
+          </div>
+          <div className="w-full block inline-flex justify-end mt-10">
+            <button
+              className="text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded-full mr-6"
+              onClick={() => this.confirmDelete(deal)}
+            >
+              Confirm
+            </button>
+            <button
+              className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+              onClick={() => this.setState({ confirm_delete: null })}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+
+    this.setState({ confirm_delete });
+  }
+
+  confirmDelete(deal) {
+    this.setState({ confirm_delete: null, loading: true });
+    const { api, ui } = this.props;
+    axios({
+      method: "DELETE",
+      url: apiURL(api, ui) + "/deal/" + deal.id,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(() => this.getDeals())
+      .catch(errors => console.log(errors))
+      .finally(() => this.setState({ loading: false }));
   }
 
   getUsers() {
@@ -293,6 +355,7 @@ class Deals extends React.Component {
 
     this.checkSession();
 
+    const { api, ui } = this.props;
     let users = [];
     this.state.users.forEach(function(u, i) {
       users.push(
@@ -305,15 +368,23 @@ class Deals extends React.Component {
     return (
       <div className="px-4 py-1 w-full h-full flex-grow">
         {this.state.loading && <Loading />}
-        {!this.state.show_filter && (
-          <button
-            className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 hover:bg-green-600"
-            onClick={() => this.setState({ show_filter: true })}
-          >
-            Filter
-          </button>
+        {!this.state.show_filter && !this.state.view_deal && (
+          <div className="w-full">
+            <button
+              className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 hover:bg-green-600"
+              onClick={() => this.setState({ show_filter: true })}
+            >
+              Filter
+            </button>
+            <button
+              className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 float-right hover:bg-green-600"
+              onClick={() => this.newDeal()}
+            >
+              New Deal
+            </button>
+          </div>
         )}
-        {this.state.show_filter && (
+        {this.state.show_filter && !this.state.view_deal && (
           <div className="p-5 w-full my-6 border border-blue-500 rounded-lg">
             <div className="w-full flex flex-row">
               {isAdmin() && (
@@ -459,6 +530,7 @@ class Deals extends React.Component {
                     );
                   })}
                 </select>
+                <span className="text-xs">Ctrl+Click to select multiple</span>
               </label>
               <div className="block text-gray-700 text-sm font-bold mb-2 w-1/6 pr-3">
                 <span className="block w-full">Sales Step</span>
@@ -519,7 +591,7 @@ class Deals extends React.Component {
             </div>
           </div>
         )}
-        {!this.state.new_deal && (
+        {!this.state.view_deal && (
           <table className="table-responsive w-full text-gray-900">
             <thead>
               <tr>
@@ -590,7 +662,7 @@ class Deals extends React.Component {
                     <td className="border px-1 py-1">
                       <div className="flex items-center">
                         <svg
-                          onClick={() => this.editDeal(deal.id)}
+                          onClick={() => this.editDeal(deal)}
                           className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
@@ -598,7 +670,7 @@ class Deals extends React.Component {
                           <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" />
                         </svg>
                         <svg
-                          onClick={() => this.deleteDeal(deal.id)}
+                          onClick={() => this.deleteDeal(deal)}
                           className="fill-current text-red-500 h-4 w-4 cursor-pointer"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
@@ -620,7 +692,30 @@ class Deals extends React.Component {
             />
           </table>
         )}
+        {this.state.view_deal && (
+          <div className="w-full">
+            <div>
+              <a
+                href="#responsive-header"
+                onClick={() =>
+                  this.setState({ view_deal: false }, this.getDeals)
+                }
+              >
+                <svg
+                  className="inline-block h-4 w-4 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <polygon points="3.828 9 9.899 2.929 8.485 1.515 0 10 .707 10.707 8.485 18.485 9.899 17.071 3.828 11 20 11 20 9 3.828 9" />
+                </svg>
+                <span className="inline-block">Back</span>
+              </a>
+            </div>
+            <ViewDeal api={api} ui={ui} deal={this.state.edit_deal} />
+          </div>
+        )}
         {this.state.error}
+        {this.state.confirm_delete}
       </div>
     );
   }

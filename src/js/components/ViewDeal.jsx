@@ -1,0 +1,149 @@
+import React from "react";
+import axios from "axios";
+import {
+  isAuthenticated,
+  sessionExpired,
+  logout,
+  getAuthToken
+} from "../helpers/auth";
+import { apiURL } from "../helpers/url";
+import { STATES } from "../helpers/states";
+import { Redirect } from "@reach/router";
+import Modal from "./Modal.jsx";
+import Loading from "../helpers/Loading.jsx";
+
+class ViewDeal extends React.Component {
+  state = {
+    deal: null,
+    loading: false,
+    error: null,
+    save_success: false
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    for (let key in this.props.deal) {
+      if (!this.props.customer.hasOwnProperty(key)) continue;
+
+      // do something with passed deal
+    }
+
+    this.setState({ deal: this.props.deal });
+  }
+
+  saveDeal() {
+    this.checkSession();
+
+    const { api, ui, customer } = this.props;
+
+    this.setState({ loading: true });
+
+    let data = {};
+    for (let key in this.state.customer) {
+      if (!this.state.customer.hasOwnProperty(key)) continue;
+
+      data[key] = this.state.customer[key];
+    }
+
+    axios({
+      method: "PUT",
+      url: apiURL(api, ui) + "/deal/" + customer.id,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      data: data
+    })
+      .then(() => {
+        this.setState({
+          save_success: true
+        });
+        setTimeout(() => this.setState({ update_success: false }), 4000);
+      })
+      .catch(errors => {
+        let error = (
+          <Modal>
+            <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
+              <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+                Error!
+              </span>
+              <span className="inline-flex px-2">
+                <div>
+                  We were unable to save the deal.{" "}
+                  {errors.error ||
+                    Object.values(errors.response.data.errors).join(", ")}
+                </div>
+              </span>
+              <button
+                className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+                onClick={() => this.setState({ error: null })}
+              >
+                Close
+              </button>
+            </div>
+          </Modal>
+        );
+
+        this.setState({ error });
+      })
+      .finally(() => this.setState({ loading: false }));
+  }
+
+  checkSession() {
+    if (sessionExpired()) {
+      logout();
+    }
+  }
+
+  render() {
+    if (!isAuthenticated()) {
+      return <Redirect noThrow={true} to="/" />;
+    }
+
+    this.checkSession();
+
+    let states = [];
+    for (let key in STATES) {
+      states.push(
+        <option value={key} key={key}>
+          {STATES[key]}
+        </option>
+      );
+    }
+
+    return (
+      <div className="py-10 w-full">
+        {this.state.loading && <Loading />}
+        {this.state.save_success && (
+          <div className="w-full p-5 mb-5 bg-green-200 text-green-700 text-md rounded-lg">
+            <b>Success.</b> Customer has been updated.
+          </div>
+        )}
+        {this.state.deal && (
+          <div className="mb-5 rounded-lg border-blue-500 border p-0">
+            <h2 className="px-5 py-2 bg-blue-500 text-white">
+              {this.props.deal ? "Edit" : "New"} Customer
+            </h2>
+
+            <div className="w-full text-right p-5">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                onClick={() => this.saveDeal()}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+
+        {this.state.error}
+      </div>
+    );
+  }
+}
+
+export default ViewDeal;
