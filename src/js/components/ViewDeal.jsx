@@ -7,10 +7,17 @@ import {
   getAuthToken
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
-import { STATES } from "../helpers/states";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
+import Customer from "./deals/customer.jsx";
+import Unit from "./deals/units.jsx";
+import Trade from "./deals/trades.jsx";
+import Status from "./deals/status.jsx";
+import Accessories from "./deals/accessories.jsx";
+import Purchase from "./deals/purchase.jsx";
+import Payment from "./deals/payments.jsx";
+import Finance from "./deals/finance.jsx";
 
 class ViewDeal extends React.Component {
   state = {
@@ -25,32 +32,26 @@ class ViewDeal extends React.Component {
   }
 
   componentDidMount() {
-    for (let key in this.props.deal) {
-      if (!this.props.customer.hasOwnProperty(key)) continue;
-
-      // do something with passed deal
-    }
-
     this.setState({ deal: this.props.deal });
   }
 
   saveDeal() {
     this.checkSession();
 
-    const { api, ui, customer } = this.props;
+    const { api, ui, deal } = this.props;
 
     this.setState({ loading: true });
 
     let data = {};
-    for (let key in this.state.customer) {
-      if (!this.state.customer.hasOwnProperty(key)) continue;
+    for (let key in this.state.deal) {
+      if (!this.state.deal.hasOwnProperty(key)) continue;
 
-      data[key] = this.state.customer[key];
+      data[key] = this.state.deal[key];
     }
 
     axios({
       method: "PUT",
-      url: apiURL(api, ui) + "/deal/" + customer.id,
+      url: apiURL(api, ui) + "/deal/" + deal.id,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -106,29 +107,31 @@ class ViewDeal extends React.Component {
 
     this.checkSession();
 
-    let states = [];
-    for (let key in STATES) {
-      states.push(
-        <option value={key} key={key}>
-          {STATES[key]}
-        </option>
-      );
-    }
+    const { ui, api, deal } = this.props;
 
     return (
       <div className="py-10 w-full">
         {this.state.loading && <Loading />}
         {this.state.save_success && (
           <div className="w-full p-5 mb-5 bg-green-200 text-green-700 text-md rounded-lg">
-            <b>Success.</b> Customer has been updated.
+            <b>Success.</b> Deal has been saved.
           </div>
         )}
         {this.state.deal && (
           <div className="mb-5 rounded-lg border-blue-500 border p-0">
             <h2 className="px-5 py-2 bg-blue-500 text-white">
-              {this.props.deal ? "Edit" : "New"} Customer
+              {this.props.deal ? "Edit" : "New"} deal
             </h2>
-
+            <div className="w-full flex flex-wrap flex-grow flex-row justify-start p-5">
+              <Customer ui={ui} api={api} customer={deal.customer} />
+              <Unit ui={ui} api={api} units={deal.units} />
+              <Trade ui={ui} api={api} trades={deal.trades} />
+              <Status ui={ui} api={api} deal={deal} />
+              <Accessories ui={ui} api={api} accessories={deal.accessories} />
+              <Purchase ui={ui} api={api} units={deal.units} />
+              <Payment ui={ui} api={api} payments={deal.payment_schedule} />
+              <Finance ui={ui} api={api} finance={deal.finance_insurance} />
+            </div>
             <div className="w-full text-right p-5">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
