@@ -32,7 +32,22 @@ class ViewDeal extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ deal: this.props.deal });
+    if (!this.props.deal) {
+      this.setState({
+        deal: {
+          customer: {},
+          units: [],
+          trades: [],
+          finance_insurance: {},
+          purchase_schedule: {},
+          accessories: [],
+          sales_status: "",
+          customer_type: ""
+        }
+      });
+    } else {
+      this.setState({ deal: this.props.deal });
+    }
   }
 
   saveDeal() {
@@ -107,7 +122,7 @@ class ViewDeal extends React.Component {
 
     this.checkSession();
 
-    const { ui, api, deal } = this.props;
+    const { ui, api } = this.props;
 
     return (
       <div className="py-10 w-full">
@@ -123,14 +138,26 @@ class ViewDeal extends React.Component {
               {this.props.deal ? "Edit" : "New"} deal
             </h2>
             <div className="w-full flex flex-wrap flex-grow flex-row justify-start p-5">
-              <Customer ui={ui} api={api} customer={deal.customer} />
-              <Unit ui={ui} api={api} units={deal.units} />
-              <Trade ui={ui} api={api} trades={deal.trades} />
-              <Status ui={ui} api={api} deal={deal} />
-              <Accessories ui={ui} api={api} accessories={deal.accessories} />
-              <Purchase ui={ui} api={api} units={deal.units} />
-              <Payment ui={ui} api={api} payments={deal.payment_schedule} />
-              <Finance ui={ui} api={api} finance={deal.finance_insurance} />
+              <Customer ui={ui} api={api} customer={this.state.deal.customer} />
+              <Unit ui={ui} api={api} units={this.state.deal.units} />
+              <Trade ui={ui} api={api} trades={this.state.deal.trades} />
+              <Status ui={ui} api={api} deal={this.state.deal} />
+              <Accessories
+                ui={ui}
+                api={api}
+                accessories={this.state.deal.accessories}
+              />
+              <Purchase ui={ui} api={api} units={this.state.deal.units} />
+              <Payment
+                ui={ui}
+                api={api}
+                payments={this.state.deal.payment_schedule}
+              />
+              <Finance
+                ui={ui}
+                api={api}
+                finance={this.state.deal.finance_insurance}
+              />
             </div>
             <div className="w-full text-right p-5">
               <button
