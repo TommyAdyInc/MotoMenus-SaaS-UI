@@ -1,14 +1,8 @@
 import React from "react";
 import axios from "axios";
-import {
-  isAuthenticated,
-  sessionExpired,
-  logout,
-  getAuthToken
-} from "../helpers/auth";
+import { getAuthToken } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { STATES } from "../helpers/states";
-import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
 
@@ -43,8 +37,6 @@ class EditCustomer extends React.Component {
   }
 
   saveCustomer() {
-    this.checkSession();
-
     const { api, ui, customer } = this.props;
 
     this.setState({ loading: true });
@@ -81,7 +73,7 @@ class EditCustomer extends React.Component {
               </span>
               <span className="inline-flex px-2">
                 <div>
-                  We were unable to update the customer.{" "}
+                  We were unable to save the customer.{" "}
                   {errors.error ||
                     Object.values(errors.response.data.errors).join(", ")}
                 </div>
@@ -101,12 +93,6 @@ class EditCustomer extends React.Component {
       .finally(() => this.setState({ loading: false }));
   }
 
-  checkSession() {
-    if (sessionExpired()) {
-      logout();
-    }
-  }
-
   setCustomerField(field, value) {
     this.setState(state => {
       let customer = { ...state.customer };
@@ -116,12 +102,6 @@ class EditCustomer extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
-      return <Redirect noThrow={true} to="/" />;
-    }
-
-    this.checkSession();
-
     let states = [];
     for (let key in STATES) {
       states.push(

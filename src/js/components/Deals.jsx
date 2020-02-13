@@ -616,10 +616,10 @@ class Deals extends React.Component {
 
                 let years = [];
                 unit_years.forEach((y, index) => {
-                  if (!!y && !!unit_makes[index] && unit_models[index]) {
+                  if (!!y || !!unit_makes[index] || unit_models[index]) {
                     years.push(
                       <span className="w-full block" key={index}>
-                        {y}
+                        {y ? y : "\u00A0"}
                       </span>
                     );
                   }
@@ -627,10 +627,10 @@ class Deals extends React.Component {
 
                 let makes = [];
                 unit_makes.forEach((m, index) => {
-                  if (!!m && !!unit_years[index] && unit_models[index]) {
+                  if (!!m || !!unit_years[index] || unit_models[index]) {
                     makes.push(
                       <span className="w-full block" key={index}>
-                        {m}
+                        {m ? m : "\u00A0"}
                       </span>
                     );
                   }
@@ -638,10 +638,10 @@ class Deals extends React.Component {
 
                 let models = [];
                 unit_models.forEach((m, index) => {
-                  if (!!m && !!unit_makes[index] && unit_years[index]) {
+                  if (!!m || !!unit_makes[index] || unit_years[index]) {
                     models.push(
                       <span className="w-full block" key={index}>
-                        {m}
+                        {m ? m : "\u00A0"}
                       </span>
                     );
                   }
@@ -711,7 +711,14 @@ class Deals extends React.Component {
                 <span className="inline-block">Back</span>
               </a>
             </div>
-            <ViewDeal api={api} ui={ui} deal={this.state.edit_deal} />
+            <ViewDeal
+              api={api}
+              ui={ui}
+              deal={this.state.edit_deal}
+              steps={this.state.sales_steps}
+              types={this.state.customer_types}
+              users={this.state.users}
+            />
           </div>
         )}
         {this.state.error}

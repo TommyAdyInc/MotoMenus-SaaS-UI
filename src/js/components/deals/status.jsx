@@ -14,11 +14,50 @@ class DealStatus extends React.Component {
   }
 
   render() {
-    return (
-      <div className="mb-5 rounded-lg border-blue-500 border p-0 mr-10">
-        <h2 className="px-5 py-2 bg-blue-500 text-white">Sales Status</h2>
-      </div>
-    );
+    const { deal, steps, setStatus } = this.props;
+
+    let sales_steps = [];
+
+    steps.forEach((s, index) => {
+      let bg =
+        index < 4
+          ? "bg-blue-" + (600 - index * 100)
+          : "bg-green-" + (300 + (index - 4) * 100);
+
+      sales_steps.push(
+        <div
+          key={"l" + index}
+          className="flex-grow block bg-gray-300 h-1 mt-6 mx-1 text-xs text-gray-800 text-right pr-1 overflow-y-visible"
+          style={{ lineHeight: 3 + "px" }}
+        >
+          {s}
+        </div>
+      );
+
+      sales_steps.push(
+        <div
+          key={index}
+          className={
+            "rounded-full p-1 " +
+            (deal.sales_status === s ? "bg-red-500" : "bg-transparent")
+          }
+        >
+          <div className="rounded-full p-1 bg-white">
+            <button
+              className={
+                "cursor-default rounded-full flex h-8 w-8 items-center justify-center text-white " +
+                bg
+              }
+              onClick={() => setStatus(s)}
+            >
+              S{index + 1}
+            </button>
+          </div>
+        </div>
+      );
+    });
+
+    return <div className="w-full flex flex-row p-2">{sales_steps}</div>;
   }
 }
 

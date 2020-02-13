@@ -4,7 +4,9 @@ import {
   isAuthenticated,
   sessionExpired,
   logout,
-  getAuthToken
+  getAuthToken,
+  isAdmin,
+  authUser
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
@@ -24,7 +26,8 @@ class ViewDeal extends React.Component {
     deal: null,
     loading: false,
     error: null,
-    save_success: false
+    save_success: false,
+    user_id: null
   };
 
   constructor(props) {
@@ -41,13 +44,30 @@ class ViewDeal extends React.Component {
           finance_insurance: {},
           purchase_schedule: {},
           accessories: [],
-          sales_status: "",
-          customer_type: ""
+          sales_status: "Greeting",
+          customer_type: [],
+          deal_date: new Date().toLocaleDateString()
         }
       });
     } else {
       this.setState({ deal: this.props.deal });
     }
+
+    this.setState({ user_id: authUser().id });
+  }
+
+  setStatus(status) {
+    this.setDeal("sales_status", status);
+  }
+
+  setDeal(field, value) {
+    this.setState(state => {
+      let deal = { ...state.deal };
+
+      deal[field] = value;
+
+      return { deal };
+    });
   }
 
   saveDeal() {
@@ -62,6 +82,10 @@ class ViewDeal extends React.Component {
       if (!this.state.deal.hasOwnProperty(key)) continue;
 
       data[key] = this.state.deal[key];
+
+      if (key === "units") {
+        data[key] = this.checkValidUnits(data[key]);
+      }
     }
 
     axios({
@@ -115,6 +139,29 @@ class ViewDeal extends React.Component {
     }
   }
 
+  checkValidUnits(units) {
+    return units
+      .filter(u => {
+        return (
+          u.stock_number ||
+          u.year ||
+          u.make ||
+          u.model ||
+          u.model_number ||
+          u.color ||
+          u.odometer
+        );
+      })
+      .map(u => {
+        u.purchase_information =
+          !u.purchase_information.price && !u.purchase_information.price
+            ? null
+            : u.purchase_information;
+
+        return u;
+      });
+  }
+
   render() {
     if (!isAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
@@ -122,7 +169,16 @@ class ViewDeal extends React.Component {
 
     this.checkSession();
 
-    const { ui, api } = this.props;
+    const { ui, api, steps, types, users } = this.props;
+
+    let consultants = [];
+    users.forEach(function(u, i) {
+      consultants.push(
+        <option value={u.id} key={i}>
+          {u.name}
+        </option>
+      );
+    });
 
     return (
       <div className="py-10 w-full">
@@ -137,17 +193,83 @@ class ViewDeal extends React.Component {
             <h2 className="px-5 py-2 bg-blue-500 text-white">
               {this.props.deal ? "Edit" : "New"} deal
             </h2>
-            <div className="w-full flex flex-wrap flex-grow flex-row justify-start p-5">
+            <Status
+              ui={ui}
+              api={api}
+              deal={this.state.deal}
+              steps={steps}
+              types={types}
+              setStatus={status => this.setStatus(status)}
+            />
+            <div className="w-full flex flex-row p-5">
               <Customer ui={ui} api={api} customer={this.state.deal.customer} />
-              <Unit ui={ui} api={api} units={this.state.deal.units} />
+
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3">
+                <span className="block w-full">Customer Type</span>
+                <select
+                  className="form-select w-full"
+                  multiple={true}
+                  size={types.length}
+                  value={this.state.deal.customer_type}
+                  onChange={e =>
+                    this.setDeal(
+                      "customer_type",
+                      Array.from(e.target.selectedOptions, item => item.value)
+                    )
+                  }
+                >
+                  {types.map((ct, index) => {
+                    return (
+                      <option value={ct} key={index}>
+                        {ct}
+                      </option>
+                    );
+                  })}
+                </select>
+                <span className="text-xs">Ctrl+Click to select multiple</span>
+              </label>
+
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3"
+                htmlFor="consultant"
+              >
+                <span className="block w-full mb-5">
+                  Date of Deal: {this.state.deal.deal_date}
+                </span>
+                {isAdmin() && consultants.length > 1 && (
+                  <div className="w-full">
+                    <span className="block w-full">Sales Consultant</span>
+                    <select
+                      className="form-select py-1 w-full"
+                      value={this.state.user_id}
+                      onChange={event =>
+                        this.setState({ user_id: event.target.value })
+                      }
+                      name="consultant"
+                    >
+                      {consultants}
+                    </select>
+                  </div>
+                )}
+              </label>
+            </div>
+            <div className="w-full flex flex-row p-5">
+              <Unit
+                ui={ui}
+                api={api}
+                units={this.state.deal.units}
+                unitUpdated={units => this.setDeal("units", units)}
+              />
+            </div>
+            <div className="w-full flex flex-row p-5">
               <Trade ui={ui} api={api} trades={this.state.deal.trades} />
-              <Status ui={ui} api={api} deal={this.state.deal} />
               <Accessories
                 ui={ui}
                 api={api}
                 accessories={this.state.deal.accessories}
               />
-              <Purchase ui={ui} api={api} units={this.state.deal.units} />
+            </div>
+            <div className="w-full flex flex-row p-5">
               <Payment
                 ui={ui}
                 api={api}

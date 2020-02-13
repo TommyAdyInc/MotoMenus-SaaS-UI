@@ -44,3 +44,11 @@ export const isAdmin = () => {
 
   return session.user.role === "admin";
 };
+
+export const authUser = () => {
+  let session =
+    JSON.parse(localStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth"));
+
+  return session.user;
+};
