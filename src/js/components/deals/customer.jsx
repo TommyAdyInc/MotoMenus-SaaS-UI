@@ -26,20 +26,22 @@ class DealCustomer extends React.Component {
   }
 
   componentDidMount() {
-    let customer = this.props.customer;
+    if (this.props.customer) {
+      let customer = this.props.customer;
 
-    for (let key in customer) {
-      if (!customer.hasOwnProperty(key)) continue;
-      if (customer[key] === null) {
-        customer[key] = "";
+      for (let key in customer) {
+        if (!customer.hasOwnProperty(key)) continue;
+        if (customer[key] === null) {
+          customer[key] = "";
+        }
+
+        if (key === "note" && !!customer[key]) {
+          customer[key] = customer[key].note;
+        }
       }
 
-      if (key === "note" && !!customer[key]) {
-        customer[key] = customer[key].note;
-      }
+      this.setState({ customer });
     }
-
-    this.setState({ customer });
   }
 
   setCustomer(value, field) {
@@ -48,7 +50,11 @@ class DealCustomer extends React.Component {
       customer[field] = value;
 
       return { customer };
-    });
+    }, this.customerUpdated);
+  }
+
+  customerUpdated() {
+    this.props.customerUpdated(this.state.customer);
   }
 
   render() {

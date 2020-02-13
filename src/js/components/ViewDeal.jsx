@@ -38,7 +38,7 @@ class ViewDeal extends React.Component {
     if (!this.props.deal) {
       this.setState({
         deal: {
-          customer: {},
+          customer: null,
           units: [],
           trades: [],
           finance_insurance: {},
@@ -202,7 +202,12 @@ class ViewDeal extends React.Component {
               setStatus={status => this.setStatus(status)}
             />
             <div className="w-full flex flex-row p-5">
-              <Customer ui={ui} api={api} customer={this.state.deal.customer} />
+              <Customer
+                ui={ui}
+                api={api}
+                customer={this.state.deal.customer}
+                customerUpdated={customer => this.setDeal("customer", customer)}
+              />
 
               <label className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3">
                 <span className="block w-full">Customer Type</span>
