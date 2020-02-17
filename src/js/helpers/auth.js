@@ -1,5 +1,6 @@
 export const setLogin = (data, remember) => {
   data.current_time = new Date().getTime() / 1000;
+
   if (remember) {
     localStorage.setItem("auth", JSON.stringify(data));
   } else {

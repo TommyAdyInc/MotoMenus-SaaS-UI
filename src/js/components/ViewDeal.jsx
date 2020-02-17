@@ -17,11 +17,12 @@ import Unit from "./deals/units.jsx";
 import Trade from "./deals/trades.jsx";
 import Status from "./deals/status.jsx";
 import Accessories from "./deals/accessories.jsx";
-import Purchase from "./deals/purchase.jsx";
 import Payment from "./deals/payments.jsx";
 import Finance from "./deals/finance.jsx";
 
 class ViewDeal extends React.Component {
+  _is_mounted = false;
+
   state = {
     deal: null,
     loading: false,
@@ -35,6 +36,8 @@ class ViewDeal extends React.Component {
   }
 
   componentDidMount() {
+    this._is_mounted = true;
+
     if (!this.props.deal) {
       this.setState({
         deal: {
@@ -61,13 +64,15 @@ class ViewDeal extends React.Component {
   }
 
   setDeal(field, value) {
-    this.setState(state => {
-      let deal = { ...state.deal };
+    if (this._is_mounted) {
+      this.setState(state => {
+        let deal = { ...state.deal };
 
-      deal[field] = value;
+        deal[field] = value;
 
-      return { deal };
-    });
+        return { deal };
+      });
+    }
   }
 
   saveDeal() {
@@ -99,10 +104,16 @@ class ViewDeal extends React.Component {
       data: data
     })
       .then(() => {
-        this.setState({
-          save_success: true
-        });
-        setTimeout(() => this.setState({ update_success: false }), 4000);
+        if (this._is_mounted) {
+          this.setState({
+            save_success: true
+          });
+          setTimeout(() => {
+            if (this._is_mounted) {
+              this.setState({ update_success: false });
+            }
+          }, 4000);
+        }
       })
       .catch(errors => {
         let error = (
@@ -162,6 +173,10 @@ class ViewDeal extends React.Component {
       });
   }
 
+  componentWillUnmount() {
+    this._is_mounted = false;
+  }
+
   render() {
     if (!isAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
@@ -201,15 +216,16 @@ class ViewDeal extends React.Component {
               types={types}
               setStatus={status => this.setStatus(status)}
             />
-            <div className="w-full flex flex-row p-5">
+            <div className="w-full flex flex-row px-5 py-2">
               <Customer
+                className="border border-blue-500 rounded-lg p-3"
                 ui={ui}
                 api={api}
                 customer={this.state.deal.customer}
                 customerUpdated={customer => this.setDeal("customer", customer)}
               />
 
-              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3">
+              <label className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3 mx-2 border border-blue-500 rounded-lg p-3">
                 <span className="block w-full">Customer Type</span>
                 <select
                   className="form-select w-full"
@@ -235,7 +251,7 @@ class ViewDeal extends React.Component {
               </label>
 
               <label
-                className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3"
+                className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3 border border-blue-500 rounded-lg p-3"
                 htmlFor="consultant"
               >
                 <span className="block w-full mb-5">
@@ -258,7 +274,7 @@ class ViewDeal extends React.Component {
                 )}
               </label>
             </div>
-            <div className="w-full flex flex-row p-5">
+            <div className="w-full flex flex-row px-5 py-2">
               <Unit
                 ui={ui}
                 api={api}
@@ -266,7 +282,7 @@ class ViewDeal extends React.Component {
                 unitUpdated={units => this.setDeal("units", units)}
               />
             </div>
-            <div className="w-full flex flex-row p-5">
+            <div className="w-full flex flex-row px-5 py-2">
               <Trade ui={ui} api={api} trades={this.state.deal.trades} />
               <Accessories
                 ui={ui}
@@ -274,7 +290,7 @@ class ViewDeal extends React.Component {
                 accessories={this.state.deal.accessories}
               />
             </div>
-            <div className="w-full flex flex-row p-5">
+            <div className="w-full flex flex-row px-5 py-2">
               <Payment
                 ui={ui}
                 api={api}

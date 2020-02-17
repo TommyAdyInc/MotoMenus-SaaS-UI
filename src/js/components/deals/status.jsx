@@ -45,7 +45,7 @@ class DealStatus extends React.Component {
           <div className="rounded-full p-1 bg-white">
             <button
               className={
-                "cursor-default rounded-full flex h-8 w-8 items-center justify-center text-white " +
+                "rounded-full flex h-8 w-8 items-center justify-center text-white " +
                 bg
               }
               onClick={() => setStatus(s)}

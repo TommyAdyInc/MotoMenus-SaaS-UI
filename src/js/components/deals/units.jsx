@@ -2,9 +2,7 @@ import React from "react";
 import axios from "axios";
 import { getAuthToken } from "../../helpers/auth";
 import { apiURL } from "../../helpers/url";
-import { STATES } from "../../helpers/states";
-import Modal from "../Modal.jsx";
-import Loading from "../../helpers/Loading.jsx";
+import SingleUnit from "./unit.jsx";
 
 class DealUnit extends React.Component {
   state = {
@@ -16,7 +14,20 @@ class DealUnit extends React.Component {
   }
 
   componentDidMount() {
-    let units = this.props.units;
+    let units = this.props.units.length
+      ? this.props.units
+      : [
+          {
+            stock_number: "",
+            year: "",
+            make: "",
+            model: "",
+            model_number: "",
+            color: "",
+            odometer: "",
+            purchase_information: this.blankPurchaseInfo()
+          }
+        ];
 
     units.forEach(u => {
       for (let key in u) {
@@ -78,7 +89,7 @@ class DealUnit extends React.Component {
       payoff_balance_owed: "",
       title_trip_fee: "",
       deposit: "",
-      taxable_show_msrp_on_pdf: 0,
+      show_msrp_on_pdf: 0,
       taxable_price: 1,
       taxable_manufacturer_freight: 1,
       taxable_technician_setup: 1,
@@ -96,37 +107,16 @@ class DealUnit extends React.Component {
     this.setState(state => {
       let units = [...state.units];
 
-      let unit = { ...units[index] };
-      unit[field] = value;
-      units[index] = unit;
+      if (field) {
+        let unit = { ...units[index] };
+        unit[field] = value;
+        units[index] = unit;
+      } else {
+        units[index] = value;
+      }
 
       return { units };
     }, this.unitAddedUpdated);
-  }
-
-  deleteUnit(index) {
-    const { ui, api } = this.props;
-
-    if (this.state.units[index].id) {
-      axios({
-        method: "DELETE",
-        url:
-          apiURL(api, ui) +
-          "/units/" +
-          this.state.units[index].deal_id +
-          "/" +
-          this.state.units[index].id,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: "Bearer " + getAuthToken()
-        }
-      })
-        .then(() => this.removeFromState(index))
-        .catch(errors => console.log(errors));
-    } else {
-      this.removeFromState(index);
-    }
   }
 
   removeFromState(index) {
@@ -144,112 +134,43 @@ class DealUnit extends React.Component {
   }
 
   render() {
+    const { ui, api } = this.props;
     return (
-      <label className="block text-gray-700 text-sm font-bold mb-2 w-full pr-3">
+      <label className="block text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3">
         <span className="block w-full">Unit Info</span>
         <div className="flex flex-row w-full">
           <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Stock Number
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Year
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Make
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Model
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Model Number
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Color
           </span>
-          <span className="form-input border-none ml-2 text-sm py-1 mb-1 w-1/8">
+          <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Odometer
           </span>
         </div>
         {this.state.units.map((u, index) => {
           return (
-            <div key={index} className="flex flex-row">
-              <input
-                type="text"
-                value={this.state.units[index].stock_number}
-                onChange={event =>
-                  this.setUnit(event.target.value, "stock_number", index)
-                }
-                className="form-input py-1 mb-1 w-1/8"
-                placeholder="Stock Number"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].year}
-                onChange={event =>
-                  this.setUnit(event.target.value, "year", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Year"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].make}
-                onChange={event =>
-                  this.setUnit(event.target.value, "make", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Make"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].model}
-                onChange={event =>
-                  this.setUnit(event.target.value, "model", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Model"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].model_number}
-                onChange={event =>
-                  this.setUnit(event.target.value, "model_number", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Model Number"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].color}
-                onChange={event =>
-                  this.setUnit(event.target.value, "color", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Color"
-              />
-              <input
-                type="text"
-                value={this.state.units[index].odometer}
-                onChange={event =>
-                  this.setUnit(event.target.value, "odometer", index)
-                }
-                className="form-input py-1 mb-1 ml-2 w-1/8"
-                placeholder="Odometer"
-              />
-              <div className="form-input py-1 mb-1 ml-2 w-1/8 flex flex-row">
-                <button className="rounded-full flex h-8 w-8 items-center justify-center text-white bg-blue-800">
-                  PI
-                </button>
-                <svg
-                  onClick={() => this.deleteUnit(index)}
-                  className="fill-current text-red-500 h-5 w-5 cursor-pointer ml-6 mt-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
-                </svg>
-              </div>
-            </div>
+            <SingleUnit
+              ui={ui}
+              api={api}
+              key={index}
+              unit={u}
+              removeFromState={() => this.removeFromState(index)}
+              unitUpdated={unit => this.setUnit(unit, false, index)}
+            />
           );
         })}
         <div className="w-full text-right">

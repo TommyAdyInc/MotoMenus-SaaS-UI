@@ -67,8 +67,13 @@ class DealCustomer extends React.Component {
       );
     }
 
+    const { className } = this.props;
     return (
-      <label className="block text-gray-700 text-sm font-bold mb-2 w-1/2 pr-3">
+      <label
+        className={
+          "block text-gray-700 text-sm font-bold mb-2 w-1/2 pr-3 " + className
+        }
+      >
         <span className="block w-full">Customer Info</span>
         <div className="flex flex-row w-full">
           <input
