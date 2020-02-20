@@ -60,19 +60,22 @@ class DealPurchase extends React.Component {
   }
 
   setTotal() {
-    this.setState({
-      cash_balance: (
-        parseFloat(this.state.subtotal) +
-        parseFloat(this.state.sales_tax) +
-        (parseFloat(this.state.pi.title_trip_fee) || 0) +
-        (parseFloat(this.state.payoff_balance_owed) || 0) -
-        (parseFloat(this.state.pi.deposit) || 0)
-      ).toFixed(2)
-    }, this.totalSet);
+    this.setState(
+      {
+        cash_balance: (
+          parseFloat(this.state.subtotal) +
+          parseFloat(this.state.sales_tax) +
+          (parseFloat(this.state.pi.title_trip_fee) || 0) +
+          (parseFloat(this.state.payoff_balance_owed) || 0) -
+          (parseFloat(this.state.pi.deposit) || 0)
+        ).toFixed(2)
+      },
+      this.totalSet
+    );
   }
 
   totalSet() {
-    this.props.purchaseInfoUpdated(this.state.cash_balance, 'cash_balance');
+    this.props.purchaseInfoUpdated(this.state.cash_balance, "cash_balance");
   }
 
   setPI(value, field) {
@@ -85,7 +88,7 @@ class DealPurchase extends React.Component {
   }
 
   purchaseInfoUpdated() {
-    this.props.purchaseInfoUpdated(this.state.pi, 'purchase_information');
+    this.props.purchaseInfoUpdated(this.state.pi, "purchase_information");
     this.subtotal();
   }
 

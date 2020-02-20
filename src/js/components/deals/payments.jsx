@@ -15,7 +15,7 @@ class DealPayment extends React.Component {
       }
     },
     payments: {},
-    amount: 0,
+    amount: 0
   };
 
   constructor(props) {
@@ -160,7 +160,10 @@ class DealPayment extends React.Component {
                   type="number"
                   min={0}
                   step={1}
-                  value={this.state.schedule.payment_options.down_payment_options[0] || ''}
+                  value={
+                    this.state.schedule.payment_options
+                      .down_payment_options[0] || ""
+                  }
                   onChange={e => this.setDownPayment(0, e.target.value)}
                   onBlur={() => this.calculate()}
                   className="form-input w-full"
@@ -171,7 +174,10 @@ class DealPayment extends React.Component {
                   type="number"
                   min={0}
                   step={1}
-                  value={this.state.schedule.payment_options.down_payment_options[1] || ''}
+                  value={
+                    this.state.schedule.payment_options
+                      .down_payment_options[1] || ""
+                  }
                   onChange={e => this.setDownPayment(1, e.target.value)}
                   onBlur={() => this.calculate()}
                   className="form-input w-full"
@@ -182,7 +188,10 @@ class DealPayment extends React.Component {
                   type="number"
                   min={0}
                   step={1}
-                  value={this.state.schedule.payment_options.down_payment_options[2] || ''}
+                  value={
+                    this.state.schedule.payment_options
+                      .down_payment_options[2] || ""
+                  }
                   onChange={e => this.setDownPayment(2, e.target.value)}
                   onBlur={() => this.calculate()}
                   className="form-input w-full"
