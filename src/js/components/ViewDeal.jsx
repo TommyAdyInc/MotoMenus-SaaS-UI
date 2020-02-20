@@ -184,7 +184,16 @@ class ViewDeal extends React.Component {
 
     this.checkSession();
 
-    const { ui, api, steps, types, users } = this.props;
+    const {
+      ui,
+      api,
+      steps,
+      types,
+      users,
+      tax_rate,
+      document_fee,
+      interest
+    } = this.props;
 
     let consultants = [];
     users.forEach(function(u, i) {
@@ -226,7 +235,7 @@ class ViewDeal extends React.Component {
               />
 
               <label className="block text-gray-700 text-sm font-bold mb-2 w-1/4 pr-3 mx-2 border border-blue-500 rounded-lg p-3">
-                <span className="block w-full">Customer Type</span>
+                <span className="block w-full text-lg mb-2">Customer Type</span>
                 <select
                   className="form-select w-full"
                   multiple={true}
@@ -280,21 +289,37 @@ class ViewDeal extends React.Component {
                 api={api}
                 units={this.state.deal.units}
                 unitUpdated={units => this.setDeal("units", units)}
+                tax_rate={tax_rate}
+                document_fee={document_fee}
               />
             </div>
             <div className="w-full flex flex-row px-5 py-2">
-              <Trade ui={ui} api={api} trades={this.state.deal.trades} />
+              <Trade
+                ui={ui}
+                api={api}
+                trades={this.state.deal.trades}
+                tradeUpdated={trades => this.setDeal("trades", trades)}
+              />
+            </div>
+            <div className="w-full flex flex-row px-5 py-2">
               <Accessories
                 ui={ui}
                 api={api}
+                tax_rate={tax_rate}
                 accessories={this.state.deal.accessories}
+                accessoriesUpdated={accessories =>
+                  this.setDeal("accessories", accessories)
+                }
+                units={this.state.deal.units}
               />
             </div>
             <div className="w-full flex flex-row px-5 py-2">
               <Payment
                 ui={ui}
                 api={api}
-                payments={this.state.deal.payment_schedule}
+                schedule={this.state.deal.payment_schedule}
+                interest={interest}
+                units={this.state.deal.units}
               />
               <Finance
                 ui={ui}

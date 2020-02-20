@@ -132,7 +132,7 @@ class SingleUnit extends React.Component {
         </div>
         {this.state.show_purchase_info && (
           <DealPurchase
-            purchaseInfoUpdated={pi => this.setUnit(pi, "purchase_information")}
+            purchaseInfoUpdated={(pi, field) => this.setUnit(pi, field)}
             pi={this.state.unit.purchase_information}
           />
         )}

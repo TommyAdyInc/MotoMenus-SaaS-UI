@@ -45,7 +45,10 @@ class Deals extends React.Component {
     },
     sales_status: "all",
     customer_type: [],
-    edit_deal: null
+    edit_deal: null,
+    tax_rate: 0,
+    document_fee: 0,
+    interest: 0
   };
 
   constructor(props) {
@@ -138,6 +141,41 @@ class Deals extends React.Component {
       }
     })
       .then(({ data }) => this.setState({ customer_types: data }))
+      .catch(errors => console.log(errors));
+  }
+
+  getTaxRate() {
+    const { api, ui } = this.props;
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/settings",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => {
+        this.setState({
+          tax_rate: data.default_tax_rate,
+          interest: data.default_interest_rate
+        });
+      })
+      .catch(errors => console.log(errors));
+  }
+
+  getDocumentFee() {
+    const { api, ui } = this.props;
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/settings/document-fee",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      }
+    })
+      .then(({ data }) => this.setState({ document_fee: data["document_fee"] }))
       .catch(errors => console.log(errors));
   }
 
@@ -311,9 +349,11 @@ class Deals extends React.Component {
 
   componentDidMount() {
     if (isAuthenticated()) {
-      this.getDeals();
       this.getSalesSteps();
       this.getCustomerTypes();
+      this.getTaxRate();
+      this.getDocumentFee();
+      this.getDeals();
 
       if (isAdmin()) {
         this.getUsers();
@@ -718,6 +758,9 @@ class Deals extends React.Component {
               steps={this.state.sales_steps}
               types={this.state.customer_types}
               users={this.state.users}
+              tax_rate={this.state.tax_rate}
+              interest={this.state.interest}
+              document_fee={this.state.document_fee}
             />
           </div>
         )}

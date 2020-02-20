@@ -1,7 +1,4 @@
 import React from "react";
-import axios from "axios";
-import { getAuthToken } from "../../helpers/auth";
-import { apiURL } from "../../helpers/url";
 import SingleUnit from "./unit.jsx";
 
 class DealUnit extends React.Component {
@@ -83,9 +80,9 @@ class DealUnit extends React.Component {
       labor: "",
       riders_edge_course: "",
       miscellaneous_costs: "",
-      document_fee: "249.00", // TODO: set from pulled in API value
+      document_fee: this.props.document_fee,
       trade_in_allowance: "",
-      sales_tax_rate: "6.225", // TODO: set from pulled in API value
+      sales_tax_rate: this.props.tax_rate,
       payoff_balance_owed: "",
       title_trip_fee: "",
       deposit: "",
@@ -137,7 +134,7 @@ class DealUnit extends React.Component {
     const { ui, api } = this.props;
     return (
       <label className="block text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3">
-        <span className="block w-full">Unit Info</span>
+        <span className="block w-full text-lg mb-2">Unit Info</span>
         <div className="flex flex-row w-full">
           <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Stock Number
