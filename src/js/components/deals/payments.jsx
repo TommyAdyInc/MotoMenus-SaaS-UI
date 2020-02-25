@@ -169,8 +169,10 @@ class DealPayment extends React.Component {
       return bool;
     }, false);
 
-    if(!changed) {
-      changed = parseFloat(prevProps.schedule.rate) !== parseFloat(this.state.schedule.rate);
+    if (!changed) {
+      changed =
+        parseFloat(prevProps.schedule.rate) !==
+        parseFloat(this.state.schedule.rate);
     }
 
     if (changed) {
@@ -233,7 +235,9 @@ class DealPayment extends React.Component {
                 $
                 {(this.state.unit === "all"
                   ? this.allTotal()
-                  : (parseFloat(this.props.units[this.state.unit].cash_balance) || 0)
+                  : parseFloat(
+                      this.props.units[this.state.unit].cash_balance
+                    ) || 0
                 ).toFixed(2)}
               </td>
               <td className="w-1/4">
