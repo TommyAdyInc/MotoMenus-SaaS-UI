@@ -320,6 +320,9 @@ class ViewDeal extends React.Component {
                 schedule={this.state.deal.payment_schedule}
                 interest={interest}
                 units={this.state.deal.units}
+                scheduleUpdated={schedule =>
+                  this.setDeal("payment_schedule", schedule)
+                }
               />
               <Finance
                 ui={ui}

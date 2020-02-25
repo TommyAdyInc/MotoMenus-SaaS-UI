@@ -98,7 +98,10 @@ class DealPurchase extends React.Component {
 
   render() {
     return (
-      <label className="block text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3">
+      <label
+        className="text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3"
+        style={{ display: this.props.show ? "block" : "none" }}
+      >
         <span className="block w-full">
           {" "}
           Purchase Information for above unit
@@ -119,7 +122,7 @@ class DealPurchase extends React.Component {
               <span className="w-1/2 inline-block">Price</span>
               <input
                 type="number"
-                value={this.state.pi.msrp}
+                value={this.state.pi.price}
                 onChange={event => this.setPI(event.target.value, "price")}
                 className="form-input py-1"
                 placeholder="Price"

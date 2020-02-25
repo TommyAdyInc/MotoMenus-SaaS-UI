@@ -12,6 +12,8 @@ class SingleUnit extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.purchaseRef = React.createRef();
   }
 
   setUnit(value, field) {
@@ -54,6 +56,10 @@ class SingleUnit extends React.Component {
 
   removeFromState() {
     this.props.removeFromState();
+  }
+
+  componentDidMount() {
+    this.purchaseRef.current.subtotal();
   }
 
   render() {
@@ -130,12 +136,12 @@ class SingleUnit extends React.Component {
             </svg>
           </div>
         </div>
-        {this.state.show_purchase_info && (
-          <DealPurchase
-            purchaseInfoUpdated={(pi, field) => this.setUnit(pi, field)}
-            pi={this.state.unit.purchase_information}
-          />
-        )}
+        <DealPurchase
+          show={this.state.show_purchase_info}
+          ref={this.purchaseRef}
+          purchaseInfoUpdated={(pi, field) => this.setUnit(pi, field)}
+          pi={this.state.unit.purchase_information}
+        />
       </div>
     );
   }
