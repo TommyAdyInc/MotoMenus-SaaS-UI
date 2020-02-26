@@ -97,7 +97,7 @@ class ViewDeal extends React.Component {
 
     axios({
       method: this.props.deal ? "PUT" : "POST",
-      url: apiURL(api, ui) + (this.props.deal ? ("/deal/" + deal.id) : "/deal"),
+      url: apiURL(api, ui) + (this.props.deal ? "/deal/" + deal.id : "/deal"),
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
