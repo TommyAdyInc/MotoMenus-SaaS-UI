@@ -53,7 +53,9 @@ class DealPayment extends React.Component {
           }
         };
 
-    let amount = this.props.units[0].cash_balance || 0;
+    let amount = this.props.units.length
+      ? this.props.units[0].cash_balance || 0
+      : 0;
 
     this.setState({ schedule, amount });
   }
@@ -169,7 +171,7 @@ class DealPayment extends React.Component {
       return bool;
     }, false);
 
-    if (!changed) {
+    if (!changed && prevProps.schedule) {
       changed =
         parseFloat(prevProps.schedule.rate) !==
         parseFloat(this.state.schedule.rate);
@@ -187,13 +189,14 @@ class DealPayment extends React.Component {
 
   render() {
     return (
-      <label className="block text-gray-700 text-sm font-bold mb-2 w-1/2 border border-blue-500 rounded-lg p-3">
+      <label className="block text-gray-700 text-sm font-bold mb-2 mr-1 w-1/2 border border-blue-500 rounded-lg p-3">
         {this.state.loading && <Loading />}
         <div className="block w-full text-lg mb-2">
           Payment Schedule{" "}
           {this.props.units.length > 1 && (
             <div className="inline-block float-right">
               <select
+                className="form-select py-1"
                 onChange={e =>
                   this.setState({ unit: e.target.value }, this.calculate)
                 }
@@ -233,12 +236,14 @@ class DealPayment extends React.Component {
             <tr>
               <td className="w-1/4 text-center">
                 $
-                {(this.state.unit === "all"
-                  ? this.allTotal()
-                  : parseFloat(
-                      this.props.units[this.state.unit].cash_balance
-                    ) || 0
-                ).toFixed(2)}
+                {this.props.units.length
+                  ? (this.state.unit === "all"
+                      ? this.allTotal()
+                      : parseFloat(
+                          this.props.units[this.state.unit].cash_balance
+                        ) || 0
+                    ).toFixed(2)
+                  : "0.00"}
               </td>
               <td className="w-1/4">
                 <input

@@ -44,8 +44,8 @@ class ViewDeal extends React.Component {
           customer: null,
           units: [],
           trades: [],
-          finance_insurance: {},
-          purchase_schedule: {},
+          finance_insurance: null,
+          purchase_schedule: null,
           accessories: [],
           sales_status: "Greeting",
           customer_type: [],
@@ -82,7 +82,9 @@ class ViewDeal extends React.Component {
 
     this.setState({ loading: true });
 
-    let data = {};
+    let data = {
+      user_id: this.state.user_id
+    };
     for (let key in this.state.deal) {
       if (!this.state.deal.hasOwnProperty(key)) continue;
 
@@ -94,8 +96,8 @@ class ViewDeal extends React.Component {
     }
 
     axios({
-      method: "PUT",
-      url: apiURL(api, ui) + "/deal/" + deal.id,
+      method: this.props.deal ? "PUT" : "POST",
+      url: apiURL(api, ui) + (this.props.deal ? ("/deal/" + deal.id) : "/deal"),
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -217,6 +219,14 @@ class ViewDeal extends React.Component {
             <h2 className="px-5 py-2 bg-blue-500 text-white">
               {this.props.deal ? "Edit" : "New"} deal
             </h2>
+            <div className="w-full text-right p-5">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                onClick={() => this.saveDeal()}
+              >
+                Save
+              </button>
+            </div>
             <Status
               ui={ui}
               api={api}
@@ -328,6 +338,9 @@ class ViewDeal extends React.Component {
                 ui={ui}
                 api={api}
                 finance={this.state.deal.finance_insurance}
+                financeUpdated={finance =>
+                  this.setDeal("finance_insurance", finance)
+                }
               />
             </div>
             <div className="w-full text-right p-5">

@@ -133,7 +133,7 @@ class DealCustomer extends React.Component {
             value={this.state.customer.address}
             onChange={event => this.setCustomer(event.target.value, "address")}
             className="form-input py-1 mb-1 w-full"
-            placeholder="Email"
+            placeholder="Address"
           />
         </div>
         <div className="flex flex-row w-full">
