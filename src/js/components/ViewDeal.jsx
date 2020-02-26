@@ -175,6 +175,14 @@ class ViewDeal extends React.Component {
       });
   }
 
+  newDeal() {
+    this.props.newDeal();
+  }
+
+  deleteDeal() {
+    this.props.deleteDeal();
+  }
+
   componentWillUnmount() {
     this._is_mounted = false;
   }
@@ -219,13 +227,29 @@ class ViewDeal extends React.Component {
             <h2 className="px-5 py-2 bg-blue-500 text-white">
               {this.props.deal ? "Edit" : "New"} deal
             </h2>
-            <div className="w-full text-right p-5">
+            <div className="w-full p-5">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm float-right"
                 onClick={() => this.saveDeal()}
               >
                 Save
               </button>
+              {this.props.deal && (
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white py-1 px-4 rounded-full text-sm mr-2"
+                  onClick={() => this.newDeal()}
+                >
+                  New Deal
+                </button>
+              )}
+              {this.props.deal && (
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white py-1 px-4 rounded-full text-sm"
+                  onClick={() => this.deleteDeal()}
+                >
+                  Delete Deal
+                </button>
+              )}
             </div>
             <Status
               ui={ui}

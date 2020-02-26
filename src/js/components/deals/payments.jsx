@@ -27,6 +27,10 @@ class DealPayment extends React.Component {
     this.timeout = null;
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
   componentDidMount() {
     const { ui, api } = this.props;
 

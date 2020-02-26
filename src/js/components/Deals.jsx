@@ -255,6 +255,15 @@ class Deals extends React.Component {
     }
   }
 
+  newDealFromEdit() {
+    this.setState(
+      {
+        view_deal: false
+      },
+      this.newDeal
+    );
+  }
+
   newDeal() {
     this.setState({
       view_deal: true,
@@ -317,7 +326,9 @@ class Deals extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       }
     })
-      .then(() => this.getDeals())
+      .then(() =>
+        this.setState({ view_deal: false, edit_deal: null }, this.getDeals)
+      )
       .catch(errors => console.log(errors))
       .finally(() => this.setState({ loading: false }));
   }
@@ -761,6 +772,8 @@ class Deals extends React.Component {
               tax_rate={this.state.tax_rate}
               interest={this.state.interest}
               document_fee={this.state.document_fee}
+              newDeal={() => this.newDealFromEdit()}
+              deleteDeal={() => this.deleteDeal(this.state.edit_deal)}
             />
           </div>
         )}
