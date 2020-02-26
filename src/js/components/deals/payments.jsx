@@ -43,7 +43,7 @@ class DealPayment extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       }
     })
-      .then(({ data }) => this.setState({ months: data }))
+      .then(({ data }) => this.setState({ months: data }, this.calculate))
       .catch(errors => console.log(errors));
 
     let schedule = this.props.schedule
@@ -132,6 +132,34 @@ class DealPayment extends React.Component {
   }
 
   calculate() {
+    let amount =
+      this.state.unit === "all"
+        ? this.allTotal()
+        : this.props.units[this.state.unit].cash_balance || 0;
+
+    let payments = {};
+    let periodic_interest = parseFloat(this.state.schedule.rate) / 12 / 100; // rate is annual rate
+    let that = this;
+    this.state.months.forEach(function(month) {
+      let discount_factor =
+        (Math.pow(1 + periodic_interest, month) * periodic_interest) /
+        (Math.pow(1 + periodic_interest, month) - 1);
+
+      let monthly = {};
+
+      that.state.schedule.payment_options.down_payment_options.forEach(function(
+        d
+      ) {
+        monthly[d] = (parseFloat(amount) - d) * discount_factor;
+      });
+
+      payments[month] = monthly;
+    });
+
+    this.setState({ payments });
+  }
+
+  calculateServer() {
     const { ui, api } = this.props;
 
     let amount =
@@ -164,16 +192,20 @@ class DealPayment extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     let that = this;
-    let changed = prevProps.units.reduce((bool, u, index) => {
-      if (
-        u.cash_balance !== that.props.units[index].cash_balance &&
-        index === parseInt(that.state.unit)
-      ) {
-        bool = true;
-      }
+    let changed = !prevProps.units && this.props.units;
 
-      return bool;
-    }, false);
+    if (!changed && prevProps.units) {
+      changed = prevProps.units.reduce((bool, u, index) => {
+        if (
+          u.cash_balance !== that.props.units[index].cash_balance &&
+          index === parseInt(that.state.unit)
+        ) {
+          bool = true;
+        }
+
+        return bool;
+      }, false);
+    }
 
     if (!changed && prevProps.schedule) {
       changed =
