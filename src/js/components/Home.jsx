@@ -1,30 +1,93 @@
 import React from "react";
+import axios from "axios";
+import { setLogin, isAuthenticated } from "../helpers/auth";
+import Modal from "./Modal.jsx";
+import Loading from "../helpers/Loading.jsx";
+import { apiURL } from "../helpers/url";
+import { Redirect } from "@reach/router";
 
 class Home extends React.Component {
+  state = {
+    element_to_render: null,
+    authenticated: false,
+    loading: false
+  };
+
+  constructor(props) {
+    super(props);
+    this.login = this.login.bind(this);
+    this.state.authenticated = isAuthenticated();
+  }
+
+  login(event) {
+    event.preventDefault();
+
+    this.setState({ loading: true });
+    const {
+      port,
+      route_prefix,
+      oauth_id,
+      oauth_secret,
+      api_url
+    } = this.props.api;
+    const { api, ui } = this.props;
+    const form_data = new FormData(event.target);
+
+    axios({
+      method: "post",
+      url: apiURL(api, ui) + "/oauth/token",
+      data: {
+        grant_type: "password",
+        client_id: oauth_id,
+        client_secret: oauth_secret,
+        username: form_data.get("email"),
+        password: form_data.get("password"),
+        provider: "users",
+        scope: ""
+      },
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(({ data }) => {
+        setLogin(data, !!form_data.get("remember"));
+        this.props.onLogin();
+        this.setState({ authenticated: true });
+      })
+      .catch(() => {
+        let element_to_render = (
+          <Modal>
+            <div className="bg-white inline-flex items-center leading-none p-2 rounded-full shadow text-red-600">
+              <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+                Error!
+              </span>
+              <span className="inline-flex px-2">
+                <div>We were unable to find a matching record.</div>
+              </span>
+              <button
+                className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+                onClick={() => this.setState({ element_to_render: null })}
+              >
+                Close
+              </button>
+            </div>
+          </Modal>
+        );
+
+        this.setState({ element_to_render });
+      })
+      .finally(() => this.setState({ loading: false }));
+  }
+
   render() {
+    if (this.state.authenticated) {
+      return <Redirect noThrow={true} to="/deals" />;
+    }
+
     return (
       <div className="bg-blue-400 h-screen w-screen">
+        {this.state.loading && <Loading />}
         <div className="flex flex-col items-center flex-1 h-full justify-center">
-          <div
-            className="my-3 text-2xl text-white"
-            style={{
-              textShadow:
-                "rgba(0, 0, 0, 0.5) 1px 1px 1px, rgba(0, 0, 0, 0.05) 1px 1px 1px"
-            }}
-          >
-            Welcome back,{" "}
-            <span>
-              {
-                [
-                  "Jack Sparrow",
-                  "Elizabeth Swan",
-                  "Will Turner",
-                  "Hector Barbossa",
-                  "Joshamee Gibbs"
-                ][Math.floor(Math.random() * 5)]
-              }
-            </span>
-          </div>
           <div className="flex rounded-lg shadow-xl w-full sm:w-3/4 md:w-3/4 lg:w-1/3 bg-white sm:mx-0">
             <div className="flex flex-col w-full p-4">
               <div className="flex flex-col flex-1 justify-center mb-8">
@@ -34,8 +97,7 @@ class Home extends React.Component {
                 <div className="w-full mt-4">
                   <form
                     className="form-horizontal w-3/4 mx-auto"
-                    method="POST"
-                    action="#"
+                    onSubmit={this.login}
                   >
                     <div className="flex flex-col mt-4">
                       <input
@@ -94,6 +156,7 @@ class Home extends React.Component {
             </div>
           </div>
         </div>
+        {this.state.element_to_render}
       </div>
     );
   }
