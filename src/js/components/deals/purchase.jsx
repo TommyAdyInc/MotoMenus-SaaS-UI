@@ -97,8 +97,39 @@ class DealPurchase extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if(prevProps.pi !== this.props.pi) {
-      this.setState({pi: this.props.pi}, this.subtotal)
+    if (this.props.pi && prevProps.pi !== this.props.pi) {
+      this.setState({ pi: this.props.pi }, this.subtotal);
+    } else if (!this.props.pi) {
+      this.setState({
+        pi: {
+          msrp: "",
+          price: "",
+          manufacturer_freight: "",
+          technician_setup: "",
+          accessories: "",
+          accessories_labor: "",
+          labor: "",
+          riders_edge_course: "",
+          miscellaneous_costs: "",
+          document_fee: this.props.document_fee,
+          trade_in_allowance: "",
+          sales_tax_rate: this.props.tax_rate,
+          payoff_balance_owed: "",
+          title_trip_fee: "",
+          deposit: "",
+          show_msrp_on_pdf: 0,
+          taxable_price: 1,
+          taxable_manufacturer_freight: 1,
+          taxable_technician_setup: 1,
+          taxable_accessories: 1,
+          taxable_accessories_labor: 1,
+          taxable_labor: 1,
+          taxable_riders_edge_course: 1,
+          taxable_miscellaneous_costs: 0,
+          taxable_document_fee: 0,
+          tax_credit_on_trade: 0
+        }
+      });
     }
   }
 

@@ -3,11 +3,13 @@ import axios from "axios";
 import { getAuthToken } from "../../helpers/auth";
 import { apiURL } from "../../helpers/url";
 import DealPurchase from "./purchase.jsx";
+import Modal from "../Modal.jsx";
 
 class SingleUnit extends React.Component {
   state = {
     show_purchase_info: false,
-    unit: this.props.unit
+    unit: this.props.unit,
+    confirm_delete: null
   };
 
   constructor(props) {
@@ -29,9 +31,46 @@ class SingleUnit extends React.Component {
     this.props.unitUpdated(this.state.unit);
   }
 
+  deleteConfirm() {
+    let confirm_delete = (
+      <Modal>
+        <div className="bg-white leading-none p-2 rounded-lg shadow text-blue-600">
+          <div className="w-full block inline-flex items-center">
+            <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
+              Confirm!
+            </span>
+            <span className="inline-flex px-2">
+              <div>
+                Are you sure you want to completely remove the selected unit:{" "}
+                <br />
+                {this.state.unit.make} {this.state.unit.model}
+              </div>
+            </span>
+          </div>
+          <div className="w-full block inline-flex justify-end mt-10">
+            <button
+              className="text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded-full mr-6"
+              onClick={() => this.deleteUnit()}
+            >
+              Confirm
+            </button>
+            <button
+              className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+              onClick={() => this.setState({ confirm_delete: null })}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+
+    this.setState({ confirm_delete });
+  }
+
   deleteUnit() {
     const { ui, api } = this.props;
-
+    this.setState({ confirm_delete: null });
     if (this.state.unit.id) {
       axios({
         method: "DELETE",
@@ -63,8 +102,8 @@ class SingleUnit extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if(prevProps.unit !== this.props.unit) {
-      this.setState({unit: this.props.unit})
+    if (prevProps.unit !== this.props.unit) {
+      this.setState({ unit: this.props.unit });
     }
   }
 
@@ -123,7 +162,7 @@ class SingleUnit extends React.Component {
           />
           <div className="form-input py-1 mb-1 ml-2 w-1/8 flex flex-row">
             <button
-              className="rounded-full flex h-8 w-8 items-center justify-center text-white bg-blue-800"
+              className="rounded-full flex h-8 w-8 items-center justify-center text-white bg-indigo-600"
               onClick={() =>
                 this.setState({
                   show_purchase_info: !this.state.show_purchase_info
@@ -133,7 +172,9 @@ class SingleUnit extends React.Component {
               PI
             </button>
             <svg
-              onClick={() => this.deleteUnit()}
+              onClick={() =>
+                this.state.unit.id ? this.deleteConfirm() : this.deleteUnit()
+              }
               className="fill-current text-red-500 h-5 w-5 cursor-pointer ml-6 mt-2"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -148,6 +189,8 @@ class SingleUnit extends React.Component {
           purchaseInfoUpdated={(pi, field) => this.setUnit(pi, field)}
           pi={this.state.unit.purchase_information}
         />
+
+        {this.state.confirm_delete}
       </div>
     );
   }

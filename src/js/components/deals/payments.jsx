@@ -132,31 +132,33 @@ class DealPayment extends React.Component {
   }
 
   calculate() {
-    let amount =
-      this.state.unit === "all"
-        ? this.allTotal()
-        : this.props.units[this.state.unit].cash_balance || 0;
+    if (this.props.units.length) {
+      let amount =
+        this.state.unit === "all"
+          ? this.allTotal()
+          : this.props.units[this.state.unit].cash_balance || 0;
 
-    let payments = {};
-    let periodic_interest = parseFloat(this.state.schedule.rate) / 12 / 100; // rate is annual rate
-    let that = this;
-    this.state.months.forEach(function(month) {
-      let discount_factor =
-        (Math.pow(1 + periodic_interest, month) * periodic_interest) /
-        (Math.pow(1 + periodic_interest, month) - 1);
+      let payments = {};
+      let periodic_interest = parseFloat(this.state.schedule.rate) / 12 / 100; // rate is annual rate
+      let that = this;
+      this.state.months.forEach(function(month) {
+        let discount_factor =
+          (Math.pow(1 + periodic_interest, month) * periodic_interest) /
+          (Math.pow(1 + periodic_interest, month) - 1);
 
-      let monthly = {};
+        let monthly = {};
 
-      that.state.schedule.payment_options.down_payment_options.forEach(function(
-        d
-      ) {
-        monthly[d] = (parseFloat(amount) - d) * discount_factor;
+        that.state.schedule.payment_options.down_payment_options.forEach(
+          function(d) {
+            monthly[d] = (parseFloat(amount) - d) * discount_factor;
+          }
+        );
+
+        payments[month] = monthly;
       });
 
-      payments[month] = monthly;
-    });
-
-    this.setState({ payments });
+      this.setState({ payments });
+    }
   }
 
   calculateServer() {
@@ -194,7 +196,12 @@ class DealPayment extends React.Component {
     let that = this;
     let changed = !prevProps.units && this.props.units;
 
-    if (!changed && prevProps.units) {
+    if (prevProps.units.length > this.props.units.length) {
+      this.setState({ unit: 0 });
+      changed = true;
+    }
+
+    if (!changed && prevProps.units && this.props.units) {
       changed = prevProps.units.reduce((bool, u, index) => {
         if (
           u.cash_balance !== that.props.units[index].cash_balance &&
@@ -207,7 +214,7 @@ class DealPayment extends React.Component {
       }, false);
     }
 
-    if (!changed && prevProps.schedule) {
+    if (!changed && prevProps.schedule && this.props.schedule) {
       changed =
         parseFloat(prevProps.schedule.rate) !==
         parseFloat(this.state.schedule.rate);
@@ -224,6 +231,75 @@ class DealPayment extends React.Component {
   }
 
   render() {
+    let month_payments = null;
+    
+    if(this.props.units.length) {
+      month_payments = this.state.months.map((m, index) => {
+        return (
+            <tr key={index}>
+              <td
+                  className={
+                    this.monthSelected(m) ? "font-bold" : "font-normal"
+                  }
+              >
+                <input
+                    type="checkbox"
+                    className="form-checkbox"
+                    defaultChecked={this.monthSelected(m)}
+                    onChange={e => this.setMonths(e.target.checked, m)}
+                />{" "}
+                {m} months
+              </td>
+              <td
+                  className={
+                    this.monthSelected(m) ? "font-bold" : "font-normal"
+                  }
+              >
+                $
+                {(
+                    (!!this.state.payments[m] &&
+                        this.state.payments[m][
+                            this.state.schedule.payment_options
+                                .down_payment_options[0]
+                            ]) ||
+                    0
+                ).toFixed(2)}
+              </td>
+              <td
+                  className={
+                    this.monthSelected(m) ? "font-bold" : "font-normal"
+                  }
+              >
+                $
+                {(
+                    (!!this.state.payments[m] &&
+                        this.state.payments[m][
+                            this.state.schedule.payment_options
+                                .down_payment_options[1]
+                            ]) ||
+                    0
+                ).toFixed(2)}
+              </td>
+              <td
+                  className={
+                    this.monthSelected(m) ? "font-bold" : "font-normal"
+                  }
+              >
+                $
+                {(
+                    (!!this.state.payments[m] &&
+                        this.state.payments[m][
+                            this.state.schedule.payment_options
+                                .down_payment_options[2]
+                            ]) ||
+                    0
+                ).toFixed(2)}
+              </td>
+            </tr>
+        );
+      })
+    }
+
     return (
       <label className="block text-gray-700 text-sm font-bold mb-2 mr-1 w-1/2 border border-blue-500 rounded-lg p-3">
         {this.state.loading && <Loading />}
@@ -249,7 +325,7 @@ class DealPayment extends React.Component {
             </div>
           )}
         </div>
-        <div className="flex flex-row w-full">
+        <div className="w-full">
           <span className="inline-block mr-2">Rate: </span>
           <input
             type="number"
@@ -259,13 +335,19 @@ class DealPayment extends React.Component {
             onChange={e => this.setRate(e.target.value)}
             className="form-input mr-5 w-1/5"
           />
-          <input
-            type="checkbox"
-            defaultChecked={this.state.schedule.show_accessories_payment_on_pdf}
-            onChange={e => this.setOnPdf(e.target.checked)}
-            className="form-checkbox mr-2"
-          />
-          <span className="inline-block">Show accessories on payments PDF</span>
+          <div className="inline-block float-right text-right pt-2">
+            <input
+              type="checkbox"
+              defaultChecked={
+                this.state.schedule.show_accessories_payment_on_pdf
+              }
+              onChange={e => this.setOnPdf(e.target.checked)}
+              className="form-checkbox mr-2"
+            />
+            <span className="inline-block">
+              Show accessories on payments PDF
+            </span>
+          </div>
         </div>
         <table className="w-full table mt-3">
           <tbody>
@@ -324,70 +406,7 @@ class DealPayment extends React.Component {
                 />
               </td>
             </tr>
-            {this.state.months.map((m, index) => {
-              return (
-                <tr key={index}>
-                  <td
-                    className={
-                      this.monthSelected(m) ? "font-bold" : "font-normal"
-                    }
-                  >
-                    <input
-                      type="checkbox"
-                      className="form-checkbox"
-                      defaultChecked={this.monthSelected(m)}
-                      onChange={e => this.setMonths(e.target.checked, m)}
-                    />{" "}
-                    {m} months
-                  </td>
-                  <td
-                    className={
-                      this.monthSelected(m) ? "font-bold" : "font-normal"
-                    }
-                  >
-                    $
-                    {(
-                      (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                          this.state.schedule.payment_options
-                            .down_payment_options[0]
-                        ]) ||
-                      0
-                    ).toFixed(2)}
-                  </td>
-                  <td
-                    className={
-                      this.monthSelected(m) ? "font-bold" : "font-normal"
-                    }
-                  >
-                    $
-                    {(
-                      (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                          this.state.schedule.payment_options
-                            .down_payment_options[1]
-                        ]) ||
-                      0
-                    ).toFixed(2)}
-                  </td>
-                  <td
-                    className={
-                      this.monthSelected(m) ? "font-bold" : "font-normal"
-                    }
-                  >
-                    $
-                    {(
-                      (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                          this.state.schedule.payment_options
-                            .down_payment_options[2]
-                        ]) ||
-                      0
-                    ).toFixed(2)}
-                  </td>
-                </tr>
-              );
-            })}
+            { month_payments }
           </tbody>
         </table>
       </label>
