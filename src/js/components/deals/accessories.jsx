@@ -11,7 +11,8 @@ class DealAccessories extends React.Component {
     accessories: [],
     subtotal: 0,
     tax: 0,
-    total: 0
+    total: 0,
+    unit: 0
   };
 
   constructor(props) {
@@ -44,6 +45,22 @@ class DealAccessories extends React.Component {
     });
 
     this.setState({ accessories }, this.setTotals);
+  }
+
+  subtotal() {
+    return this.state.accessories.reduce((total, a) => {
+      total += (parseFloat(a.unit_price) || 0) * (parseInt(a.quantity) || 1);
+
+      return total;
+    }, 0);
+  }
+
+  labor() {
+    return this.state.accessories.reduce((total, a) => {
+      total += parseFloat(a.labor) || 0;
+
+      return total;
+    }, 0);
   }
 
   setTotals() {
@@ -138,10 +155,48 @@ class DealAccessories extends React.Component {
     this.setTotals();
   }
 
+  transferToPi() {
+    let units = [...this.props.units];
+    let unit = { ...units[this.state.unit] };
+    let pi = { ...unit.purchase_information };
+
+    pi.accessories = this.subtotal();
+    pi.accessories_labor = this.labor();
+
+    unit.purchase_information = pi;
+    units[this.state.unit] = unit;
+
+    this.props.unitUpdated(units);
+  }
+
   render() {
     return (
       <label className="block text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3">
-        <span className="block w-full text-lg mb-2">Accessories</span>
+        <div className="block w-full text-lg mb-2">
+          Accessories
+          <div className="inline-block float-right text-right">
+            <button
+              className="bg-indigo-400 text-white rounded-full px-4 text-sm py-1 mr-2 hover:bg-indigo-600"
+              onClick={() => this.transferToPi()}
+            >
+              Transfer to PI
+            </button>
+            {this.props.units.length > 1 && (
+              <select
+                className="form-select py-1"
+                onChange={e => this.setState({ unit: e.target.value })}
+              >
+                {this.props.units.map(function(u, index) {
+                  return (
+                    <option key={index} value={index}>
+                      Unit {index + 1}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+          </div>
+        </div>
         <div className="flex flex-row w-full">
           <span className="form-input border-none text-sm py-1 mb-1 w-1/8">
             Part Number

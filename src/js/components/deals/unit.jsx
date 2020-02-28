@@ -62,6 +62,12 @@ class SingleUnit extends React.Component {
     this.purchaseRef.current.subtotal();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(prevProps.unit !== this.props.unit) {
+      this.setState({unit: this.props.unit})
+    }
+  }
+
   render() {
     return (
       <div className="w-full block">

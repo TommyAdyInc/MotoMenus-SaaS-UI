@@ -345,6 +345,7 @@ class ViewDeal extends React.Component {
                   this.setDeal("accessories", accessories)
                 }
                 units={this.state.deal.units}
+                unitUpdated={units => this.setDeal("units", units)}
               />
             </div>
             <div className="w-full flex flex-row px-5 py-2">

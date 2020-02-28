@@ -96,6 +96,12 @@ class DealPurchase extends React.Component {
     this.subtotal();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(prevProps.pi !== this.props.pi) {
+      this.setState({pi: this.props.pi}, this.subtotal)
+    }
+  }
+
   render() {
     return (
       <label

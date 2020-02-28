@@ -51,6 +51,12 @@ class DealUnit extends React.Component {
     this.setState({ units });
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(prevProps.units !== this.props.units) {
+      this.setState({units: this.props.units})
+    }
+  }
+
   addNewUnit() {
     this.setState(state => {
       let units = [...state.units];
