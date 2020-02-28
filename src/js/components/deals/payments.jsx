@@ -233,71 +233,52 @@ class DealPayment extends React.Component {
   render() {
     let month_payments = null;
 
-    if(this.props.units.length) {
+    if (this.props.units.length) {
       month_payments = this.state.months.map((m, index) => {
         return (
-            <tr key={index}>
-              <td
-                  className={
-                    this.monthSelected(m) ? "font-bold" : "font-normal"
-                  }
-              >
-                <input
-                    type="checkbox"
-                    className="form-checkbox"
-                    defaultChecked={this.monthSelected(m)}
-                    onChange={e => this.setMonths(e.target.checked, m)}
-                />{" "}
-                {m} months
-              </td>
-              <td
-                  className={
-                    this.monthSelected(m) ? "font-bold" : "font-normal"
-                  }
-              >
-                $
-                {(
-                    (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                            this.state.schedule.payment_options
-                                .down_payment_options[0]
-                            ]) ||
-                    0
-                ).toFixed(2)}
-              </td>
-              <td
-                  className={
-                    this.monthSelected(m) ? "font-bold" : "font-normal"
-                  }
-              >
-                $
-                {(
-                    (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                            this.state.schedule.payment_options
-                                .down_payment_options[1]
-                            ]) ||
-                    0
-                ).toFixed(2)}
-              </td>
-              <td
-                  className={
-                    this.monthSelected(m) ? "font-bold" : "font-normal"
-                  }
-              >
-                $
-                {(
-                    (!!this.state.payments[m] &&
-                        this.state.payments[m][
-                            this.state.schedule.payment_options
-                                .down_payment_options[2]
-                            ]) ||
-                    0
-                ).toFixed(2)}
-              </td>
-            </tr>
+          <tr key={index}>
+            <td className={this.monthSelected(m) ? "font-bold" : "font-normal"}>
+              <input
+                type="checkbox"
+                className="form-checkbox"
+                defaultChecked={this.monthSelected(m)}
+                onChange={e => this.setMonths(e.target.checked, m)}
+              />{" "}
+              {m} months
+            </td>
+            <td className={this.monthSelected(m) ? "font-bold" : "font-normal"}>
+              $
+              {(
+                (!!this.state.payments[m] &&
+                  this.state.payments[m][
+                    this.state.schedule.payment_options.down_payment_options[0]
+                  ]) ||
+                0
+              ).toFixed(2)}
+            </td>
+            <td className={this.monthSelected(m) ? "font-bold" : "font-normal"}>
+              $
+              {(
+                (!!this.state.payments[m] &&
+                  this.state.payments[m][
+                    this.state.schedule.payment_options.down_payment_options[1]
+                  ]) ||
+                0
+              ).toFixed(2)}
+            </td>
+            <td className={this.monthSelected(m) ? "font-bold" : "font-normal"}>
+              $
+              {(
+                (!!this.state.payments[m] &&
+                  this.state.payments[m][
+                    this.state.schedule.payment_options.down_payment_options[2]
+                  ]) ||
+                0
+              ).toFixed(2)}
+            </td>
+          </tr>
         );
-      })
+      });
     }
 
     return (
@@ -406,7 +387,7 @@ class DealPayment extends React.Component {
                 />
               </td>
             </tr>
-            { month_payments }
+            {month_payments}
           </tbody>
         </table>
       </label>
