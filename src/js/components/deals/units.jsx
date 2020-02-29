@@ -26,6 +26,10 @@ class DealUnit extends React.Component {
           }
         ];
 
+    this.setNullFields(units);
+  }
+
+  setNullFields(units) {
     units.forEach(u => {
       for (let key in u) {
         if (!u.hasOwnProperty(key)) continue;
@@ -53,7 +57,7 @@ class DealUnit extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.units !== this.props.units) {
-      this.setState({ units: this.props.units });
+      this.setNullFields(this.props.units);
     }
   }
 
@@ -137,7 +141,7 @@ class DealUnit extends React.Component {
   }
 
   render() {
-    const { ui, api } = this.props;
+    const { ui, api, tax_rate, document_fee } = this.props;
     return (
       <label className="block text-gray-700 text-sm font-bold mb-2 w-full border border-blue-500 rounded-lg p-3">
         <span className="block w-full text-lg mb-2">Unit Info</span>
@@ -173,6 +177,8 @@ class DealUnit extends React.Component {
               unit={u}
               removeFromState={() => this.removeFromState(index)}
               unitUpdated={unit => this.setUnit(unit, false, index)}
+              tax_rate={tax_rate}
+              document_fee={document_fee}
             />
           );
         })}

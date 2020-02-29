@@ -192,39 +192,42 @@ class Users extends React.Component {
                 New User
               </button>
             </div>
-            <table className="table-responsive w-full text-gray-900">
+            <table className="table-responsive w-full text-gray-900 mt-3 sm:rounded-lg">
               <thead>
                 <tr>
-                  <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
-                  <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
-                  <th className="px-2 py-1 w-2/12 text-md text-left">Role</th>
-                  <th className="px-2 py-1 w-2/12 text-md text-left">Status</th>
-                  <th className="px-2 py-1 w-1/12"></th>
+                  <th className="table-header">Name</th>
+                  <th className="table-header">Email</th>
+                  <th className="table-header">Role</th>
+                  <th className="table-header">Status</th>
+                  <th className="table-header"></th>
                 </tr>
               </thead>
-              <tbody className="text-xs md:text-sm lg:text-sm">
+              <tbody className="text-xs md:text-sm lg:text-sm border border-gray-200">
                 {this.state.users.map((user, index) => {
                   return (
-                    <tr key={index} className="odd:bg-white even:bg-gray-200">
-                      <td className="border px-1 py-1">{user.name}</td>
-                      <td className="border px-1 py-1">{user.email}</td>
-                      <td className="border px-1 py-1">{user.role}</td>
-                      <td className="border px-1 py-1 text-center">
+                    <tr key={index}>
+                      <td className="border-b border-gray-200 px-5 py-3">
+                        {user.name}
+                      </td>
+                      <td className="border-b border-gray-200 px-5 py-3">
+                        {user.email}
+                      </td>
+                      <td className="border-b border-gray-200 px-5 py-3">
+                        {user.role}
+                      </td>
+                      <td className="border-b border-gray-200 px-5 py-3 text-center">
                         <div
-                          className={
-                            "inline-block text-white text-xs rounded-full px-4 py-0 " +
-                            (user.deleted_at ? "bg-red-400" : "bg-green-400")
-                          }
+                          className={user.deleted_at ? "inactive" : "active"}
                         >
                           {user.deleted_at ? "Disabled" : "Enabled"}
                         </div>
                       </td>
-                      <td className="border px-1 py-1">
+                      <td className="border-b border-gray-200 px-5 py-3">
                         <div className="flex items-center">
                           {!user.deleted_at && (
                             <svg
                               onClick={() => this.editUser(user)}
-                              className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
+                              className="fill-current text-green-500 h-4 w-4 mr-6 cursor-pointer"
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
                             >

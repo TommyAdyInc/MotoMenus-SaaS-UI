@@ -14,6 +14,7 @@ import Loading from "../helpers/Loading.jsx";
 import Paging from "../helpers/Paging.jsx";
 import EditCustomer from "./EditCustomer.jsx";
 import { STATES } from "../helpers/states";
+import { downloadCsv } from "../helpers/download";
 
 class Customers extends React.Component {
   state = {
@@ -147,7 +148,35 @@ class Customers extends React.Component {
   }
 
   exportToCSV() {
-    // TODO: implement customers export on API side
+    const { api, ui } = this.props;
+
+    this.setState({ loading: true });
+
+    let params = {};
+    for (let key in this.state.filter) {
+      if (this.state.filter[key]) {
+        params[key] = this.state.filter[key];
+      }
+    }
+
+    axios({
+      method: "GET",
+      url: apiURL(api, ui) + "/customers/export",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + getAuthToken()
+      },
+      params: params
+    })
+      .then(({ data }) =>
+        downloadCsv(
+          data,
+          "Customers-" + new Date().toLocaleDateString() + ".csv"
+        )
+      )
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ loading: false }));
   }
 
   setFilterField(field, value) {
@@ -340,36 +369,40 @@ class Customers extends React.Component {
                 </div>
               </div>
             )}
-            <table className="table-responsive w-full text-gray-900">
+            <table className="table-responsive w-full text-gray-800 mt-3 sm:rounded-lg">
               <thead>
                 <tr>
-                  <th className="px-2 py-1 w-1/4 text-md text-left">Name</th>
-                  <th className="px-2 py-1 w-1/4 text-md text-left">Address</th>
-                  <th className="px-2 py-1 w-2/12 text-md text-left">Phone</th>
-                  <th className="px-2 py-1 w-1/4 text-md text-left">Email</th>
-                  <th className="px-2 py-1 w-1/12"></th>
+                  <th className="table-header">Name</th>
+                  <th className="table-header">Address</th>
+                  <th className="table-header">Phone</th>
+                  <th className="table-header">Email</th>
+                  <th className="table-header"></th>
                 </tr>
               </thead>
-              <tbody className="text-xs md:text-sm lg:text-sm">
+              <tbody className="text-xs md:text-sm lg:text-sm border-gray-200 border">
                 {this.state.customers.map((customer, index) => {
                   return (
-                    <tr key={index} className="odd:bg-white even:bg-gray-200">
-                      <td className="border px-1 py-1">
+                    <tr key={index}>
+                      <td className="border-b border-gray-200 px-5 py-3">
                         {customer.first_name} {customer.last_name}
                       </td>
-                      <td className="border px-1 py-1">
+                      <td className="border-b border-gray-200 px-5 py-3">
                         {customer.address}, {customer.city}, {customer.state}{" "}
                         {customer.postcode}
                       </td>
-                      <td className="border px-1 py-1">{customer.phone}</td>
-                      <td className="border px-1 py-1">{customer.email}</td>
-                      <td className="border px-1 py-1">
+                      <td className="border-b border-gray-200 px-5 py-3">
+                        {customer.phone}
+                      </td>
+                      <td className="border-b border-gray-200 px-5 py-3">
+                        {customer.email}
+                      </td>
+                      <td className="border-b border-gray-200 px-5 py-3">
                         <div className="flex items-center">
                           <svg
                             onClick={() =>
                               this.setState({ edit_customer: customer })
                             }
-                            className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
+                            className="fill-current text-green-500 h-4 w-4 cursor-pointer"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                           >

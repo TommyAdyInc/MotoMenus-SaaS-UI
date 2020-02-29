@@ -37,6 +37,18 @@ h3 {
   }
 }
 
+/* global table css */
+.table-header {
+  @apply text-xs px-5 py-3 w-1/12 text-left font-medium bg-gray-200 text-gray-600 tracking-wider uppercase border-gray-200 border;
+}
+
+.inactive {
+  @apply px-2 inline-flex text-xs font-semibold rounded-full bg-red-100 leading-5 text-red-800;
+}
+
+.active {
+  @apply px-2 inline-flex text-xs font-semibold rounded-full bg-green-100 leading-5 text-green-800;
+}
 
 /* css for customer edit form */
 .input-wide {

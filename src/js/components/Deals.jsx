@@ -281,27 +281,46 @@ class Deals extends React.Component {
   deleteDeal(deal) {
     let confirm_delete = (
       <Modal>
-        <div className="bg-white leading-none p-2 rounded-lg shadow text-blue-600">
-          <div className="w-full block inline-flex items-center">
-            <span className="bg-red-600 h-6 items-center inline-flex justify-center px-3 rounded-full text-white">
-              Confirm!
-            </span>
-            <span className="inline-flex px-2">
-              <div>
-                Are you sure you want to completely remove the selected deal for{" "}
-                {deal.customer.first_name} {deal.customer.last_name}?
+        <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="sm:flex sm:items-start">
+              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <svg
+                  className="h-6 w-6 text-red-600"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
               </div>
-            </span>
+              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Confirm Delete
+                </h3>
+                <div className="mt-2">
+                  <p className="text-sm leading-5 text-gray-500">
+                    Are you sure you want to completely remove the selected deal
+                    for {deal.customer.first_name} {deal.customer.last_name}?
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="w-full block inline-flex justify-end mt-10">
+          <div className="bg-gray-50 p-4 sm:px-6 sm:py-4 sm:flex sm:flex-row-reverse">
             <button
-              className="text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded-full mr-6"
+              className="text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded-md"
               onClick={() => this.confirmDelete(deal)}
             >
               Confirm
             </button>
             <button
-              className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full"
+              className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-md mr-6"
               onClick={() => this.setState({ confirm_delete: null })}
             >
               Cancel
@@ -643,23 +662,21 @@ class Deals extends React.Component {
           </div>
         )}
         {!this.state.view_deal && (
-          <table className="table-responsive w-full text-gray-900">
+          <table className="table-responsive w-full text-gray-800 mt-3 sm:rounded-lg">
             <thead>
               <tr>
-                <th className="px-2 py-1 w-1/12 text-md text-left">Date</th>
-                <th className="px-2 py-1 w-2/12 text-md text-left">Customer</th>
-                <th className="px-2 py-1 w-1/12 text-md text-left">Phone</th>
-                <th className="px-2 py-1 w-2/12 text-md text-left">
-                  Consultant
-                </th>
-                <th className="px-2 py-1 w-1/12 text-md text-left">Year</th>
-                <th className="px-2 py-1 w-1/12 text-md text-left">Make</th>
-                <th className="px-2 py-1 w-2/12 text-md text-left">Model</th>
-                <th className="px-2 py-1 w-1/12 text-md text-left">Step</th>
-                <th className="px-2 py-1 w-1/12"></th>
+                <th className="table-header">Date</th>
+                <th className="table-header">Customer</th>
+                <th className="table-header">Phone</th>
+                <th className="table-header">Consultant</th>
+                <th className="table-header">Year</th>
+                <th className="table-header">Make</th>
+                <th className="table-header">Model</th>
+                <th className="table-header">Step</th>
+                <th className="table-header"></th>
               </tr>
             </thead>
-            <tbody className="text-xs md:text-sm lg:text-sm">
+            <tbody className="text-xs md:text-sm lg:text-sm border border-gray-200">
               {this.state.deals.map((deal, index) => {
                 let unit_years = deal.units.map(u => u.year);
                 let unit_makes = deal.units.map(u => u.make);
@@ -699,22 +716,36 @@ class Deals extends React.Component {
                 });
 
                 return (
-                  <tr key={index} className="odd:bg-white even:bg-gray-200">
-                    <td className="border px-1 py-1">{deal.deal_date}</td>
-                    <td className="border px-1 py-1">
+                  <tr key={index}>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {deal.deal_date}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
                       {deal.customer.first_name} {deal.customer.last_name}
                     </td>
-                    <td className="border px-1 py-1">{deal.customer.phone}</td>
-                    <td className="border px-1 py-1">{deal.user.name}</td>
-                    <td className="border px-1 py-1">{years}</td>
-                    <td className="border px-1 py-1">{makes}</td>
-                    <td className="border px-1 py-1">{models}</td>
-                    <td className="border px-1 py-1">{deal.sales_status}</td>
-                    <td className="border px-1 py-1">
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {deal.customer.phone}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {deal.user.name}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {years}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {makes}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {models}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
+                      {deal.sales_status}
+                    </td>
+                    <td className="border-b border-gray-200 px-5 py-3">
                       <div className="flex items-center">
                         <svg
                           onClick={() => this.editDeal(deal)}
-                          className="fill-current text-green-500 h-4 w-4 mx-3 cursor-pointer"
+                          className="fill-current text-green-500 h-4 w-4 mr-6 cursor-pointer"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
                         >

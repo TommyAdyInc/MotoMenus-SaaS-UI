@@ -3,6 +3,7 @@ import axios from "axios";
 import { getAuthToken } from "../../helpers/auth";
 import { apiURL } from "../../helpers/url";
 import Loading from "../../helpers/Loading.jsx";
+import { downloadPdf } from "../../helpers/download";
 
 class DealPayment extends React.Component {
   state = {
@@ -230,6 +231,43 @@ class DealPayment extends React.Component {
     this.props.scheduleUpdated(this.state.schedule);
   }
 
+  downloadPaymentPdf() {
+    if (this.props.schedule && parseInt(this.props.schedule.deal_id)) {
+      const { api, ui } = this.props;
+
+      this.setState({ loading: true });
+
+      axios({
+        method: "GET",
+        url: apiURL(api, ui) + "/pdf/" + this.props.schedule.deal_id,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + getAuthToken()
+        },
+        params: {
+          type: "deal"
+        }
+      })
+        .then(({ data }) =>
+          downloadPdf(
+            data,
+            "Deal-" +
+              this.props.customer.first_name +
+              " " +
+              this.props.customer.last_name +
+              ".pdf"
+          )
+        )
+        .catch(error => console.log(error))
+        .finally(() => this.setState({ loading: false }));
+    }
+  }
+
+  emailToCustomer() {
+    //
+  }
+
   render() {
     let month_payments = null;
 
@@ -390,6 +428,24 @@ class DealPayment extends React.Component {
             {month_payments}
           </tbody>
         </table>
+        {this.props.schedule &&
+          this.props.schedule.deal_id &&
+          this.props.units.length > 0 && (
+            <div className="w-full text-right mt-3">
+              <button
+                className="bg-pink-600 text-white rounded-full px-4 text-sm py-1 mr-2 hover:bg-pink-900"
+                onClick={() => this.downloadPaymentPdf()}
+              >
+                PDF
+              </button>
+              <button
+                className="bg-pink-600 text-white rounded-full px-4 text-sm py-1 hover:bg-pink-900"
+                onClick={() => this.emailToCustomer()}
+              >
+                Email
+              </button>
+            </div>
+          )}
       </label>
     );
   }

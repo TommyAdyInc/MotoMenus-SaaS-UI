@@ -11,6 +11,7 @@ import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
+import { downloadPdf } from "../helpers/download";
 
 class CashSpecials extends React.Component {
   state = {
@@ -107,13 +108,7 @@ class CashSpecials extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       }
     })
-      .then(({ data }) => {
-        const downloadLink = document.createElement("a");
-        downloadLink.href = "data:application/pdf;base64," + data;
-        downloadLink.download = "CashSpecials.pdf";
-        downloadLink.click();
-        downloadLink.remove();
-      })
+      .then(({ data }) => downloadPdf(data, "CashSpecials.pdf"))
       .catch(error => console.log(error))
       .finally(() => this.setState({ loading: false }));
   }

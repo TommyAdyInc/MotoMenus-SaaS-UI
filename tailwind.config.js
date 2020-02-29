@@ -25,9 +25,10 @@ module.exports = {
     }
   },
   variants: {
-    backgroundColor: ['responsive', 'group-hover', 'first', 'last', 'odd', 'even', 'hover', 'focus', 'active', 'visited', 'disabled']
+    backgroundColor: ['responsive', 'odd', 'even'],
   },
   plugins: [
     require('@tailwindcss/custom-forms'),
+    require('@tailwindcss/ui'),
   ]
 };

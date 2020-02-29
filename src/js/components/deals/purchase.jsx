@@ -8,7 +8,34 @@ import Loading from "../../helpers/Loading.jsx";
 
 class DealPurchase extends React.Component {
   state = {
-    pi: this.props.pi,
+    pi: {
+      msrp: "",
+      price: "",
+      manufacturer_freight: "",
+      technician_setup: "",
+      accessories: "",
+      accessories_labor: "",
+      labor: "",
+      riders_edge_course: "",
+      miscellaneous_costs: "",
+      document_fee: 0,
+      trade_in_allowance: "",
+      sales_tax_rate: 0,
+      payoff_balance_owed: "",
+      title_trip_fee: "",
+      deposit: "",
+      show_msrp_on_pdf: 0,
+      taxable_price: 1,
+      taxable_manufacturer_freight: 1,
+      taxable_technician_setup: 1,
+      taxable_accessories: 1,
+      taxable_accessories_labor: 1,
+      taxable_labor: 1,
+      taxable_riders_edge_course: 1,
+      taxable_miscellaneous_costs: 0,
+      taxable_document_fee: 0,
+      tax_credit_on_trade: 0
+    },
     subtotal: 0,
     sales_tax: 0,
     trade_equity: 0,
@@ -75,7 +102,9 @@ class DealPurchase extends React.Component {
   }
 
   totalSet() {
-    this.props.purchaseInfoUpdated(this.state.cash_balance, "cash_balance");
+    if (this.state.pi.price) {
+      this.props.purchaseInfoUpdated(this.state.cash_balance, "cash_balance");
+    }
   }
 
   setPI(value, field) {
@@ -93,43 +122,48 @@ class DealPurchase extends React.Component {
   }
 
   componentDidMount() {
-    this.subtotal();
+    if (this.props.pi) {
+      this.setState({ pi: this.props.pi }, this.subtotal);
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.pi && prevProps.pi !== this.props.pi) {
       this.setState({ pi: this.props.pi }, this.subtotal);
     } else if (!this.props.pi) {
-      this.setState({
-        pi: {
-          msrp: "",
-          price: "",
-          manufacturer_freight: "",
-          technician_setup: "",
-          accessories: "",
-          accessories_labor: "",
-          labor: "",
-          riders_edge_course: "",
-          miscellaneous_costs: "",
-          document_fee: this.props.document_fee,
-          trade_in_allowance: "",
-          sales_tax_rate: this.props.tax_rate,
-          payoff_balance_owed: "",
-          title_trip_fee: "",
-          deposit: "",
-          show_msrp_on_pdf: 0,
-          taxable_price: 1,
-          taxable_manufacturer_freight: 1,
-          taxable_technician_setup: 1,
-          taxable_accessories: 1,
-          taxable_accessories_labor: 1,
-          taxable_labor: 1,
-          taxable_riders_edge_course: 1,
-          taxable_miscellaneous_costs: 0,
-          taxable_document_fee: 0,
-          tax_credit_on_trade: 0
-        }
-      });
+      this.setState(
+        {
+          pi: {
+            msrp: "",
+            price: "",
+            manufacturer_freight: "",
+            technician_setup: "",
+            accessories: "",
+            accessories_labor: "",
+            labor: "",
+            riders_edge_course: "",
+            miscellaneous_costs: "",
+            document_fee: this.props.document_fee,
+            trade_in_allowance: "",
+            sales_tax_rate: this.props.tax_rate,
+            payoff_balance_owed: "",
+            title_trip_fee: "",
+            deposit: "",
+            show_msrp_on_pdf: 0,
+            taxable_price: 1,
+            taxable_manufacturer_freight: 1,
+            taxable_technician_setup: 1,
+            taxable_accessories: 1,
+            taxable_accessories_labor: 1,
+            taxable_labor: 1,
+            taxable_riders_edge_course: 1,
+            taxable_miscellaneous_costs: 0,
+            taxable_document_fee: 0,
+            tax_credit_on_trade: 0
+          }
+        },
+        this.subtotal
+      );
     }
   }
 
@@ -144,170 +178,274 @@ class DealPurchase extends React.Component {
           Purchase Information for above unit
         </span>
         <div className="w-full flex flex-row">
-          <div className="border border-gray-500 rounded-lg mr-2 p-2 w-3/4">
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">MSRP</span>
-              <input
-                type="number"
-                value={this.state.pi.msrp}
-                onChange={event => this.setPI(event.target.value, "msrp")}
-                className="form-input py-1"
-                placeholder="MSRP"
-              />
+          <div className="border border-gray-300 rounded-lg mr-2 p-2 w-3/4">
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">MSRP</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.msrp}
+                  onChange={event => this.setPI(event.target.value, "msrp")}
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 py-1"
+                  placeholder="MSRP"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Price</span>
-              <input
-                type="number"
-                value={this.state.pi.price}
-                onChange={event => this.setPI(event.target.value, "price")}
-                className="form-input py-1"
-                placeholder="Price"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Price</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.price}
+                  onChange={event => this.setPI(event.target.value, "price")}
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Price"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Manufacturer Freight</span>
-              <input
-                type="number"
-                value={this.state.pi.manufacturer_freight}
-                onChange={event =>
-                  this.setPI(event.target.value, "manufacturer_freight")
-                }
-                className="form-input py-1"
-                placeholder="Manufacturer Freight"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">
+                Manufacturer Freight
+              </span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.manufacturer_freight}
+                  onChange={event =>
+                    this.setPI(event.target.value, "manufacturer_freight")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Manufacturer Freight"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Technician Setup</span>
-              <input
-                type="number"
-                value={this.state.pi.technician_setup}
-                onChange={event =>
-                  this.setPI(event.target.value, "technician_setup")
-                }
-                className="form-input py-1"
-                placeholder="Technician Setup"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Technician Setup</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.technician_setup}
+                  onChange={event =>
+                    this.setPI(event.target.value, "technician_setup")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Technician Setup"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Accessories</span>
-              <input
-                type="number"
-                value={this.state.pi.accessories}
-                onChange={event =>
-                  this.setPI(event.target.value, "accessories")
-                }
-                className="form-input py-1"
-                placeholder="Accessories"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Accessories</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.accessories}
+                  onChange={event =>
+                    this.setPI(event.target.value, "accessories")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Accessories"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Accessories Labor</span>
-              <input
-                type="number"
-                value={this.state.pi.accessories_labor}
-                onChange={event =>
-                  this.setPI(event.target.value, "accessories_labor")
-                }
-                className="form-input py-1"
-                placeholder="Accessories Labor"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Accessories Labor</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.accessories_labor}
+                  onChange={event =>
+                    this.setPI(event.target.value, "accessories_labor")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Accessories Labor"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Labor</span>
-              <input
-                type="number"
-                value={this.state.pi.labor}
-                onChange={event => this.setPI(event.target.value, "labor")}
-                className="form-input py-1"
-                placeholder="Labor"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Labor</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.labor}
+                  onChange={event => this.setPI(event.target.value, "labor")}
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Labor"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">
                 Rider&apos;s Edge Course
               </span>
-              <input
-                type="number"
-                value={this.state.pi.riders_edge_course}
-                onChange={event =>
-                  this.setPI(event.target.value, "riders_edge_course")
-                }
-                className="form-input py-1"
-                placeholder="Rider's Edge Course"
-              />
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.riders_edge_course}
+                  onChange={event =>
+                    this.setPI(event.target.value, "riders_edge_course")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Rider's Edge Course"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Miscellaneous Costs</span>
-              <input
-                type="number"
-                value={this.state.pi.miscellaneous_costs}
-                onChange={event =>
-                  this.setPI(event.target.value, "miscellaneous_costs")
-                }
-                className="form-input py-1"
-                placeholder="Miscellaneous Costs"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">
+                Miscellaneous Costs
+              </span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.miscellaneous_costs}
+                  onChange={event =>
+                    this.setPI(event.target.value, "miscellaneous_costs")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Miscellaneous Costs"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Trade In Allowance</span>
-              <input
-                type="number"
-                value={this.state.pi.trade_in_allowance}
-                onChange={event =>
-                  this.setPI(event.target.value, "trade_in_allowance")
-                }
-                className="form-input py-1"
-                placeholder="Trade In Allowance"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">
+                Trade In Allowance
+              </span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.trade_in_allowance}
+                  onChange={event =>
+                    this.setPI(event.target.value, "trade_in_allowance")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Trade In Allowance"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">
                 Payoff Balance Owed onTrade
               </span>
-              <input
-                type="number"
-                value={this.state.pi.payoff_balance_owed}
-                onChange={event =>
-                  this.setPI(event.target.value, "payoff_balance_owed")
-                }
-                className="form-input py-1"
-                placeholder="Payoff Balance Owed on Trade"
-              />
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.payoff_balance_owed}
+                  onChange={event =>
+                    this.setPI(event.target.value, "payoff_balance_owed")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Payoff Balance Owed on Trade"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Title/Trip Fee</span>
-              <input
-                type="number"
-                value={this.state.pi.title_trip_fee}
-                onChange={event =>
-                  this.setPI(event.target.value, "title_trip_fee")
-                }
-                className="form-input py-1"
-                placeholder="Title/Trip Fee"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Title/Trip Fee</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.title_trip_fee}
+                  onChange={event =>
+                    this.setPI(event.target.value, "title_trip_fee")
+                  }
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Title/Trip Fee"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Deposit</span>
-              <input
-                type="number"
-                value={this.state.pi.deposit}
-                onChange={event => this.setPI(event.target.value, "deposit")}
-                className="form-input py-1"
-                placeholder="Deposit"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Deposit</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    $
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.deposit}
+                  onChange={event => this.setPI(event.target.value, "deposit")}
+                  className="form-input block w-full pl-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Deposit"
+                />
+              </div>
             </label>
-            <label className="mb-1 block w-full xl:w-1/2 bg-white even:bg-gray-200">
-              <span className="w-1/2 inline-block">Sales Tax Rate</span>
-              <input
-                type="number"
-                value={this.state.pi.sales_tax_rate}
-                onChange={event =>
-                  this.setPI(event.target.value, "sales_tax_rate")
-                }
-                className="form-input py-1"
-                placeholder="Sales Tax Rate"
-              />
+            <label className="flex flex-row mb-1 block w-full bg-white even:bg-gray-100">
+              <span className="w-1/2 inline-block pt-2">Sales Tax Rate</span>
+              <div className="mt-1 relative inline-block rounded-md shadow-sm w-1/2">
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm sm:leading-5">
+                    %
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  value={this.state.pi.sales_tax_rate}
+                  onChange={event =>
+                    this.setPI(event.target.value, "sales_tax_rate")
+                  }
+                  className="form-input block w-full pr-7 sm:text-sm sm:leading-5 w-1/2 py-1"
+                  placeholder="Sales Tax Rate"
+                />
+              </div>
             </label>
             <div className="w-full block mt-3">
               <b className="w-3/4 text-right inline-block">Document Fee:</b>
@@ -334,7 +472,7 @@ class DealPurchase extends React.Component {
               </b>
             </div>
           </div>
-          <div className="border border-gray-500 rounded-lg w-1/4 p-2">
+          <div className="border border-gray-300 rounded-lg w-1/4 p-2">
             <span className="block w-full">Taxables</span>
             <label className="block text-gray-700 text-sm font-bold mb-2">
               <input

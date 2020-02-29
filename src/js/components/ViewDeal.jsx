@@ -105,14 +105,15 @@ class ViewDeal extends React.Component {
       },
       data: data
     })
-      .then(() => {
+      .then(({ data }) => {
         if (this._is_mounted) {
           this.setState({
-            save_success: true
+            save_success: true,
+            deal: data
           });
           setTimeout(() => {
             if (this._is_mounted) {
-              this.setState({ update_success: false });
+              this.setState({ save_success: false });
             }
           }, 4000);
         }
@@ -358,6 +359,7 @@ class ViewDeal extends React.Component {
                 scheduleUpdated={schedule =>
                   this.setDeal("payment_schedule", schedule)
                 }
+                customer={this.state.deal.customer}
               />
               <Finance
                 ui={ui}
@@ -366,6 +368,9 @@ class ViewDeal extends React.Component {
                 financeUpdated={finance =>
                   this.setDeal("finance_insurance", finance)
                 }
+                units={this.state.deal.units}
+                trades={this.state.deal.trades}
+                customer={this.state.deal.customer}
               />
             </div>
             <div className="w-full text-right p-5">

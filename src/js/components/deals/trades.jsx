@@ -2,10 +2,12 @@ import React from "react";
 import axios from "axios";
 import { apiURL } from "../../helpers/url";
 import { getAuthToken } from "../../helpers/auth";
+import Modal from "../Modal.jsx";
 
 class DealTrade extends React.Component {
   state = {
-    trades: []
+    trades: [],
+    confirm_delete: null
   };
 
   constructor(props) {
@@ -86,6 +88,62 @@ class DealTrade extends React.Component {
 
       return { trades };
     }, this.tradeAddedUpdated);
+  }
+
+  deleteConfirm(trade) {
+    let confirm_delete = (
+      <Modal>
+        <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="sm:flex sm:items-start">
+              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <svg
+                  className="h-6 w-6 text-red-600"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Confirm Delete
+                </h3>
+                <div className="mt-2">
+                  <p className="text-sm leading-5 text-gray-500">
+                    Are you sure you want to completely remove the selected
+                    trade: <br />
+                    {trade.make} {trade.model}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 p-4 sm:px-6 sm:py-4 sm:flex sm:flex-row-reverse">
+            <button
+              className="text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded-md"
+              onClick={() => this.deleteTrade(trade)}
+            >
+              Confirm
+            </button>
+            <button
+              className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-md mr-6"
+              onClick={() => this.setState({ confirm_delete: null })}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+
+    this.setState({ confirm_delete });
   }
 
   deleteTrade(trade) {
@@ -231,7 +289,7 @@ class DealTrade extends React.Component {
               />
               <div className="form-input py-1 mb-1 ml-2 w-1/10 flex flex-row">
                 <svg
-                  onClick={() => this.deleteTrade(t)}
+                  onClick={() => this.deleteConfirm(t)}
                   className="fill-current text-red-500 h-5 w-5 cursor-pointer mt-1"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -250,6 +308,8 @@ class DealTrade extends React.Component {
             New Trade
           </button>
         </div>
+
+        {this.state.confirm_delete}
       </label>
     );
   }
