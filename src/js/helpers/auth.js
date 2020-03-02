@@ -8,6 +8,12 @@ export const setLogin = (data, remember) => {
   }
 };
 
+export const setAdminLogin = (data, remember) => {
+  data.current_time = new Date().getTime() / 1000;
+
+  sessionStorage.setItem("auth_admin", JSON.stringify(data));
+};
+
 export const logout = () => {
   localStorage.removeItem("auth");
   sessionStorage.removeItem("auth");
@@ -16,14 +22,27 @@ export const logout = () => {
   window.location = "/";
 };
 
+export const adminLogout = () => {
+  sessionStorage.removeItem("auth_admin");
+
+  // redirect to login
+  window.location = "/admin";
+};
+
 export const isAuthenticated = () =>
   localStorage.getItem("auth") || sessionStorage.getItem("auth");
+
+export const isAdminAuthenticated = () => sessionStorage.getItem("auth_admin");
 
 export const getAuthToken = () => {
   return (
     JSON.parse(localStorage.getItem("auth")) ||
     JSON.parse(sessionStorage.getItem("auth"))
   ).token.access_token;
+};
+
+export const getAdminAuthToken = () => {
+  return JSON.parse(sessionStorage.getItem("auth_admin")).token.access_token;
 };
 
 export const sessionExpired = () => {

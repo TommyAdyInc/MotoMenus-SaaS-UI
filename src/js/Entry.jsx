@@ -12,6 +12,7 @@ import CheckApiStatus from "./components/CheckApiStatus.jsx";
 import CheckEnvironmentVariables from "./components/CheckEnvironmentVariables.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./components/Home.jsx";
+import Admin from "./components/Admin.jsx";
 import Menu from "./components/Menu.jsx";
 import NotFound from "./components/NotFound.jsx";
 import Deals from "./components/Deals.jsx";
@@ -51,8 +52,16 @@ class Entry extends React.Component {
     this.setState({ authenticated: true });
   }
 
+  onAdminLogin() {
+    this.setState({ admin_authenticated: true });
+  }
+
   onLogout() {
     this.setState({ authenticated: false });
+  }
+
+  onAdminLogout() {
+    this.setState({ admin_authenticated: false });
   }
 
   render() {
@@ -63,11 +72,20 @@ class Entry extends React.Component {
         <CheckEnvironmentVariables />
         <CheckApiStatus api={api} ui={ui} />
         <main className="flex-auto">
-          {this.state.authenticated && (
-            <Menu onLogout={() => this.onLogout()} />
-          )}
+          {this.state.authenticated &&
+            window.location.pathname !== "/admin" && (
+              <Menu onLogout={() => this.onLogout()} />
+            )}
           <Router className={this.state.authenticated ? "h-auto" : "h-full"}>
             <Home path="/" api={api} ui={ui} onLogin={() => this.onLogin()} />
+
+            <Admin
+              path="/admin"
+              api={api}
+              ui={ui}
+              onLogin={() => this.onAdminLogin()}
+              onLogout={() => this.onAdminLogout()}
+            />
 
             <CashSpecials path="/cash-specials" api={api} ui={ui} />
             <Customers path="/customers" api={api} ui={ui} />
