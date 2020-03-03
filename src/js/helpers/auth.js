@@ -37,7 +37,8 @@ export const isAdminAuthenticated = () => sessionStorage.getItem("auth_admin");
 export const getAuthToken = () => {
   return (
     JSON.parse(localStorage.getItem("auth")) ||
-    JSON.parse(sessionStorage.getItem("auth"))
+    JSON.parse(sessionStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth_admin"))
   ).token.access_token;
 };
 
@@ -48,7 +49,8 @@ export const getAdminAuthToken = () => {
 export const sessionExpired = () => {
   let session =
     JSON.parse(localStorage.getItem("auth")) ||
-    JSON.parse(sessionStorage.getItem("auth"));
+    JSON.parse(sessionStorage.getItem("auth")) ||
+    JSON.parse(sessionStorage.getItem("auth_admin"));
 
   return (
     !session ||
@@ -62,7 +64,10 @@ export const isAdmin = () => {
     JSON.parse(localStorage.getItem("auth")) ||
     JSON.parse(sessionStorage.getItem("auth"));
 
-  return session.user.role === "admin";
+  return (
+    JSON.parse(sessionStorage.getItem("auth_admin")) ||
+    session.user.role === "admin"
+  );
 };
 
 export const authUser = () => {

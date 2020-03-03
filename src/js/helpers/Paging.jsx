@@ -12,10 +12,10 @@ class Paging extends React.Component {
       <tfoot>
         {paging && (
           <tr>
-            <td className="text-sm py-2" colSpan={colSpanLeft}>
+            <td className="text-sm p-2" colSpan={colSpanLeft}>
               {page} {paging.from} to {paging.to} out of {paging.total}
             </td>
-            <td className="text-sm py-2" colSpan={colSpanRight}>
+            <td className="text-sm p-2" colSpan={colSpanRight}>
               <div className="flex align-center justify-end w-full">
                 {paging.from > 1 && (
                   <a

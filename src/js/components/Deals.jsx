@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import {
   isAuthenticated,
+  isAdminAuthenticated,
+  getAdminAuthToken,
   sessionExpired,
   logout,
   getAuthToken,
@@ -78,7 +80,7 @@ class Deals extends React.Component {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "Bearer " + getAuthToken()
+        Authorization: "Bearer " + getAuthToken() || getAdminAuthToken()
       },
       params: this.setFilter(params)
     })
@@ -378,7 +380,7 @@ class Deals extends React.Component {
   }
 
   componentDidMount() {
-    if (isAuthenticated()) {
+    if (isAuthenticated() || isAdminAuthenticated()) {
       this.getSalesSteps();
       this.getCustomerTypes();
       this.getTaxRate();
@@ -419,7 +421,7 @@ class Deals extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 
@@ -446,12 +448,14 @@ class Deals extends React.Component {
             >
               Filter
             </button>
-            <button
-              className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 float-right hover:bg-green-600"
-              onClick={() => this.newDeal()}
-            >
-              New Deal
-            </button>
+            {!isAdminAuthenticated() && (
+              <button
+                className="inline-block text-white text-sm rounded-full px-4 py-1 bg-green-400 float-right hover:bg-green-600"
+                onClick={() => this.newDeal()}
+              >
+                New Deal
+              </button>
+            )}
           </div>
         )}
         {this.state.show_filter && !this.state.view_deal && (

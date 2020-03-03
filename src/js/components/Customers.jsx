@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import {
   isAuthenticated,
+  isAdminAuthenticated,
   sessionExpired,
   logout,
   getAuthToken,
@@ -139,7 +140,7 @@ class Customers extends React.Component {
   }
 
   componentDidMount() {
-    if (isAuthenticated()) {
+    if (isAuthenticated() || isAdminAuthenticated()) {
       this.getCustomers();
       if (isAdmin()) {
         this.getUsers();
@@ -206,7 +207,7 @@ class Customers extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 

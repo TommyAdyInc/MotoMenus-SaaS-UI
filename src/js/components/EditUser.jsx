@@ -4,7 +4,8 @@ import {
   isAuthenticated,
   sessionExpired,
   logout,
-  getAuthToken
+  getAuthToken,
+  isAdminAuthenticated
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
@@ -26,6 +27,8 @@ class EditUser extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.timeout = null;
   }
 
   componentDidMount() {
@@ -71,7 +74,10 @@ class EditUser extends React.Component {
           password_confirm: "",
           update_success: true
         });
-        setTimeout(() => this.setState({ update_success: false }), 4000);
+        this.timeout = setTimeout(
+          () => this.setState({ update_success: false }),
+          4000
+        );
       })
       .catch(errors => {
         let error = (
@@ -108,8 +114,12 @@ class EditUser extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 

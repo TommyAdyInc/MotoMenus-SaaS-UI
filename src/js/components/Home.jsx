@@ -1,6 +1,10 @@
 import React from "react";
 import axios from "axios";
-import { setLogin, isAuthenticated } from "../helpers/auth";
+import {
+  setLogin,
+  isAuthenticated,
+  isAdminAuthenticated
+} from "../helpers/auth";
 import Modal from "./Modal.jsx";
 import Loading from "../helpers/Loading.jsx";
 import { apiURL } from "../helpers/url";
@@ -16,20 +20,14 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
-    this.state.authenticated = isAuthenticated();
+    this.state.authenticated = isAuthenticated() || isAdminAuthenticated();
   }
 
   login(event) {
     event.preventDefault();
 
     this.setState({ loading: true });
-    const {
-      port,
-      route_prefix,
-      oauth_id,
-      oauth_secret,
-      api_url
-    } = this.props.api;
+    const { oauth_id, oauth_secret } = this.props.api;
     const { api, ui } = this.props;
     const form_data = new FormData(event.target);
 

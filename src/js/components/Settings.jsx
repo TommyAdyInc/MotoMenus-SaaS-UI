@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import {
   isAuthenticated,
+  isAdminAuthenticated,
   sessionExpired,
   logout,
   getAuthToken,
@@ -275,7 +276,7 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
-    if (isAuthenticated()) {
+    if (isAuthenticated() || isAdminAuthenticated()) {
       this.getSettings();
       this.getLogo();
       this.getStoreName();
@@ -284,7 +285,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 
@@ -401,42 +402,44 @@ class Settings extends React.Component {
               </div>
             </div>
           )}
-          <div className="mb-5 rounded-lg border-blue-500 border p-0">
-            <h2 className="px-5 py-2 bg-blue-500 text-white">User</h2>
-            <div className="p-5">
-              <b className="inline-block mr-3">Change Password</b>{" "}
-              <input
-                className="form-input py-0"
-                type="password"
-                value={this.state.password}
-                onChange={event =>
-                  this.setState({ password: event.target.value })
-                }
-              />
-              <b className="inline-block mr-3">Confirm Password</b>{" "}
-              <input
-                className="form-input py-0"
-                type="password"
-                value={this.state.password_confirm}
-                onChange={event =>
-                  this.setState({ password_confirm: event.target.value })
-                }
-              />
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm ml-6"
-                onClick={() => this.updateUser()}
-              >
-                Update Password
-              </button>
-              {this.state.save_user && <CheckMark />}
-              <br />
-              {this.state.password_error && (
-                <div className="text-red-500 text-sm">
-                  Passwords do not match!!
-                </div>
-              )}
+          {!isAdminAuthenticated() && (
+            <div className="mb-5 rounded-lg border-blue-500 border p-0">
+              <h2 className="px-5 py-2 bg-blue-500 text-white">User</h2>
+              <div className="p-5">
+                <b className="inline-block mr-3">Change Password</b>{" "}
+                <input
+                  className="form-input py-0"
+                  type="password"
+                  value={this.state.password}
+                  onChange={event =>
+                    this.setState({ password: event.target.value })
+                  }
+                />
+                <b className="inline-block mr-3">Confirm Password</b>{" "}
+                <input
+                  className="form-input py-0"
+                  type="password"
+                  value={this.state.password_confirm}
+                  onChange={event =>
+                    this.setState({ password_confirm: event.target.value })
+                  }
+                />
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm ml-6"
+                  onClick={() => this.updateUser()}
+                >
+                  Update Password
+                </button>
+                {this.state.save_user && <CheckMark />}
+                <br />
+                {this.state.password_error && (
+                  <div className="text-red-500 text-sm">
+                    Passwords do not match!!
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {this.state.error}

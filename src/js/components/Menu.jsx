@@ -1,5 +1,5 @@
 import React from "react";
-import { logout, isAdmin } from "../helpers/auth";
+import { logout, isAdmin, isAdminAuthenticated } from "../helpers/auth";
 
 class Menu extends React.Component {
   state = {
@@ -178,16 +178,29 @@ class Menu extends React.Component {
             )}
           </div>
           <div>
-            <a
-              href="#responsive-header"
-              onClick={() => {
-                logout();
-                onLogout();
-              }}
-              className="nav-item"
-            >
-              Logout
-            </a>
+            {isAdminAuthenticated() ? (
+              <a
+                href="/admin"
+                onClick={() => {
+                  logout();
+                  onLogout();
+                }}
+                className="nav-item text-red-700"
+              >
+                Admin Dashboard
+              </a>
+            ) : (
+              <a
+                href="#responsive-header"
+                onClick={() => {
+                  logout();
+                  onLogout();
+                }}
+                className="nav-item"
+              >
+                Logout
+              </a>
+            )}
           </div>
         </div>
       </nav>

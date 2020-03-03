@@ -24,7 +24,7 @@ class DocumentFee extends React.Component {
 
     axios({
       method: "GET",
-      url: apiURL(api, ui) + "/settings/document-fee",
+      url: apiURL(api, ui) + "/global-settings",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

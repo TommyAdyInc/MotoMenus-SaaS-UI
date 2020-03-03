@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import {
   isAuthenticated,
+  isAdminAuthenticated,
   sessionExpired,
   logout,
   getAuthToken,
@@ -28,7 +29,7 @@ class ViewDeal extends React.Component {
     loading: false,
     error: null,
     save_success: false,
-    user_id: null
+    user_id: ""
   };
 
   constructor(props) {
@@ -56,7 +57,11 @@ class ViewDeal extends React.Component {
       this.setState({ deal: this.props.deal });
     }
 
-    this.setState({ user_id: authUser().id });
+    this.setState({
+      user_id:
+        this.props.deal.user_id ||
+        (!isAdminAuthenticated() ? authUser().id : "")
+    });
   }
 
   setStatus(status) {
@@ -189,7 +194,7 @@ class ViewDeal extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 
@@ -235,7 +240,7 @@ class ViewDeal extends React.Component {
               >
                 Save
               </button>
-              {this.props.deal && (
+              {this.props.deal && !isAdminAuthenticated() && (
                 <button
                   className="bg-green-500 hover:bg-green-700 text-white py-1 px-4 rounded-full text-sm mr-2"
                   onClick={() => this.newDeal()}

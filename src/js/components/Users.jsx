@@ -4,7 +4,8 @@ import {
   isAuthenticated,
   sessionExpired,
   logout,
-  getAuthToken
+  getAuthToken,
+  isAdminAuthenticated
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
@@ -155,13 +156,13 @@ class Users extends React.Component {
   }
 
   componentDidMount() {
-    if (isAuthenticated()) {
+    if (isAuthenticated() || isAdminAuthenticated()) {
       this.getUsers();
     }
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 

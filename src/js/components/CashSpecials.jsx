@@ -5,7 +5,8 @@ import {
   sessionExpired,
   logout,
   getAuthToken,
-  isAdmin
+  isAdmin,
+  isAdminAuthenticated
 } from "../helpers/auth";
 import { apiURL } from "../helpers/url";
 import { Redirect } from "@reach/router";
@@ -120,7 +121,7 @@ class CashSpecials extends React.Component {
   }
 
   componentDidMount() {
-    if (isAuthenticated()) {
+    if (isAuthenticated() || isAdminAuthenticated()) {
       this.getCashSpecials();
     }
   }
@@ -150,7 +151,7 @@ class CashSpecials extends React.Component {
   }
 
   render() {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() && !isAdminAuthenticated()) {
       return <Redirect noThrow={true} to="/" />;
     }
 

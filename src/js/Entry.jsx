@@ -17,7 +17,7 @@ import Menu from "./components/Menu.jsx";
 import NotFound from "./components/NotFound.jsx";
 import Deals from "./components/Deals.jsx";
 import Customers from "./components/Customers.jsx";
-import { isAuthenticated } from "./helpers/auth";
+import { isAuthenticated, isAdminAuthenticated } from "./helpers/auth";
 import Users from "./components/Users.jsx";
 import Settings from "./components/Settings.jsx";
 import CashSpecials from "./components/CashSpecials.jsx";
@@ -44,7 +44,8 @@ class Entry extends React.Component {
         subsubdomain: hostname_parts_reversed[3],
         tld: hostname_parts_reversed[0]
       },
-      authenticated: isAuthenticated()
+      authenticated: isAuthenticated(),
+      admin_authenticated: isAdminAuthenticated()
     };
   }
 
@@ -72,11 +73,17 @@ class Entry extends React.Component {
         <CheckEnvironmentVariables />
         <CheckApiStatus api={api} ui={ui} />
         <main className="flex-auto">
-          {this.state.authenticated &&
+          {(this.state.authenticated || this.state.admin_authenticated) &&
             window.location.pathname !== "/admin" && (
               <Menu onLogout={() => this.onLogout()} />
             )}
-          <Router className={this.state.authenticated ? "h-auto" : "h-full"}>
+          <Router
+            className={
+              this.state.authenticated || this.state.admin_authenticated
+                ? "h-auto"
+                : "h-full"
+            }
+          >
             <Home path="/" api={api} ui={ui} onLogin={() => this.onLogin()} />
 
             <Admin
@@ -96,7 +103,11 @@ class Entry extends React.Component {
             <NotFound default />
           </Router>
         </main>
-        <Footer authenticated={this.state.authenticated} />
+        <Footer
+          authenticated={
+            this.state.authenticated || this.state.admin_authenticated
+          }
+        />
       </div>
     );
   }
