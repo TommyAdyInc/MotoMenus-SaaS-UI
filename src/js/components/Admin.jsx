@@ -50,7 +50,8 @@ class Admin extends React.Component {
         username: form_data.get("email"),
         password: form_data.get("password"),
         provider: "superadmins",
-        scope: ""
+        scope: "",
+        admin: 1,
       },
       headers: {
         "Content-Type": "application/json"
@@ -106,7 +107,8 @@ class Admin extends React.Component {
         Authorization: "Bearer " + getAuthToken()
       },
       data: {
-        password: this.state.password
+        password: this.state.password,
+        admin: 1,
       }
     })
       .then(() => {

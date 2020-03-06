@@ -29,6 +29,9 @@ class DocumentFee extends React.Component {
         "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: "Bearer " + getAdminAuthToken()
+      },
+      params: {
+        admin: 1,
       }
     })
       .then(({ data }) => {
@@ -75,7 +78,8 @@ class DocumentFee extends React.Component {
         Authorization: "Bearer " + getAdminAuthToken()
       },
       data: {
-        document_fee: this.state.document_fee
+        document_fee: this.state.document_fee,
+        admin: 1,
       }
     })
       .then(() => {
