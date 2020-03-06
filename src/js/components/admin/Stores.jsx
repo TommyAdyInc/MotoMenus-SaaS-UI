@@ -30,7 +30,7 @@ class Stores extends React.Component {
     this.setState({ loading: true });
 
     let params = {
-      admin: 1,
+      admin: 1
     };
     if (paging === "next") {
       params.page = parseInt(this.state.paging.current_page) + 1;
@@ -98,8 +98,14 @@ class Stores extends React.Component {
       data: {
         store_name: this.state.store_name,
         fqdn:
-          this.state.fqdn + "." + api.subdomain + "." + ui.domain + "." + ui.tld,
-        admin: 1,
+          this.state.fqdn +
+          "." +
+          api.subdomain +
+          "." +
+          ui.domain +
+          "." +
+          ui.tld,
+        admin: 1
       }
     })
       .then(() => {
@@ -127,7 +133,7 @@ class Stores extends React.Component {
         Authorization: "Bearer " + getAdminAuthToken()
       },
       params: {
-        admin: 1,
+        admin: 1
       }
     })
       .then(() => (store.deleted_at = "deactivated"))
@@ -159,7 +165,7 @@ class Stores extends React.Component {
         Authorization: "Bearer " + getAdminAuthToken()
       },
       params: {
-        admin: 1,
+        admin: 1
       }
     })
       .then(() => (store.deleted_at = null))

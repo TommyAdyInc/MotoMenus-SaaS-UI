@@ -51,7 +51,7 @@ class Admin extends React.Component {
         password: form_data.get("password"),
         provider: "superadmins",
         scope: "",
-        admin: 1,
+        admin: 1
       },
       headers: {
         "Content-Type": "application/json"
@@ -108,7 +108,7 @@ class Admin extends React.Component {
       },
       data: {
         password: this.state.password,
-        admin: 1,
+        admin: 1
       }
     })
       .then(() => {
